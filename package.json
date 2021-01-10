@@ -1,0 +1,38 @@
+{
+  "name": "family-chart",
+  "version": "0.0.0-alpha-6",
+  "description": "family tree creator and viewer",
+  "keywords": [
+    "datafull",
+    "family-chart",
+    "family tree",
+    "d3"
+  ],
+  "homepage": "https://donatso.github.io/family-chart/",
+  "license": "ISC",
+  "author": {
+    "name": "Donat Soric",
+    "url": "https://www.linkedin.com/in/donat-sori%C4%87-342a92161/"
+  },
+  "main": "dist/family-chart.js",
+  "unpkg": "dist/family-chart.min.js",
+  "module": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/donatso/family-chart.git"
+  },
+  "files": [
+    "dist/**/*.js"
+  ],
+  "scripts": {
+    "build": "rollup -c"
+  },
+  "sideEffects": false,
+  "dependencies": {
+    "d3": "6"
+  },
+  "devDependencies": {
+    "rollup": "2",
+    "rollup-plugin-terser": "7"
+  }
+}
