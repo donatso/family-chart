@@ -18,7 +18,7 @@ yarn add family-chart
 ```
 
 ## Data creation
-Visit [create-tree](https://donatso.github.io/family-tree/examples/create-tree/) and create your family tree.
+Visit [create-tree](https://donatso.github.io/family-chart/examples/create-tree/) and create your family tree.
 After creation copy json from textarea and use it for examples below.
 
 # Usages
