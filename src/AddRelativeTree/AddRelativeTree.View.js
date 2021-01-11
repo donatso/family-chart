@@ -1,9 +1,9 @@
 import {Form} from "../view/elements/Form.js"
 import NewRelative from "./AddRelativeTree.NewRelative.js"
 
-export default function View({cont, datum, store, tree, card_edit, card_dim}) {
+export default function View(store, tree, datum) {
   const data_stash = store.getData(),
-    svg_dim = cont.getBoundingClientRect(),
+    svg_dim = store.state.cont.getBoundingClientRect(),
     tree_fit = calculateTreeFit(svg_dim),
     mounted = (node) => {
       addEventListeners(node)
@@ -62,7 +62,7 @@ export default function View({cont, datum, store, tree, card_edit, card_dim}) {
     `)}
 
     function createPath() {
-      const {w,h} = card_dim;
+      const {w,h} = store.state.card_dim;
       let parent = (is_vertical && d.y < 0)
         ? {x: 0, y: -h/2}
         : (is_vertical && d.y > 0)
@@ -109,7 +109,7 @@ export default function View({cont, datum, store, tree, card_edit, card_dim}) {
           addNewRel();
           store.update.tree();
         }
-      Form({datum: new_rel, rel_datum: datum, data_stash, rel_type, postSubmit, card_edit})
+      Form({datum: new_rel, rel_datum: datum, data_stash, rel_type, postSubmit, card_edit: store.state.card_edit})
       return true
     }
   }

@@ -7,19 +7,16 @@ import Card from "./elements/Card.js"
 import {calculateEnterAndExitPositions, isAllRelativeDisplayed} from "../CalculateTree/CalculateTree.handlers.js"
 import ViewAddEventListeners from "./View.EventListeners.js"
 
-export default function d3AnimationView({
-  cont, card_display, card_dim,
-  card_edit, edit, add, hide_rels=true, mini_tree=true
-}) {
-  card_dim = Object.assign({w:220,h:70,text_x:75,text_y:15,img_w:60,img_h:60,img_x:5,img_y:5}, card_dim || {});
-
+export default function d3AnimationView(store) {
   const svg = createSvg();
   setupSvg(svg);
+  setEventListeners()
 
-  return {update: updateView, setEventListeners}
+  return {update: updateView}
 
-  function updateView({tree, tree_position='fit', transition_time=2000}) {
-    const view = d3.select(svg).select(".view")
+  function updateView({tree_position='fit', transition_time=2000}) {
+    const tree = store.state.tree,
+      view = d3.select(svg).select(".view")
 
     updateCards();
     updateLinks();
@@ -92,15 +89,24 @@ export default function d3AnimationView({
       }
 
       function CardHtml(d) {
-        const show_mini_tree = mini_tree && !isAllRelativeDisplayed(d, tree.data)
-        return Card({d, card_display, card_dim, show_mini_tree, show_edit: edit, show_add: add, show_hide_rels: hide_rels}).template
+        const show_mini_tree = store.state.mini_tree && !isAllRelativeDisplayed(d, tree.data)
+        return Card({
+          d,
+          card_display: store.state.card_display,
+          card_dim: store.state.card_dim,
+          show_mini_tree: show_mini_tree,
+          show_edit: store.state.edit,
+          show_add: store.state.add,
+          show_hide_rels: store.state.hide_rels
+        }).template
       }
     }
 
   }
 
   function createSvg() {
-    const svg_dim = cont.getBoundingClientRect(),
+    const svg_dim = store.state.cont.getBoundingClientRect(),
+      card_dim = store.state.card_dim,
       svg_html = (`
         <svg class="main_svg">
           <defs>
@@ -131,13 +137,13 @@ export default function d3AnimationView({
     const fake_cont = document.createElement("div")
     fake_cont.innerHTML = svg_html
     const svg = fake_cont.firstElementChild
-    cont.appendChild(svg)
+    store.state.cont.appendChild(svg)
 
     return svg
   }
 
-  function setEventListeners(store) {
+  function setEventListeners() {
     svg.querySelector(".fit_screen_icon").addEventListener("click", () => store.update.tree())
-    ViewAddEventListeners({cont, svg, store, card_edit, card_dim});
+    ViewAddEventListeners(store);
   }
 }

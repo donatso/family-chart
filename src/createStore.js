@@ -1,8 +1,8 @@
 import CalculateTree from "./CalculateTree/CalculateTree.js"
 
-export default function createStore({data, main_id}) {
-  let onUpdate, calc_props={};
-  const state = {data, main_id, tree: null},
+export default function createStore(initial_state) {
+  let onUpdate;
+  const state = initial_state,
     update = {
       tree: (props) => {
         state.tree = calcTree();
@@ -14,12 +14,15 @@ export default function createStore({data, main_id}) {
     getData = () => state.data,
     getTree = () => state.tree,
     setOnUpdate = (f) => onUpdate = f,
-    setCalcProps = props => calc_props = props;
+    methods = {}
 
-  return {state, update, getData, getTree, setOnUpdate, setCalcProps}
+  return {state, update, getData, getTree, setOnUpdate, methods}
 
 
   function calcTree() {
-    return CalculateTree({data_stash: state.data, main_id: state.main_id, ...calc_props})
+    return CalculateTree({
+      data_stash: state.data, main_id: state.main_id,
+      node_separation: state.node_separation, level_separation: state.level_separation
+    })
   }
 }

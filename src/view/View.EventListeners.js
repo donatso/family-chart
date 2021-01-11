@@ -3,8 +3,8 @@ import {moveToAddToAdded, deletePerson} from "../handlers.js"
 import AddRelativeTree from "../AddRelativeTree/AddRelativeTree.js"
 import {toggleAllRels, toggleRels} from "../CalculateTree/CalculateTree.handlers.js"
 
-export default function ViewAddEventListeners({cont, svg, store, card_edit, card_dim}) {
-  svg.addEventListener("click", e => {
+export default function ViewAddEventListeners(store) {
+  store.state.cont.querySelector(".main_svg").addEventListener("click", e => {
     const node = e.target
 
     handleCardFamilyTreeClickMaybe(node) || handleCardEditClickMaybe(node)
@@ -35,7 +35,7 @@ export default function ViewAddEventListeners({cont, svg, store, card_edit, card
         }
         store.update.tree()
       }
-    Form({datum, postSubmit, card_edit})
+    Form({datum, postSubmit, card_edit: store.state.card_edit})
     return true
   }
 
@@ -48,7 +48,7 @@ export default function ViewAddEventListeners({cont, svg, store, card_edit, card
     toggleAllRels(store.getTree().data, false)
     store.update.mainId(d_id)
     store.update.tree({tree_position: 'main_to_middle', transition_time})
-    AddRelativeTree({cont, d_id: d_id, store, card_edit, card_dim, transition_time})
+    AddRelativeTree(store, d_id, transition_time)
     return true
   }
 
