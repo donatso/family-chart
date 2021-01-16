@@ -1,6 +1,4 @@
-import {getLabel} from "../../handlers.js"
-
-export function Form({datum, rel_datum, data_stash, rel_type, card_edit, postSubmit}) {
+export function Form({datum, rel_datum, data_stash, rel_type, card_edit, postSubmit, card_display}) {
   const modal_el = document.querySelector('#form_modal'),
     modal = M.Modal.getInstance(modal_el);
 
@@ -36,7 +34,7 @@ export function Form({datum, rel_datum, data_stash, rel_type, card_edit, postSub
               ? '' 
               : rel_datum.rels.spouses.map((sp_id, i) => {
                   const spouse = data_stash.find(d => d.id === sp_id)
-                  return (`<option value="${sp_id}" ${i === 0 ? 'selected' : ''}>${getLabel(spouse)}</option>`)
+                  return (`<option value="${sp_id}" ${i === 0 ? 'selected' : ''}>${card_display[0](spouse)}</option>`)
                 }).join("\n")}
           <option value="${'_new'}">NEW</option>
         </select>

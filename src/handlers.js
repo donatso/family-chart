@@ -8,17 +8,6 @@ export function removeToAdd(datum, data_stash) {
   return false
 }
 
-export function removeAllToAdd(data_stash) {
-  data_stash.slice(0).forEach(d => {
-    d.to_add ? removeToAdd(d, data_stash) : ''
-  })
-}
-
-export function getLabel(datum) {
-  if (datum.data.fn || datum.data.ln) return `${datum.data.fn || ''} ${datum.data.ln || ''}`
-  else return 'UNKNOWN'
-}
-
 export function deletePerson(datum, data_stash) {
   data_stash.forEach(d => {
     for (let k in d.rels) {

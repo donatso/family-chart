@@ -35,7 +35,7 @@ export default function ViewAddEventListeners(store) {
         }
         store.update.tree()
       }
-    Form({datum, postSubmit, card_edit: store.state.card_edit})
+    Form({datum, postSubmit, card_edit: store.state.card_edit, card_display: store.state.card_display})
     return true
   }
 
