@@ -16,10 +16,10 @@
       width:100%;
     }
     textarea {
-      height: 600px;
-      max-height: 80vh;
+      height: 200px;
       width:100%;
     }
+    .p5 {padding: 5px}
     @media only screen and (max-width: 600px) {
       #chart {
         height: 60vh;
@@ -40,8 +40,14 @@
       <div id="chart" style="position: relative"></div>
     </div>
     <div class="col s12 m3">
-      <textarea id="textarea"></textarea>
-      <button class="btn" id="update_btn">UPDATE CHART</button>
+      <div id="edit_cont" class="card p5"></div>
+      <div id="display_cont" class="card p5"></div>
+    </div>
+    <div class="col m12">
+      <div class="card p5">
+        <textarea id="textarea"></textarea>
+        <button class="btn" id="update_btn">UPDATE CHART</button>
+      </div>
     </div>
   </div>
 </div>
