@@ -6,27 +6,37 @@ import {toggleAllRels, toggleRels} from "../CalculateTree/CalculateTree.handlers
 export default function ViewAddEventListeners(store) {
   store.state.cont.querySelector(".main_svg").addEventListener("click", e => {
     const node = e.target
+    const listeners = [
+      {lis: handleCardFamilyTreeClickMaybe, query: ".card_family_tree"},
+      {lis: handleCardEditClickMaybe, query: ".card_edit"},
+      {lis: handleCardAddRelative, query: ".card_add_relative"},
+      {lis: handleCardShowHideRels, query: ".card_break_link"},
+      ...(store.state.custom_elements || [])
+    ],
+      isClicked = (query) => node.closest(query)
 
-    handleCardFamilyTreeClickMaybe(node) || handleCardEditClickMaybe(node)
-    || handleCardAddRelative(node) || handleCardShowHideRels(node)
+
+
+    for (let i = 0; i < listeners.length; i++) {
+      const listener = listeners[i];
+      if (!isClicked(listener.query)) continue
+
+      const card = node.closest('.card'),
+        d_id = card.getAttribute("data-id"),
+        d = store.getTree().data.find(d => d.data.id === d_id)
+      listener.lis(store, {card, d_id, d})
+    }
   })
 
-  function handleCardFamilyTreeClickMaybe(node) {
-    if (!node.closest('.card_family_tree')) return
-    const card = node.closest('.card'),
-      d_id = card.getAttribute("data-id")
-
+  function handleCardFamilyTreeClickMaybe(store, {card, d}) {
     toggleAllRels(store.getTree().data, false)
-    store.update.mainId(d_id)
+    store.update.mainId(d.data.id)
     store.update.tree({tree_position: 'inherit'})
     return true
   }
 
-  function handleCardEditClickMaybe(node) {
-    if (!node.closest('.card_edit')) return
-    const card = node.closest('.card'),
-      d_id = card.getAttribute("data-id"),
-      datum = store.getData().find(d => d.id === d_id),
+  function handleCardEditClickMaybe(store, {card, d}) {
+    const datum = d.data,
       postSubmit = (props) => {
         if (datum.to_add) moveToAddToAdded(datum, store.getData())
         if (props && props.delete) {
@@ -39,27 +49,19 @@ export default function ViewAddEventListeners(store) {
     return true
   }
 
-  function handleCardAddRelative(node) {
-    if (!node.closest('.card_add_relative')) return
-    const card = node.closest('.card'),
-      d_id = card.getAttribute("data-id"),
-      transition_time = 1000
+  function handleCardAddRelative(store, {card, d}) {
+    const transition_time = 1000
 
     toggleAllRels(store.getTree().data, false)
-    store.update.mainId(d_id)
+    store.update.mainId(d.data.id)
     store.update.tree({tree_position: 'main_to_middle', transition_time})
-    AddRelativeTree(store, d_id, transition_time)
+    AddRelativeTree(store, d.data.id, transition_time)
     return true
   }
 
-  function handleCardShowHideRels(node) {
-    if (!node.closest('.card_break_link')) return
-    const card = node.closest('.card'),
-      d_id = card.getAttribute("data-id"),
-      tree_datum = store.getTree().data.find(d => d.data.id === d_id)
-
-    tree_datum.data.hide_rels = !tree_datum.data.hide_rels
-    toggleRels(tree_datum, tree_datum.data.hide_rels)
+  function handleCardShowHideRels(store, {card, d}) {
+    d.data.hide_rels = !d.data.hide_rels
+    toggleRels(d, d.data.hide_rels)
     store.update.tree({tree_position: 'inherit'})
     return true
   }

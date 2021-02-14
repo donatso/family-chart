@@ -1,6 +1,6 @@
 import {CardBody, CardBodyAddNew, MiniTree, PencilIcon, PlusIcon, LinkBreakIcon, CardImage} from "./Card.Elements.js"
 
-export default function Card({d, card_display, card_dim, show_mini_tree, show_add, show_edit, show_hide_rels}) {
+export default function Card({d, card_display, card_dim, show_mini_tree, show_add, show_edit, show_hide_rels, custom_elements}) {
   return {template: (`
     <g class="card" data-id="${d.data.id}">
       <g transform="translate(${-card_dim.w / 2}, ${-card_dim.h / 2})">
@@ -10,6 +10,7 @@ export default function Card({d, card_display, card_dim, show_mini_tree, show_ad
         ${!d.data.to_add && show_edit ? PencilIcon({d,card_dim}).template : ''}
         ${!d.data.to_add ? CardImage({d,card_dim}).template : ''}
         ${show_hide_rels ? LinkBreakIconWrapper({d,card_dim}) : ''}
+        ${custom_elements ? custom_elements.map(d => d.el).join("\n") : ''}
       </g>
     </g>
   `)}
