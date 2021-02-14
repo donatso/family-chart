@@ -29,9 +29,9 @@ export function CardBodyAddNew({d,card_dim, show_edit}) {
   }
 }
 
-export function PencilIcon({d,card_dim}) {
+export function PencilIcon({d,card_dim,x,y}) {
   return ({template: (`
-    <g transform="translate(${card_dim.w-20},${card_dim.h-20})scale(.7)" style="cursor: pointer" class="card_edit pencil_icon">
+    <g transform="translate(${x || card_dim.w-20},${y || card_dim.h-20})scale(.7)" style="cursor: pointer" class="card_edit pencil_icon">
       <circle fill="rgba(0,0,0,0)" r="16" cx="8" cy="8" />
       <path fill="currentColor"
          d="M19.082,2.123L17.749,0.79c-1.052-1.052-2.766-1.054-3.819,0L1.925,12.794c-0.06,0.06-0.104,0.135-0.127,0.216
@@ -72,26 +72,25 @@ export function MiniTree({d,card_dim}) {
   `)})
 }
 
-export function PlusIcon({d,card_dim}) {
+export function PlusIcon({d,card_dim,x,y}) {
   return ({template: (`
     <g class="card_add_relative">
-      <g transform="translate(${card_dim.w/2},${card_dim.h})scale(.1)">
-        <circle r="100" />
+      <g transform="translate(${x || card_dim.w/2},${y || card_dim.h})scale(.1)">
+        <circle r="100" fill="rgba(0,0,0,0)" />
         <g transform="translate(-50,-45)">
           <line
             x1="10" x2="90" y1="50" y2="50"
-            stroke="currentColor" stroke-width="20" stroke-linecap="round"
+            stroke="currentColor" stroke-width="15" stroke-linecap="round"
           />
           <line
             x1="50" x2="50" y1="10" y2="90"
-            stroke="currentColor" stroke-width="20" stroke-linecap="round"
+            stroke="currentColor" stroke-width="15" stroke-linecap="round"
           />
         </g>
       </g>
     </g>
   `)})
 }
-
 
 export function LinkBreakIcon({x,y,rt,closed}) {
   return ({template: (`
@@ -121,6 +120,22 @@ export function LinkBreakIcon({x,y,rt,closed}) {
       </g>
     </g>
   `)})
+}
+
+export function LinkBreakIconWrapper({d,card_dim}) {
+  let g = "",
+    r = d.data.rels, _r = d.data._rels || {},
+    closed = d.data.hide_rels,
+    areParents = r => r.father || r.mother,
+    areChildren = r => r.children && r.children.length > 0
+  if ((d.is_ancestry || d.data.main) && (areParents(r) || areParents(_r))) {g+=LinkBreakIcon({x:card_dim.w/2,y:0, rt: -45, closed}).template}
+  if (!d.is_ancestry && d.added) {
+    const sp = d.spouse, sp_r = sp.data.rels, _sp_r = sp.data._rels || {};
+    if ((areChildren(r) || areChildren(_r)) && (areChildren(sp_r) || areChildren(_sp_r))) {
+      g+=LinkBreakIcon({x:d.sx - d.x + card_dim.w/2 +24.4,y: (d.x !== d.sx ? card_dim.h/2 : card_dim.h)+1, rt: 135, closed}).template
+    }
+  }
+  return g
 }
 
 export function CardImage({d,card_dim}) {
