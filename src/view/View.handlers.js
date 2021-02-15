@@ -1,6 +1,6 @@
 import d3 from "../d3.js"
 
-export function setupSvg(svg) {
+export function setupSvg(svg, zoom_polite) {
   setupZoom()
 
   function setupZoom() {
@@ -11,8 +11,16 @@ export function setupSvg(svg) {
     d3.select(svg).call(zoom)
     svg.__zoomObj = zoom
 
+    if (zoom_polite) zoom.filter(zoomFilter)
+
     function zoomed(e) {
       d3.select(view).attr("transform", e.transform);
+    }
+
+    function zoomFilter(e) {
+      if (e.type === "wheel" && !e.ctrlKey) return false
+      else if (e.touches && e.touches.length < 2) return false
+      else return true
     }
   }
 }

@@ -9,7 +9,7 @@ import ViewAddEventListeners from "./View.EventListeners.js"
 
 export default function d3AnimationView(store) {
   const svg = createSvg();
-  setupSvg(svg);
+  setupSvg(svg, store.state.zoom_polite);
   setEventListeners()
 
   return {update: updateView}
