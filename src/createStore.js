@@ -16,6 +16,8 @@ export default function createStore(initial_state) {
     setOnUpdate = (f) => onUpdate = f,
     methods = {}
 
+  if (!state.data || state.data.length === 0) state.data = [{to_add: true, rels: {}, data: {}, id: Math.random()+""}]
+
   return {state, update, getData, getTree, setOnUpdate, methods}
 
 

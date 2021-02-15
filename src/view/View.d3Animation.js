@@ -138,6 +138,7 @@ export default function d3AnimationView(store) {
     const fake_cont = document.createElement("div")
     fake_cont.innerHTML = svg_html
     const svg = fake_cont.firstElementChild
+    store.state.cont.innerHTML = ""
     store.state.cont.appendChild(svg)
 
     return svg
