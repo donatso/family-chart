@@ -68,10 +68,8 @@ export function cardShowHideRels(store, {card, d}) {
   store.update.tree({tree_position: 'inherit'})
 }
 
-export function manualZoom({amount, svg, transition_time=2000}) {
-  const zoom = svg.__zoomObj,
-    _t = svg.__zoom,
-    t = {k: _t.k*amount, x: _t.x/amount, y:_t.y/amount}
+export function manualZoom({amount, svg, transition_time=500}) {
+  const zoom = svg.__zoomObj
   d3.select(svg).transition().duration(transition_time || 0).delay(transition_time ? 100 : 0)  // delay 100 because of weird error of undefined something in d3 zoom
-    .call(zoom.transform, d3.zoomIdentity.scale(t.k).translate(t.x, t.y))
+    .call(zoom.scaleBy, amount)
 }
