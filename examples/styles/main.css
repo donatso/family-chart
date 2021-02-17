@@ -17,15 +17,15 @@ svg.main_svg text {
   fill: currentColor;
 }
 
-.card-female {
+.card-female .card-body-rect, .card-female .text-overflow-mask {
   fill: lightpink;
 }
 
-.card-male {
+.card-male .card-body-rect, .card-male .text-overflow-mask {
   fill: lightblue;
 }
 
-.card-genderless {
+.card-genderless .card-body-rect, .card-genderless .text-overflow-mask {
   fill: #fff;
 }
 

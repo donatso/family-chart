@@ -1,8 +1,7 @@
 export function CardBody({d,card_dim,card_display}) {
-  const color_class = d.data.data.gender === 'M' ? 'card-male' : d.data.data.gender === 'F' ? 'card-female' : 'card-genderless'
   return {template: (`
-    <g>
-      <rect width="${card_dim.w}" height="${card_dim.h}" rx="5" ry="5" class="${color_class}${d.data.main ? ' card-main' : ''}"
+    <g class="card-body">
+      <rect width="${card_dim.w}" height="${card_dim.h}" rx="5" ry="5" class="card-body-rect ${d.data.main ? ' card-main' : ''}"
         fill="url(#male_gradient)"
       />
       <g transform="translate(${card_dim.text_x}, ${card_dim.text_y})">
@@ -10,7 +9,7 @@ export function CardBody({d,card_dim,card_display}) {
           <tspan x="${0}" dy="${14}">${card_display[0](d.data)}</tspan>
           <tspan x="${0}" dy="${14}" font-size="10">${card_display[1](d.data)}</tspan>
         </text>
-        <rect width="${card_dim.w-card_dim.text_x-10}" height="${card_dim.h-20}" style="mask: url(#fade)" class="${color_class}" /> 
+        <rect width="${card_dim.w-card_dim.text_x-10}" height="${card_dim.h-20}" style="mask: url(#fade)" class="text-overflow-mask" /> 
       </g>
     </g>
   `)
@@ -19,10 +18,10 @@ export function CardBody({d,card_dim,card_display}) {
 
 export function CardBodyAddNew({d,card_dim, show_edit}) {
   return {template: (`
-    <g class="${show_edit ? 'card_edit' : ''}" style="cursor: ${show_edit ? 'pointer' : null}">
-      <rect width="${card_dim.w}" height="${card_dim.h}" fill="rgb(59, 85, 96)" stroke="#fff" rx="${10}" />
-      <text transform="translate(${card_dim.w/2}, ${card_dim.h/2})" text-anchor="middle" style="fill: #fff">
-        <tspan font-size="18" dy="${8}">UNKNOWN</tspan>
+    <g class="card-body card-unknown card_edit">
+      <rect class="card-body-rect" width="${card_dim.w}" height="${card_dim.h}" fill="rgb(59, 85, 96)" stroke="#fff" rx="${10}" />
+      <text transform="translate(${card_dim.w/2}, ${card_dim.h/2})" text-anchor="middle" fill="#fff">
+        <tspan font-size="18" dy="${8}">ADD</tspan>
       </text>
     </g>
   `)
@@ -31,9 +30,9 @@ export function CardBodyAddNew({d,card_dim, show_edit}) {
 
 export function PencilIcon({d,card_dim,x,y}) {
   return ({template: (`
-    <g transform="translate(${x || card_dim.w-20},${y || card_dim.h-20})scale(.7)" style="cursor: pointer" class="card_edit pencil_icon">
-      <circle fill="rgba(0,0,0,0)" r="16" cx="8" cy="8" />
-      <path fill="currentColor"
+    <g transform="translate(${x || card_dim.w-20},${y || card_dim.h-20})scale(.6)" style="cursor: pointer" class="card_edit pencil_icon">
+      <circle fill="rgba(0,0,0,0)" r="17" cx="8.5" cy="8.5" />
+      <path fill="currentColor" transform="translate(-1.5, -1.5)"
          d="M19.082,2.123L17.749,0.79c-1.052-1.052-2.766-1.054-3.819,0L1.925,12.794c-0.06,0.06-0.104,0.135-0.127,0.216
           l-1.778,6.224c-0.05,0.175-0.001,0.363,0.127,0.491c0.095,0.095,0.223,0.146,0.354,0.146c0.046,0,0.092-0.006,0.137-0.02
           l6.224-1.778c0.082-0.023,0.156-0.066,0.216-0.127L19.082,5.942C20.134,4.89,20.134,3.176,19.082,2.123z M3.076,13.057l9.428-9.428
@@ -75,9 +74,9 @@ export function MiniTree({d,card_dim}) {
 export function PlusIcon({d,card_dim,x,y}) {
   return ({template: (`
     <g class="card_add_relative">
-      <g transform="translate(${x || card_dim.w/2},${y || card_dim.h})scale(.1)">
-        <circle r="100" fill="rgba(0,0,0,0)" />
-        <g transform="translate(-50,-45)">
+      <g transform="translate(${x || card_dim.w/2},${y || card_dim.h})scale(.13)">
+        <circle r="80" cx="40" cy="40" fill="rgba(0,0,0,0)" />
+        <g transform="translate(-10, -8)">
           <line
             x1="10" x2="90" y1="50" y2="50"
             stroke="currentColor" stroke-width="15" stroke-linecap="round"
@@ -138,22 +137,24 @@ export function LinkBreakIconWrapper({d,card_dim}) {
   return g
 }
 
-export function CardImage({d,card_dim}) {
+export function CardImage({d,card_dim, maleIcon, femaleIcon}) {
   return ({template: (`
     <g style="transform: translate(${card_dim.img_x}px,${card_dim.img_y}px);" class="card_image">
       ${d.data.data.image 
         ? `<image href="${d.data.data.image}" height="${card_dim.img_h}" width="${card_dim.img_w}" preserveAspectRatio="xMidYMin slice" clip-path="url(#card_image_clip)" />`
-        : d.data.data.gender === "F" ? GenderlessIcon() : d.data.data.gender === "M" ? GenderlessIcon() : GenderlessIcon()}      
+        : (d.data.data.gender === "F" && !!femaleIcon) ? femaleIcon({card_dim}) : (d.data.data.gender === "M" && !!maleIcon) ? maleIcon({card_dim}) : GenderlessIcon()}      
     </g>
   `)})
 
   function GenderlessIcon() {
     return (`
-      <g>
-        <rect height="${card_dim.img_h}" width="${card_dim.img_w}" clip-path="url(#card_image_clip)" fill="rgb(59, 85, 96)" />
-        <path style="transform: translate(5px,5px)scale(.097)" fill="lightgrey" d="M256 288c79.5 0 144-64.5 144-144S335.5 0 256 0 112 
-          64.5 112 144s64.5 144 144 144zm128 32h-55.1c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16H128C57.3 320 0 377.3 
-          0 448v16c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48v-16c0-70.7-57.3-128-128-128z" />
+      <g class="genderless-icon" clip-path="url(#card_image_clip)">
+        <rect height="${card_dim.img_h}" width="${card_dim.img_w}" fill="rgb(59, 85, 96)" />
+        <g transform="scale(${card_dim.img_w*0.001616})">
+         <path transform="translate(50,40)" fill="lightgrey" d="M256 288c79.5 0 144-64.5 144-144S335.5 0 256 0 112 
+            64.5 112 144s64.5 144 144 144zm128 32h-55.1c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16H128C57.3 320 0 377.3 
+            0 448v16c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48v-16c0-70.7-57.3-128-128-128z" />
+        </g>
       </g>
     `)
   }

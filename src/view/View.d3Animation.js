@@ -98,7 +98,9 @@ export default function d3AnimationView(store) {
           show_edit: store.state.edit,
           show_add: store.state.add,
           show_hide_rels: store.state.hide_rels,
-          custom_elements: store.state.custom_elements
+          custom_elements: store.state.custom_elements,
+          maleIcon: store.state.maleIcon,
+          femaleIcon: store.state.femaleIcon,
         }).template
       }
     }
