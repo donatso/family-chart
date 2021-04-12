@@ -13,7 +13,7 @@ export function removeToAdd(datum, data_stash) {
 }
 
 export function deletePerson(datum, data_stash) {
-  if (!checkIfRelativesAreNotSolelyTheirs(datum)) return false
+  if (!checkIfRelativesAreNotSolelyTheirs(datum)) return {success: false, error: 'checkIfRelativesAreNotSolelyTheirs'}
   data_stash.forEach(d => {
     for (let k in d.rels) {
       if (!d.rels.hasOwnProperty(k)) continue
@@ -27,7 +27,7 @@ export function deletePerson(datum, data_stash) {
   data_stash.splice(data_stash.findIndex(d => d.id === datum.id), 1)
   data_stash.forEach(d => {if (d.to_add) deletePerson(d, data_stash)})  // full update of tree
 
-  return true
+  return {success: true}
 
   function checkIfRelativesAreNotSolelyTheirs(datum) {
     return true
