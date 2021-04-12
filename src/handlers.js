@@ -13,6 +13,7 @@ export function removeToAdd(datum, data_stash) {
 }
 
 export function deletePerson(datum, data_stash) {
+  if (!checkIfRelativesAreNotSolelyTheirs(datum)) return false
   data_stash.forEach(d => {
     for (let k in d.rels) {
       if (!d.rels.hasOwnProperty(k)) continue
@@ -23,13 +24,32 @@ export function deletePerson(datum, data_stash) {
       }
     }
   })
-  data_stash.splice(data_stash.findIndex(d => d === datum), 1)
+  data_stash.splice(data_stash.findIndex(d => d.id === datum.id), 1)
+  data_stash.forEach(d => {if (d.to_add) deletePerson(d, data_stash)})  // full update of tree
 
-  if (datum.rels.spouses) {  // if person have spouse holder we delete that as well
-    datum.rels.spouses.forEach(sp_id => {
-      const spouse = data_stash.find(d => d.id === sp_id)
-      if (spouse.to_add) deletePerson(spouse, data_stash)
-    })
+  return true
+
+  function checkIfRelativesAreNotSolelyTheirs(datum) {
+    return true
+
+    if (checkAncestry()) {console.log(`ancestry true, ${datum.id}`); return false}
+    else if (checkProgeny()) {console.log(`progeny true, ${datum.id}`); return false}
+
+    return true
+
+    function checkAncestry() {
+      return (datum.rels.mother && checkIfRelIsReal(datum.rels.mother)) || (datum.rels.father && checkIfRelIsReal(datum.rels.father))
+    }
+
+    function checkProgeny() {
+      return (datum.rels.children && datum.rels.children.some(rel_id => (rel_id !== datum.id) && checkIfRelIsReal(rel_id)))
+    }
+
+    function checkIfRelIsReal(rel_id) {
+      const rel_datum = data_stash.find(d => d.id === rel_id);
+      return rel_datum ? !rel_datum.to_add : false
+    }
+
   }
 }
 
@@ -50,7 +70,7 @@ export function cardEdit(store, {card, d}) {
       }
       store.update.tree()
     }
-  store.state.cardEditForm({datum, postSubmit, card_edit: store.state.card_edit, card_display: store.state.card_display})
+  store.state.cardEditForm({datum, postSubmit, store})
 }
 
 export function cardAddRelative(store, {card, d}) {
@@ -72,4 +92,10 @@ export function manualZoom({amount, svg, transition_time=500}) {
   const zoom = svg.__zoomObj
   d3.select(svg).transition().duration(transition_time || 0).delay(transition_time ? 100 : 0)  // delay 100 because of weird error of undefined something in d3 zoom
     .call(zoom.scaleBy, amount)
+}
+
+export function isAllRelativeDisplayed(d, data) {
+  const r = d.data.rels,
+    all_rels = [r.father, r.mother, ...(r.spouses || []), ...(r.children || [])].filter(v => v)
+  return all_rels.every(rel_id => data.some(d => d.data.id === rel_id))
 }

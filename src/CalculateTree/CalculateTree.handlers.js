@@ -1,10 +1,3 @@
-export function isAllRelativeDisplayed(d, data) {
-  const r = d.data.rels,
-    all_rels = [r.father, r.mother, ...(r.spouses || []), ...(r.children || [])].filter(v => v)
-
-  return all_rels.every(rel_id => data.some(d => d.data.id === rel_id))
-}
-
 export function sortChildrenWithSpouses(data) {
   data.forEach(datum => {
     if (!datum.rels.children) return

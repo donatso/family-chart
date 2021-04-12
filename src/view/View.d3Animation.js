@@ -4,8 +4,9 @@ import {mainToMiddle, setupSvg, treeFit} from "./View.handlers.js"
 import {createPath} from "./elements/Link.js"
 import {createLinks} from "../CalculateTree/createLinks.js"
 import Card from "./elements/Card.js"
-import {calculateEnterAndExitPositions, isAllRelativeDisplayed} from "../CalculateTree/CalculateTree.handlers.js"
+import {calculateEnterAndExitPositions} from "../CalculateTree/CalculateTree.handlers.js"
 import ViewAddEventListeners from "./View.EventListeners.js"
+import {isAllRelativeDisplayed} from "../handlers"
 
 export default function d3AnimationView(store) {
   const svg = createSvg();
@@ -72,13 +73,14 @@ export default function d3AnimationView(store) {
         d3.select(this)
           .attr("transform", `translate(${d._x}, ${d._y})`)
           .style("opacity", 0)
-          .html(CardHtml(d))
+          .node().appendChild(CardElement(this, d))
       }
 
       function cardUpdateNoEnter(d) {}
 
       function cardUpdate(d) {
-        d3.select(this).html(CardHtml(d))
+        this.innerHTML = ""
+        this.appendChild(CardElement(this, d))
         d3.select(this).transition().duration(transition_time).attr("transform", `translate(${d.x}, ${d.y})`).style("opacity", 1)
       }
 
@@ -88,9 +90,16 @@ export default function d3AnimationView(store) {
           .on("end", () => g.remove())
       }
 
-      function CardHtml(d) {
-        const show_mini_tree = store.state.mini_tree && !isAllRelativeDisplayed(d, tree.data)
-        return Card({
+      function CardElement(el, d) {
+        if (store.state.customCard) return store.state.customCard({el, d, store})
+        else return CardElementDefault(d)
+      }
+
+      function CardElementDefault(d) {
+        const el = document.createElementNS("http://www.w3.org/2000/svg", 'g'),
+          show_mini_tree = store.state.mini_tree && !isAllRelativeDisplayed(d, tree.data)
+
+        el.innerHTML = Card({
           d,
           card_display: store.state.card_display,
           card_dim: store.state.card_dim,
@@ -102,6 +111,8 @@ export default function d3AnimationView(store) {
           maleIcon: store.state.maleIcon,
           femaleIcon: store.state.femaleIcon,
         }).template
+
+        return el
       }
     }
 
@@ -118,10 +129,9 @@ export default function d3AnimationView(store) {
               <stop offset=".91" stop-color="white" stop-opacity=".5"/>
               <stop offset="1" stop-color="white" stop-opacity="1"/>
             </linearGradient>
-        
             <mask id="fade" maskContentUnits="objectBoundingBox"><rect width="1" height="1" fill="url(#fadeGrad)"/></mask>
             <clipPath id="card_text_clip"><rect width="${card_dim.w-card_dim.text_x-10}" height="${card_dim.h-10}"></rect></clipPath>
-            <clipPath id="card_image_clip"><rect width="${card_dim.img_w}" height="${card_dim.img_h}" rx="5" ry="5"></rect></clipPath>
+            <clipPath id="card_image_clip"><path d="M0,5 Q 0,0 5,0 H${card_dim.img_w} V${card_dim.img_h} H5 Q 0,${card_dim.img_h} 0,${card_dim.img_h-5} z"></clipPath>
           </defs>
           <rect width="${svg_dim.width}" height="${svg_dim.height}" fill="transparent" />
           <g class="view">
@@ -129,11 +139,11 @@ export default function d3AnimationView(store) {
             <g class="cards_view"></g>
           </g>
           <g style="transform: translate(100%, 100%)">
-          <g class="fit_screen_icon cursor-pointer" style="transform: translate(-50px, -50px)">
-            <rect width="27" height="27" stroke-dasharray="${27/2}" stroke-dashoffset="${27/4}" 
-              style="stroke:#fff;stroke-width:4px;fill:transparent;"/>
-            <circle r="5" cx="${27/2}" cy="${27/2}" style="fill:#fff" />          
-          </g>
+            <g class="fit_screen_icon cursor-pointer" style="transform: translate(-50px, -50px); display: none">
+              <rect width="27" height="27" stroke-dasharray="${27/2}" stroke-dashoffset="${27/4}" 
+                style="stroke:#fff;stroke-width:4px;fill:transparent;"/>
+              <circle r="5" cx="${27/2}" cy="${27/2}" style="fill:#fff" />          
+            </g>
           </g>
         </svg>
       `)

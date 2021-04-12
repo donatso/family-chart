@@ -109,8 +109,7 @@ export default function View(store, tree, datum) {
           addNewRel();
           store.update.tree();
         }
-      store.state.cardEditForm({datum: new_rel, rel_datum: datum, data_stash, rel_type,
-        postSubmit, card_edit: store.state.card_edit, card_display: store.state.card_display})
+      store.state.cardEditForm({datum: new_rel, rel_datum: datum, rel_type, postSubmit, store})
       return true
     }
   }

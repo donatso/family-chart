@@ -1,9 +1,7 @@
 export function CardBody({d,card_dim,card_display}) {
   return {template: (`
     <g class="card-body">
-      <rect width="${card_dim.w}" height="${card_dim.h}" rx="5" ry="5" class="card-body-rect ${d.data.main ? ' card-main' : ''}"
-        fill="url(#male_gradient)"
-      />
+      <rect width="${card_dim.w}" height="${card_dim.h}" rx="5" ry="5" class="card-body-rect ${d.data.main ? ' card-main' : ''}" />
       <g transform="translate(${card_dim.text_x}, ${card_dim.text_y})">
         <text clip-path="url(#card_text_clip)">
           <tspan x="${0}" dy="${14}">${card_display[0](d.data)}</tspan>
@@ -137,18 +135,21 @@ export function LinkBreakIconWrapper({d,card_dim}) {
   return g
 }
 
-export function CardImage({d,card_dim, maleIcon, femaleIcon}) {
+export function CardImage({d, image, card_dim, maleIcon, femaleIcon}) {
   return ({template: (`
-    <g style="transform: translate(${card_dim.img_x}px,${card_dim.img_y}px);" class="card_image">
+    <g style="transform: translate(${card_dim.img_x}px,${card_dim.img_y}px);" class="card_image" clip-path="url(#card_image_clip)">
       ${d.data.data.image 
-        ? `<image href="${d.data.data.image}" height="${card_dim.img_h}" width="${card_dim.img_w}" preserveAspectRatio="xMidYMin slice" clip-path="url(#card_image_clip)" />`
-        : (d.data.data.gender === "F" && !!femaleIcon) ? femaleIcon({card_dim}) : (d.data.data.gender === "M" && !!maleIcon) ? maleIcon({card_dim}) : GenderlessIcon()}      
+        ? `<image href="${image || d.data.data.image}" height="${card_dim.img_h}" width="${card_dim.img_w}" preserveAspectRatio="xMidYMin slice" />`
+        : (d.data.data.gender === "F" && !!femaleIcon) ? femaleIcon({card_dim}) 
+        : (d.data.data.gender === "M" && !!maleIcon) ? maleIcon({card_dim}) 
+        : GenderlessIcon()
+      }      
     </g>
   `)})
 
   function GenderlessIcon() {
     return (`
-      <g class="genderless-icon" clip-path="url(#card_image_clip)">
+      <g class="genderless-icon">
         <rect height="${card_dim.img_h}" width="${card_dim.img_w}" fill="rgb(59, 85, 96)" />
         <g transform="scale(${card_dim.img_w*0.001616})">
          <path transform="translate(50,40)" fill="lightgrey" d="M256 288c79.5 0 144-64.5 144-144S335.5 0 256 0 112 
