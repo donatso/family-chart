@@ -13,44 +13,68 @@ export function removeToAdd(datum, data_stash) {
 }
 
 export function deletePerson(datum, data_stash) {
-  if (!checkIfRelativesAreNotSolelyTheirs(datum)) return {success: false, error: 'checkIfRelativesAreNotSolelyTheirs'}
-  data_stash.forEach(d => {
-    for (let k in d.rels) {
-      if (!d.rels.hasOwnProperty(k)) continue
-      if (d.rels[k] === datum.id) {
-        delete d.rels[k]
-      } else if (Array.isArray(d.rels[k]) && d.rels[k].includes(datum.id)) {
-        d.rels[k].splice(d.rels[k].findIndex(did => did === datum.id, 1))
+  if (!checkIfRelativesConnectedWithoutPerson(datum, data_stash)) return {success: false, error: 'checkIfRelativesConnectedWithoutPerson'}
+  executeDelete()
+  return {success: true};
+
+  function checkIfRelativesConnectedWithoutPerson(datum, data_stash) {
+    const r = datum.rels,
+      r_ids = [r.father, r.mother, ...(r.spouses || []), ...(r.children || [])].filter(r_id => !!r_id),
+      rels_not_to_main = [];
+
+    for (let i = 0; i < r_ids.length; i++) {
+      const line = findPersonLineToMain(data_stash.find(d => d.id === r_ids[i]), [datum])
+      if (!line) {rels_not_to_main.push(r_ids[i]); break;}
+    }
+    return rels_not_to_main.length === 0;
+  }
+
+  function findPersonLineToMain(datum, without_persons) {
+    let line;
+    if (isM(datum)) line = [datum]
+    checkIfAnyRelIsMain(datum, [datum])
+    return line
+
+    function checkIfAnyRelIsMain(d0, history) {
+      if (line) return
+      history = [...history, d0];
+      runAllRels(check);
+      if (!line) runAllRels(checkRels);
+
+      function runAllRels(f) {
+        const r = d0.rels;
+        [r.father, r.mother, ...(r.spouses || []), ...(r.children || [])]
+          .filter(d_id => (d_id && ![...without_persons, ...history].find(d => d.id === d_id)))
+          .forEach(d_id => f(d_id));
+      }
+
+      function check(d_id) {
+        if (isM(d_id)) line = history
+      }
+
+      function checkRels(d_id) {
+        const person = data_stash.find(d => d.id === d_id)
+        checkIfAnyRelIsMain(person, history)
       }
     }
-  })
-  data_stash.splice(data_stash.findIndex(d => d.id === datum.id), 1)
-  data_stash.forEach(d => {if (d.to_add) deletePerson(d, data_stash)})  // full update of tree
-
-  return {success: true}
-
-  function checkIfRelativesAreNotSolelyTheirs(datum) {
-    return true
-
-    if (checkAncestry()) {console.log(`ancestry true, ${datum.id}`); return false}
-    else if (checkProgeny()) {console.log(`progeny true, ${datum.id}`); return false}
-
-    return true
-
-    function checkAncestry() {
-      return (datum.rels.mother && checkIfRelIsReal(datum.rels.mother)) || (datum.rels.father && checkIfRelIsReal(datum.rels.father))
-    }
-
-    function checkProgeny() {
-      return (datum.rels.children && datum.rels.children.some(rel_id => (rel_id !== datum.id) && checkIfRelIsReal(rel_id)))
-    }
-
-    function checkIfRelIsReal(rel_id) {
-      const rel_datum = data_stash.find(d => d.id === rel_id);
-      return rel_datum ? !rel_datum.to_add : false
-    }
-
   }
+
+  function executeDelete() {
+    data_stash.forEach(d => {
+      for (let k in d.rels) {
+        if (!d.rels.hasOwnProperty(k)) continue
+        if (d.rels[k] === datum.id) {
+          delete d.rels[k]
+        } else if (Array.isArray(d.rels[k]) && d.rels[k].includes(datum.id)) {
+          d.rels[k].splice(d.rels[k].findIndex(did => did === datum.id, 1))
+        }
+      }
+    })
+    data_stash.splice(data_stash.findIndex(d => d.id === datum.id), 1)
+    data_stash.forEach(d => {if (d.to_add) deletePerson(d, data_stash)})  // full update of tree
+  }
+
+  function isM(d0) {return typeof d0 === 'object' ? d0.id === data_stash[0].id : d0 === data_stash[0].id}  // todo: make main more exact
 }
 
 export function cardChangeMain(store, {card, d}) {
