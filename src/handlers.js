@@ -17,17 +17,32 @@ export function deletePerson(datum, data_stash) {
   executeDelete()
   return {success: true};
 
-  function checkIfRelativesConnectedWithoutPerson(datum, data_stash) {
-    const r = datum.rels,
-      r_ids = [r.father, r.mother, ...(r.spouses || []), ...(r.children || [])].filter(r_id => !!r_id),
-      rels_not_to_main = [];
-
-    for (let i = 0; i < r_ids.length; i++) {
-      const line = findPersonLineToMain(data_stash.find(d => d.id === r_ids[i]), [datum])
-      if (!line) {rels_not_to_main.push(r_ids[i]); break;}
-    }
-    return rels_not_to_main.length === 0;
+  function executeDelete() {
+    data_stash.forEach(d => {
+      for (let k in d.rels) {
+        if (!d.rels.hasOwnProperty(k)) continue
+        if (d.rels[k] === datum.id) {
+          delete d.rels[k]
+        } else if (Array.isArray(d.rels[k]) && d.rels[k].includes(datum.id)) {
+          d.rels[k].splice(d.rels[k].findIndex(did => did === datum.id, 1))
+        }
+      }
+    })
+    data_stash.splice(data_stash.findIndex(d => d.id === datum.id), 1)
+    data_stash.forEach(d => {if (d.to_add) deletePerson(d, data_stash)})  // full update of tree
   }
+}
+
+export function checkIfRelativesConnectedWithoutPerson(datum, data_stash) {
+  const r = datum.rels,
+    r_ids = [r.father, r.mother, ...(r.spouses || []), ...(r.children || [])].filter(r_id => !!r_id),
+    rels_not_to_main = [];
+
+  for (let i = 0; i < r_ids.length; i++) {
+    const line = findPersonLineToMain(data_stash.find(d => d.id === r_ids[i]), [datum])
+    if (!line) {rels_not_to_main.push(r_ids[i]); break;}
+  }
+  return rels_not_to_main.length === 0;
 
   function findPersonLineToMain(datum, without_persons) {
     let line;
@@ -58,22 +73,6 @@ export function deletePerson(datum, data_stash) {
       }
     }
   }
-
-  function executeDelete() {
-    data_stash.forEach(d => {
-      for (let k in d.rels) {
-        if (!d.rels.hasOwnProperty(k)) continue
-        if (d.rels[k] === datum.id) {
-          delete d.rels[k]
-        } else if (Array.isArray(d.rels[k]) && d.rels[k].includes(datum.id)) {
-          d.rels[k].splice(d.rels[k].findIndex(did => did === datum.id, 1))
-        }
-      }
-    })
-    data_stash.splice(data_stash.findIndex(d => d.id === datum.id), 1)
-    data_stash.forEach(d => {if (d.to_add) deletePerson(d, data_stash)})  // full update of tree
-  }
-
   function isM(d0) {return typeof d0 === 'object' ? d0.id === data_stash[0].id : d0 === data_stash[0].id}  // todo: make main more exact
 }
 
@@ -122,4 +121,20 @@ export function isAllRelativeDisplayed(d, data) {
   const r = d.data.rels,
     all_rels = [r.father, r.mother, ...(r.spouses || []), ...(r.children || [])].filter(v => v)
   return all_rels.every(rel_id => data.some(d => d.data.id === rel_id))
+}
+
+export function generateUUID() {
+  var d = new Date().getTime();
+  var d2 = (performance && performance.now && (performance.now()*1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16;
+    if(d > 0){//Use timestamp until depleted
+      r = (d + r)%16 | 0;
+      d = Math.floor(d/16);
+    } else {//Use microseconds since page-load if supported
+      r = (d2 + r)%16 | 0;
+      d2 = Math.floor(d2/16);
+    }
+    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
 }

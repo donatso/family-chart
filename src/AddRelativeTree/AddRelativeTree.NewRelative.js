@@ -1,4 +1,4 @@
-import {moveToAddToAdded, removeToAdd} from "../handlers.js"
+import {generateUUID, moveToAddToAdded, removeToAdd} from "../handlers.js"
 
 export default function NewRelative({datum, data_stash, rel_type}) {
   const new_rel = createNewRel(rel_type);
@@ -6,7 +6,7 @@ export default function NewRelative({datum, data_stash, rel_type}) {
 
   function createNewRel(rel_type) {
     const new_rel_gender = (["daughter", "mother"].includes(rel_type) || rel_type === "spouse" && datum.data.gender === "M") ? "F" : "M"
-    return {id: Math.random()+"", data: {gender: new_rel_gender}, rels: {}}
+    return {id: generateUUID(), data: {gender: new_rel_gender}, rels: {}}
   }
 
   function addNewRel() {

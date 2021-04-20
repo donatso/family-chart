@@ -1,4 +1,5 @@
 import CalculateTree from "./CalculateTree/CalculateTree.js"
+import {generateUUID} from "./handlers"
 
 export default function createStore(initial_state) {
   let onUpdate;
@@ -16,7 +17,7 @@ export default function createStore(initial_state) {
     setOnUpdate = (f) => onUpdate = f,
     methods = {}
 
-  if (!state.data || state.data.length === 0) state.data = [{to_add: true, rels: {}, data: {}, id: Math.random()+""}]
+  if (!state.data || state.data.length === 0) state.data = [{to_add: true, rels: {}, data: {}, id: generateUUID()}]
 
   return {state, update, getData, getTree, setOnUpdate, methods}
 
