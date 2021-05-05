@@ -138,8 +138,8 @@ export function LinkBreakIconWrapper({d,card_dim}) {
 export function CardImage({d, image, card_dim, maleIcon, femaleIcon}) {
   return ({template: (`
     <g style="transform: translate(${card_dim.img_x}px,${card_dim.img_y}px);" class="card_image" clip-path="url(#card_image_clip)">
-      ${d.data.data.image 
-        ? `<image href="${image || d.data.data.image}" height="${card_dim.img_h}" width="${card_dim.img_w}" preserveAspectRatio="xMidYMin slice" />`
+      ${image 
+        ? `<image href="${image}" height="${card_dim.img_h}" width="${card_dim.img_w}" preserveAspectRatio="xMidYMin slice" />`
         : (d.data.data.gender === "F" && !!femaleIcon) ? femaleIcon({card_dim}) 
         : (d.data.data.gender === "M" && !!maleIcon) ? maleIcon({card_dim}) 
         : GenderlessIcon()
