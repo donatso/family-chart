@@ -16,7 +16,7 @@ export function CardBody({d,card_dim,card_display}) {
 
 export function CardBodyAddNew({d,card_dim, show_edit}) {
   return {template: (`
-    <g class="card-body card-unknown card_edit">
+    <g class="card-body card-unknown card_add">
       <rect class="card-body-rect" width="${card_dim.w}" height="${card_dim.h}" fill="rgb(59, 85, 96)" stroke="#fff" rx="${10}" />
       <text transform="translate(${card_dim.w/2}, ${card_dim.h/2})" text-anchor="middle" fill="#fff">
         <tspan font-size="18" dy="${8}">ADD</tspan>
