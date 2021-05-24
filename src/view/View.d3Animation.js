@@ -130,10 +130,10 @@ export default function d3AnimationView(store) {
               <stop offset="1" stop-color="white" stop-opacity="1"/>
             </linearGradient>
             <mask id="fade" maskContentUnits="objectBoundingBox"><rect width="1" height="1" fill="url(#fadeGrad)"/></mask>
-            <clipPath id="card_clip"><path d="M0,5 Q 0,0 5,0 H${card_dim.w} V${card_dim.h} H5 Q 0,${card_dim.h} 0,${card_dim.h-5} z"></clipPath>
+            <clipPath id="card_clip"><path d="${curvedRectPath({w:card_dim.w, h:card_dim.h}, 5)}"></clipPath>
             <clipPath id="card_text_clip"><rect width="${card_dim.w-card_dim.text_x-10}" height="${card_dim.h-10}"></rect></clipPath>
             <clipPath id="card_image_clip"><path d="M0,0 Q 0,0 0,0 H${card_dim.img_w} V${card_dim.img_h} H0 Q 0,${card_dim.img_h} 0,${card_dim.img_h} z"></clipPath>
-            <clipPath id="card_image_clip_curved"><path d="M0,5 Q 0,0 5,0 H${card_dim.img_w} V${card_dim.img_h} H5 Q 0,${card_dim.img_h} 0,${card_dim.img_h-5} z"></clipPath>
+            <clipPath id="card_image_clip_curved"><path d="${curvedRectPath({w: card_dim.img_w, h:card_dim.img_h}, 5, ['rx', 'ry'])}"></clipPath>
           </defs>
           <rect width="${svg_dim.width}" height="${svg_dim.height}" fill="transparent" />
           <g class="view">
@@ -161,5 +161,18 @@ export default function d3AnimationView(store) {
   function setEventListeners() {
     svg.querySelector(".fit_screen_icon").addEventListener("click", () => store.update.tree())
     ViewAddEventListeners(store);
+  }
+
+  function curvedRectPath(dim, curve, no_curve_corners) {
+    const {w,h} = dim,
+      c = curve,
+      ncc = no_curve_corners || [],
+      ncc_check = (corner) => ncc.includes(corner),
+      lx = ncc_check('lx') ? `M0,0` : `M0,${c} Q 0,0 5,0`,
+      rx = ncc_check('rx') ? `H${w}` : `H${w-c} Q ${w},0 ${w},5`,
+      ry = ncc_check('ry') ? `V${h}` : `V${h-c} Q ${w},${h} ${w-c},${h}`,
+      ly = ncc_check('ly') ? `H0` : `H${c} Q 0,${h} 0,${h-c}`
+
+    return (`${lx} ${rx} ${ry} ${ly} z`)
   }
 }
