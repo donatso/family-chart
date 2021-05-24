@@ -130,8 +130,10 @@ export default function d3AnimationView(store) {
               <stop offset="1" stop-color="white" stop-opacity="1"/>
             </linearGradient>
             <mask id="fade" maskContentUnits="objectBoundingBox"><rect width="1" height="1" fill="url(#fadeGrad)"/></mask>
+            <clipPath id="card_clip"><path d="M0,5 Q 0,0 5,0 H${card_dim.w} V${card_dim.h} H5 Q 0,${card_dim.h} 0,${card_dim.h-5} z"></clipPath>
             <clipPath id="card_text_clip"><rect width="${card_dim.w-card_dim.text_x-10}" height="${card_dim.h-10}"></rect></clipPath>
-            <clipPath id="card_image_clip"><path d="M0,5 Q 0,0 5,0 H${card_dim.img_w} V${card_dim.img_h} H5 Q 0,${card_dim.img_h} 0,${card_dim.img_h-5} z"></clipPath>
+            <clipPath id="card_image_clip"><path d="M0,0 Q 0,0 0,0 H${card_dim.img_w} V${card_dim.img_h} H0 Q 0,${card_dim.img_h} 0,${card_dim.img_h} z"></clipPath>
+            <clipPath id="card_image_clip_curved"><path d="M0,5 Q 0,0 5,0 H${card_dim.img_w} V${card_dim.img_h} H5 Q 0,${card_dim.img_h} 0,${card_dim.img_h-5} z"></clipPath>
           </defs>
           <rect width="${svg_dim.width}" height="${svg_dim.height}" fill="transparent" />
           <g class="view">

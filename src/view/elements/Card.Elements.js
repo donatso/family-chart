@@ -1,7 +1,7 @@
 export function CardBody({d,card_dim,card_display}) {
   return {template: (`
     <g class="card-body">
-      <rect width="${card_dim.w}" height="${card_dim.h}" rx="5" ry="5" class="card-body-rect ${d.data.main ? ' card-main' : ''}" />
+      <rect width="${card_dim.w}" height="${card_dim.h}" class="card-body-rect" />
       <g transform="translate(${card_dim.text_x}, ${card_dim.text_y})">
         <text clip-path="url(#card_text_clip)">
           <tspan x="${0}" dy="${14}">${card_display[0](d.data)}</tspan>
@@ -22,6 +22,13 @@ export function CardBodyAddNew({d,card_dim, show_edit}) {
         <tspan font-size="18" dy="${8}">ADD</tspan>
       </text>
     </g>
+  `)
+  }
+}
+
+export function CardBodyOutline({d,card_dim}) {
+  return {template: (`
+    <rect width="${card_dim.w}" height="${card_dim.h}" rx="4" ry="4" class="card-body-rect ${d.data.main ? ' card-main' : ''}" />  <!-- for main outline -->
   `)
   }
 }
