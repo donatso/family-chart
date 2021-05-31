@@ -17,7 +17,7 @@ export function CardBody({d,card_dim,card_display}) {
 export function CardBodyAddNew({d,card_dim, show_edit}) {
   return {template: (`
     <g class="card-body card-unknown card_add">
-      <rect class="card-body-rect" width="${card_dim.w}" height="${card_dim.h}" fill="rgb(59, 85, 96)" stroke="#fff" rx="${10}" />
+      <rect class="card-body-rect" width="${card_dim.w}" height="${card_dim.h}" fill="rgb(59, 85, 96)" />
       <text transform="translate(${card_dim.w/2}, ${card_dim.h/2})" text-anchor="middle" fill="#fff">
         <tspan font-size="18" dy="${8}">ADD</tspan>
       </text>
@@ -26,9 +26,9 @@ export function CardBodyAddNew({d,card_dim, show_edit}) {
   }
 }
 
-export function CardBodyOutline({d,card_dim}) {
+export function CardBodyOutline({d,card_dim, is_new}) {
   return {template: (`
-    <rect width="${card_dim.w}" height="${card_dim.h}" rx="4" ry="4" class="card-body-rect ${d.data.main ? ' card-main' : ''}" />  <!-- for main outline -->
+    <rect width="${card_dim.w}" height="${card_dim.h}" rx="4" ry="4" class="card-outline ${(d.data.main && !is_new) ? 'card-main-outline' : ''} ${is_new ? 'card-new-outline' : ''}" />
   `)
   }
 }

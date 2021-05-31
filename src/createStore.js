@@ -1,5 +1,5 @@
 import CalculateTree from "./CalculateTree/CalculateTree.js"
-import {generateUUID} from "./handlers"
+import {generateUUID} from "./handlers/general.js"
 
 export default function createStore(initial_state) {
   let onUpdate;

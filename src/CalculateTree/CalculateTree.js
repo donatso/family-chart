@@ -1,6 +1,6 @@
 import d3 from "../d3.js"
 import {sortChildrenWithSpouses} from "./CalculateTree.handlers.js"
-import {generateUUID} from "../handlers"
+import {generateUUID} from "../handlers/general.js"
 
 export default function CalculateTree({data_stash, main_id=null, is_vertical=true, node_separation=250, level_separation=150}) {
   data_stash = createRelsToAdd(data_stash)

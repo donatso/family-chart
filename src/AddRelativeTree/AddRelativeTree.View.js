@@ -1,5 +1,8 @@
-import {Form} from "../view/elements/Form.js"
-import NewRelative from "./AddRelativeTree.NewRelative.js"
+import {
+  addNewPerson,
+  createNewPersonWithGenderFromRel,
+  handleRelsOfNewDatum,
+} from "../handlers/newPerson.js"
 
 export default function View(store, tree, datum) {
   const data_stash = store.getData(),
@@ -103,13 +106,15 @@ export default function View(store, tree, datum) {
       if (!node.closest('.card')) return
       const card = node.closest('.card'),
         rel_type = card.getAttribute("data-rel_type"),
-        {new_rel, addNewRel} = NewRelative({datum, data_stash, rel_type}),
+        rel_datum = datum,
+        new_datum = createNewPersonWithGenderFromRel({rel_datum, rel_type}),
         postSubmit = () => {
           view.remove();
-          addNewRel();
+          addNewPerson({data_stash, datum: new_datum})
+          handleRelsOfNewDatum({datum: new_datum, data_stash, rel_datum, rel_type})
           store.update.tree();
         }
-      store.state.cardEditForm({datum: new_rel, rel_datum: datum, rel_type, postSubmit, store})
+      store.state.cardEditForm({datum: new_datum, rel_datum, rel_type, postSubmit, store})
       return true
     }
   }
