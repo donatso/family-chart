@@ -1,6 +1,6 @@
 import d3 from "../d3.js"
 import {sortChildrenWithSpouses} from "./CalculateTree.handlers.js"
-import {generateUUID} from "../handlers/general.js"
+import {createNewPerson} from "../handlers/newPerson.js"
 
 export default function CalculateTree({data_stash, main_id=null, is_vertical=true, node_separation=250, level_separation=150}) {
   data_stash = createRelsToAdd(data_stash)
@@ -160,9 +160,12 @@ export default function CalculateTree({data_stash, main_id=null, is_vertical=tru
     return data
 
     function createToAddSpouse(d) {
-      const spouse = {id: generateUUID(), rels: {spouses: [d.id], children: []},
-        data: {gender: d.data.gender === "M" ? "F" : "M"}, to_add: true}
-      to_add_spouses.push(spouse)
+      const spouse = createNewPerson({
+        data: {gender: d.data.gender === "M" ? "F" : "M"},
+        rels: {spouses: [d.id], children: []}
+      });
+      spouse.to_add = true;
+      to_add_spouses.push(spouse);
       return spouse
     }
   }

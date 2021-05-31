@@ -27,7 +27,6 @@ export function handleRelsOfNewDatum({datum, data_stash, rel_type, rel_datum}) {
         const new_spouse = createNewPersonWithGenderFromRel({rel_type: "spouse", rel_datum})
         addSpouse(new_spouse)
         addNewPerson({data_stash, datum: new_spouse})
-        console.log(data_stash)
         return new_spouse
       }
     }
@@ -73,8 +72,8 @@ export function handleRelsOfNewDatum({datum, data_stash, rel_type, rel_datum}) {
   }
 }
 
-export function createNewPerson({data}) {
-  return {id: generateUUID(), data: data || {}, rels: {}}
+export function createNewPerson({data, rels}) {
+  return {id: generateUUID(), data: data || {}, rels: rels || {}}
 }
 
 export function createNewPersonWithGenderFromRel({data, rel_type, rel_datum}) {
@@ -87,19 +86,10 @@ export function createNewPersonWithGenderFromRel({data, rel_type, rel_datum}) {
   }
 }
 
-
-export function newRelative({data_stash, rel_type, rel_datum}) {
-  const rel_data = {gender: getGenderFromRelative(rel_datum, rel_type)},
-    datum = createNewPerson({data: rel_data});
-  return {new_rel: datum, addNewRel}
-
-
-  function setupDatum() {
-    data_stash.push(datum)
-    return handleRelsOfNewDatum({datum, data_stash, rel_type, rel_datum})
-  }
-}
-
 export function addNewPerson({data_stash, datum}) {
   data_stash.push(datum)
+}
+
+export function createTreeDataWithMainNode({data}) {
+  return {data: [createNewPerson({data})], version: null}
 }
