@@ -50,8 +50,7 @@ export default function View(store, tree, datum) {
         <g>
           <rect width="${w}" height="${h}" fill="#fff" rx="${10}" ${d.data.main ? 'stroke="#000"' : ''} class="${color_class}" />
           <text transform="translate(${0}, ${h / 4})">
-            <tspan x="${10}" dy="${14}">${d.data.data.fn} ${d.data.data.ln || ''}</tspan>
-            <tspan x="${10}" dy="${14}">${d.data.data.bd || ''}</tspan>
+            <tspan x="${10}" dy="${14}">${d.data.data.label}</tspan>
           </text>
         </g>
       `)

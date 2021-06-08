@@ -4,7 +4,7 @@ import View from "./AddRelativeTree.View.js"
 
 export default function AddRelativeTree(store, d_id, transition_time) {
   const datum = store.getData().find(d => d.id === d_id),
-    tree = CalculateTree({datum, data_stash: store.getData(), card_dim: store.state.card_dim}),
+    tree = CalculateTree({datum, data_stash: store.getData(), card_dim: store.state.card_dim, add_rel_labels: store.state.add_rel_labels}),
     view = View(store, tree, datum)
 
   const div_add_relative = document.createElement("div")
