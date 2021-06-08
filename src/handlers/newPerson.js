@@ -93,3 +93,8 @@ export function addNewPerson({data_stash, datum}) {
 export function createTreeDataWithMainNode({data}) {
   return {data: [createNewPerson({data})], version: null}
 }
+
+export function addNewPersonAndHandleRels({datum, data_stash, rel_type, rel_datum}) {
+  addNewPerson({data_stash, datum})
+  handleRelsOfNewDatum({datum, data_stash, rel_type, rel_datum})
+}
