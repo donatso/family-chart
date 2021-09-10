@@ -4,7 +4,8 @@ import {
   handleRelsOfNewDatum,
 } from "../handlers/newPerson.js"
 
-export default function View(store, tree, datum) {
+export default function View(store, tree, datum, props) {
+  if (!props) props = {}
   const data_stash = store.getData(),
     svg_dim = store.state.cont.getBoundingClientRect(),
     tree_fit = calculateTreeFit(svg_dim),
@@ -28,7 +29,8 @@ export default function View(store, tree, datum) {
   }
 
   function calculateTreeFit(svg_dim) {
-    return {k:1, x:svg_dim.width/2, y: svg_dim.height/2}
+    const k = props.scale || 1;
+    return {k, x:svg_dim.width/2, y: svg_dim.height/2}
   }
 
   function Card({d, is_main}) {

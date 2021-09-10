@@ -2,10 +2,11 @@ import d3 from "../d3.js"
 import CalculateTree from "./AddRelativeTree.CalculateTree.js"
 import View from "./AddRelativeTree.View.js"
 
-export default function AddRelativeTree(store, d_id, transition_time) {
+export default function AddRelativeTree(store, d_id, transition_time, props) {
+  if (!props) props = {};
   const datum = store.getData().find(d => d.id === d_id),
     tree = CalculateTree({datum, data_stash: store.getData(), card_dim: store.state.card_dim, add_rel_labels: store.state.add_rel_labels}),
-    view = View(store, tree, datum)
+    view = View(store, tree, datum, props)
 
   const div_add_relative = document.createElement("div")
   div_add_relative.style.cssText = "width: 100%; height: 100%; position: absolute; top: 0; left: 0;background-color: rgba(0,0,0,.3);opacity: 0"

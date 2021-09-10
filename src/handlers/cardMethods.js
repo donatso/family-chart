@@ -22,13 +22,14 @@ export function cardEdit(store, {card, d}) {
   store.state.cardEditForm({datum, postSubmit, store})
 }
 
-export function cardAddRelative(store, {card, d}) {
+export function cardAddRelative(store, {card, d, scale}) {
   const transition_time = 1000
 
+  if (!scale && window.innerWidth < 650) scale = window.innerWidth / 650
   toggleAllRels(store.getTree().data, false)
-  store.update.mainId(d.data.id)
-  store.update.tree({tree_position: 'main_to_middle', transition_time})
-  AddRelativeTree(store, d.data.id, transition_time)
+  store.update.mainId(d.data.id);
+  store.update.tree({tree_position: 'main_to_middle', transition_time, scale})
+  AddRelativeTree(store, d.data.id, transition_time, {scale})
 }
 
 export function cardShowHideRels(store, {card, d}) {

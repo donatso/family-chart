@@ -48,7 +48,8 @@ export function calculateTreeFit(svg_dim, tree_dim) {
   return {k,x,y}
 }
 
-export function mainToMiddle({datum, svg, svg_dim, transition_time}) {
-  const t = {k:1, x:svg_dim.width/2-datum.x, y: svg_dim.height/2-datum.y}
+export function mainToMiddle({datum, svg, svg_dim, scale, transition_time}) {
+  const k = scale || 1, x = svg_dim.width/2-datum.x*k, y = svg_dim.height/2-datum.y,
+    t = {k, x: x/k, y: y/k}
   positionTree({t, svg, with_transition: true, transition_time})
 }

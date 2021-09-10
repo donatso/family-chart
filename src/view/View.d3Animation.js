@@ -15,14 +15,17 @@ export default function d3AnimationView(store) {
 
   return {update: updateView}
 
-  function updateView({tree_position='fit', transition_time=2000}) {
+  function updateView(props) {
+    if (!props) props = {}
     const tree = store.state.tree,
-      view = d3.select(svg).select(".view")
+      view = d3.select(svg).select(".view"),
+      tree_position = props.tree_position || 'fit',
+      transition_time = props.hasOwnProperty('transition_time') ? props.transition_time : 2000;
 
     updateCards();
     updateLinks();
     if (tree_position === 'fit') treeFit({svg, svg_dim: svg.getBoundingClientRect(), tree_dim: tree.dim, transition_time})
-    else if (tree_position === 'main_to_middle') mainToMiddle({datum: tree.data[0], svg, svg_dim: svg.getBoundingClientRect(), transition_time})
+    else if (tree_position === 'main_to_middle') mainToMiddle({datum: tree.data[0], svg, svg_dim: svg.getBoundingClientRect(), scale: props.scale, transition_time})
     else if (tree_position === 'inherit') {}
 
     function updateLinks() {
