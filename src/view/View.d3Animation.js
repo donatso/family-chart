@@ -6,7 +6,6 @@ import {createLinks} from "../CalculateTree/createLinks.js"
 import Card from "./elements/Card.js"
 import {calculateEnterAndExitPositions} from "../CalculateTree/CalculateTree.handlers.js"
 import ViewAddEventListeners from "./View.EventListeners.js"
-import {isAllRelativeDisplayed} from "../handlers"
 
 export default function d3AnimationView(store) {
   const svg = createSvg();
@@ -95,27 +94,7 @@ export default function d3AnimationView(store) {
 
       function CardElement(el, d) {
         if (store.state.customCard) return store.state.customCard({el, d, store})
-        else return CardElementDefault(d)
-      }
-
-      function CardElementDefault(d) {
-        const el = document.createElementNS("http://www.w3.org/2000/svg", 'g'),
-          show_mini_tree = store.state.mini_tree && !isAllRelativeDisplayed(d, tree.data)
-
-        el.innerHTML = Card({
-          d,
-          card_display: store.state.card_display,
-          card_dim: store.state.card_dim,
-          show_mini_tree: show_mini_tree,
-          show_edit: store.state.edit,
-          show_add: store.state.add,
-          show_hide_rels: store.state.hide_rels,
-          custom_elements: store.state.custom_elements,
-          maleIcon: store.state.maleIcon,
-          femaleIcon: store.state.femaleIcon,
-        }).template
-
-        return el
+        else return Card({})({el, d, store})
       }
     }
 

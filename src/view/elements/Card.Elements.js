@@ -14,9 +14,9 @@ export function CardBody({d,card_dim,card_display}) {
   }
 }
 
-export function CardBodyAddNew({d,card_dim, show_edit, label}) {
+export function CardBodyAddNew({d,card_dim,card_add,label}) {
   return {template: (`
-    <g class="card-body card-unknown card_add">
+    <g class="card-body ${card_add ? 'card_add' : 'card-unknown'}">
       <rect class="card-body-rect" width="${card_dim.w}" height="${card_dim.h}" fill="rgb(59, 85, 96)" />
       <text transform="translate(${card_dim.w/2}, ${card_dim.h/2})" text-anchor="middle" fill="#fff">
         <tspan font-size="18" dy="${8}">${label}</tspan>
@@ -64,8 +64,9 @@ export function HideIcon({d,card_dim}) {
 
 export function MiniTree({d,card_dim}) {
   return ({template: (`
-    <g class="card_family_tree">
-      <g transform="translate(${card_dim.w*.8},6)scale(.9)" style="cursor: pointer">
+    <g class="card_family_tree" style="cursor: pointer">
+      <rect x="-31" y="-25" width="72" height="15" fill="rgba(0,0,0,0)"></rect>
+      <g transform="translate(${card_dim.w*.8},6)scale(.9)">
         <rect x="-31" y="-25" width="72" height="15" fill="rgba(0,0,0,0)"></rect>
         <line y2="-17.5" stroke="#fff" />
         <line x1="-20" x2="20" y1="-17.5" y2="-17.5" stroke="#fff" />
