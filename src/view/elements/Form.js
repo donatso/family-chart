@@ -9,20 +9,26 @@ export function Form({datum, rel_datum, data_stash, rel_type, card_edit, postSub
     modal_el.innerHTML = (`
       <div class="modal-content">
         <form>
-          <label><input type="radio" name="gender" value="M" ${datum.data.gender === 'M' ? 'checked' : ''}><span>male</span></label><br>
-          <label><input type="radio" name="gender" value="F" ${datum.data.gender === 'F' ? 'checked' : ''}><span>female</span></label><br>
+          <div>
+            <div style="text-align: left">
+              <span style="display: ${datum.to_add || !!rel_datum ? 'none' : null}; float: right; cursor: pointer" class="red-text delete">delete</span>
+            </div>
+            <div>
+              <label><input type="radio" name="gender" value="M" ${datum.data.gender === 'M' ? 'checked' : ''}><span>male</span></label><br>
+              <label><input type="radio" name="gender" value="F" ${datum.data.gender === 'F' ? 'checked' : ''}><span>female</span></label><br>
+            </div>
+          </div>
           ${getEditFields(card_edit)}
           ${(rel_type === "son" || rel_type === "daughter") ? otherParentSelect() : ''}
           <br><br>
-          <div style="text-align: right; display: ${datum.to_add || !!rel_datum ? 'none' : 'block'}">
-            <span class="btn delete">delete</span>
+          <div style="text-align: center">
+            <button type="submit" class="btn">submit</button>
           </div>
-          <button type="submit" class="btn">submit</button>
         </form>
       </div>
     `)
     modal_el.querySelector("form").addEventListener('submit', submitFormChanges)
-    modal_el.querySelector(".btn.delete").addEventListener('click', deletePerson)
+    modal_el.querySelector(".delete").addEventListener('click', deletePerson)
     M.FormSelect.init(modal_el.querySelectorAll("select"));
   }
 

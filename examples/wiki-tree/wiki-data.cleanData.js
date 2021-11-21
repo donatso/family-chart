@@ -31,7 +31,7 @@ function wdToFamilyTree(data_wd) {
       children = get(props.child, "ids"),
       ft_datum = {
         id: datum.wiki_id,
-        data: {fn: first_name, ln: last_name, desc: datum.desc, label: datum.label, image: datum.image},
+        data: {fn: first_name, ln: last_name, desc: datum.desc, label: datum.label, avatar: datum.avatar},
         rels: {}
       }
 

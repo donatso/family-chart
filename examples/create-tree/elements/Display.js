@@ -1,5 +1,3 @@
-import f3 from "../../../src/index.js"
-
 export default function Display(cont_selector, store) {
   const cont = document.querySelector(cont_selector),
     card_display = store.state.card_display;
@@ -37,7 +35,7 @@ function labelCreator(create_form) {
   const keys = create_form.match(/[^{\}]+(?=})/g),
     creator = (d) => {
       let label = create_form;
-      keys.forEach(k => label = label.replace(`{${k}}`, d.data[k]))
+      keys.forEach(k => label = label.replace(`{${k}}`, d.data[k] || ''))
       return label
     }
 

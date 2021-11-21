@@ -1,5 +1,6 @@
 import d3 from "../d3.js"
 import {checkIfRelativesConnectedWithoutPerson} from "./checkIfRelativesConnectedWithoutPerson.js"
+import {createTreeDataWithMainNode} from "./newPerson.js"
 
 export function moveToAddToAdded(datum, data_stash) {
   delete datum.to_add
@@ -29,6 +30,7 @@ export function deletePerson(datum, data_stash) {
     })
     data_stash.splice(data_stash.findIndex(d => d.id === datum.id), 1)
     data_stash.forEach(d => {if (d.to_add) deletePerson(d, data_stash)})  // full update of tree
+    if (data_stash.length === 0) data_stash.push(createTreeDataWithMainNode({}).data[0])
   }
 }
 

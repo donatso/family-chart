@@ -2,6 +2,7 @@ import f3 from '../../src/index.js'
 import Edit from './elements/Edit.js'
 import ReactiveTextarea from "./elements/ReactiveTextarea.js"
 import Display from "./elements/Display.js"
+import {Form} from "../../src/view/elements/Form.js"
 
 (async () => {
   const store = f3.createStore({
@@ -9,8 +10,7 @@ import Display from "./elements/Display.js"
       cont: document.querySelector("#chart"),
       card_display: cardDisplay(),
       card_edit: cardEditParams(),
-      edit: true,
-      add: true,
+      cardEditForm,
       card_dim: {w:220,h:70,text_x:75,text_y:15,img_w:60,img_h:60,img_x:5,img_y:5}
     }),
     view = f3.d3AnimationView(store),
@@ -31,6 +31,15 @@ function firstNode() {
   return [{id: '0', rels: {}, data: {'first name': 'Name', 'last name': "Surname", 'birthday': 1970, gender: "M"}}]
 }
 
+function cardEditForm(props) {
+  const postSubmit = props.postSubmit;
+  props.postSubmit = (ps_props) => {
+    postSubmit(ps_props)
+
+  }
+  Form({...props, card_edit: cardEditParams()})
+}
+
 function cardEditParams() {
   return [
     {type: 'text', placeholder: 'first name', key: 'first name'},
@@ -41,13 +50,10 @@ function cardEditParams() {
 }
 
 function cardDisplay() {
-  const d1 = d => d.data['first name'] + " " + d.data['last name'],
-    d2 = d => d.data['birthday']
+  const d1 = d => `${d.data['first name'] || ''} ${d.data['last name'] || ''}`,
+    d2 = d => `${d.data['birthday'] || ''}`
   d1.create_form = "{first name} {last name}"
   d2.create_form = "{birthday}"
 
-  return [
-    d1,
-    d2
-  ]
+  return [d1, d2]
 }
