@@ -27,7 +27,7 @@ export default function CardWrapper({}) {
           ${CardBodyOutline({d,card_dim,is_new:d.data.to_add}).template}
           <g clip-path="url(#card_clip)">
             ${!d.data.to_add ? CardBody({d,card_dim, card_display: store.state.card_display}).template : CardBodyAddNew({d,card_dim, card_add: store.state.cardEditForm, label: unknown_lbl}).template}
-            ${!d.data.to_add ? CardImage({d, image: d.data.data.avatar ? d.data.data.avatar.url : null, card_dim, maleIcon: null, femaleIcon: null}).template : ''}
+            ${!d.data.to_add ? CardImage({d, image: d.data.data.avatar || null, card_dim, maleIcon: null, femaleIcon: null}).template : ''}
             ${!d.data.to_add && store.state.cardEditForm ? PencilIcon({card_dim, x: card_dim.w-46, y: card_dim.h-20}).template : ''}
             ${!d.data.to_add && store.state.cardEditForm ? PlusIcon({card_dim, x: card_dim.w-26, y: card_dim.h-20}).template : ''}
           </g>

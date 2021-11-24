@@ -84,7 +84,7 @@ export async function getWikiPersonData({wiki_id, exclude_props=true}) {
     wiki_id,
     label: getWikiDatumLbl(entity),
     desc: getWikiDatumDesc(entity),
-    avatar: {url: await getImageUrl(entity)},
+    avatar: await getImageUrl(entity),
     claims: await getElementsClaims(entity.claims)
   }
 
