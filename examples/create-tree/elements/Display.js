@@ -38,7 +38,7 @@ function labelCreator(create_form) {
       keys.forEach(k => label = label.replace(`{${k}}`, d.data[k] || ''))
       return label
     }
-
   creator.create_form = create_form
+  creator.toString = () => `d => \`${create_form.replace(/{/g, '${d.data["').replace(/}/g, '"]}')}\``
   return creator
 }

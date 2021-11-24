@@ -20,6 +20,12 @@
       width:100%;
     }
     .p5 {padding: 5px}
+    code {
+      display: block;
+      max-height: 150px;
+      overflow-y: auto;
+      font-size: 10px;
+    }
     @media only screen and (max-width: 600px) {
       #chart {
         height: 60vh;
@@ -44,9 +50,26 @@
       <div id="display_cont" class="card p5"></div>
     </div>
     <div class="col m12">
+      <h5>Data</h5>
       <div class="card p5">
         <textarea id="textarea"></textarea>
         <button class="btn" id="update_btn">UPDATE CHART</button>
+      </div>
+      <h5>family-chart.css</h5>
+      <div class="card p5">
+        <pre><code id="family-chart-css"></code></pre>
+      </div>
+      <h5>Vanila</h5>
+      <div class="card p5">
+        <pre><code id="ReactiveVanila"></code></pre>
+      </div>
+      <h5>Vue</h5>
+      <div class="card p5">
+        <pre><code id="ReactiveVue"></code></pre>
+      </div>
+      <h5>React</h5>
+      <div class="card p5">
+        <pre><code id="ReactiveReact"></code></pre>
       </div>
     </div>
   </div>

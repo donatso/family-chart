@@ -1,8 +1,12 @@
 import f3 from '../../src/index.js'
 import Edit from './elements/Edit.js'
 import ReactiveTextarea from "./elements/ReactiveTextarea.js"
+import ReactiveVanila from "./elements/ReactiveVanila.js"
+import ReactiveVue from "./elements/ReactiveVue.js"
+import ReactiveReact from "./elements/ReactiveReact.js"
 import Display from "./elements/Display.js"
 import {Form} from "../../src/view/elements/Form.js"
+
 
 (async () => {
   const store = f3.createStore({
@@ -15,20 +19,28 @@ import {Form} from "../../src/view/elements/Form.js"
     }),
     view = f3.d3AnimationView(store),
     reactiveTextArea = ReactiveTextarea(data => {store.update.data(data)}, "#textarea", "#update_btn"),
+    reactiveVanila = ReactiveVanila( "#ReactiveVanila"),
+    reactiveVue = ReactiveVue( "#ReactiveVue"),
+    reactiveReact = ReactiveReact( "#ReactiveReact"),
     edit = Edit('#edit_cont', store),
     display = Display('#display_cont', store),
     onUpdate = (props) => {
       view.update(props || {});
       reactiveTextArea.update(store.getData());
+      reactiveVanila.update(store);
+      reactiveVue.update(store);
+      reactiveReact.update(store);
     }
 
+  fetch('./elements/family-chart.css').then(r => r.text()).then(text => document.querySelector('#family-chart-css').innerText = text)
   store.setOnUpdate(onUpdate)
   store.update.tree()
 
 })();
 
 function firstNode() {
-  return [{id: '0', rels: {}, data: {'first name': 'Name', 'last name': "Surname", 'birthday': 1970, gender: "M"}}]
+  return [{id: '0', rels: {}, data: {'first name': 'Name', 'last name': "Surname", 'birthday': 1970,
+      avatar: 'https://static8.depositphotos.com/1009634/988/v/950/depositphotos_9883921-stock-illustration-no-user-profile-picture.jpg', gender: "M"}}]
 }
 
 function cardEditForm(props) {
@@ -45,7 +57,7 @@ function cardEditParams() {
     {type: 'text', placeholder: 'first name', key: 'first name'},
     {type: 'text', placeholder: 'last name', key: 'last name'},
     {type: 'text', placeholder: 'birthday', key: 'birthday'},
-    {type: 'text', placeholder: 'image', key: 'image'}
+    {type: 'text', placeholder: 'avatar', key: 'avatar'}
   ]
 }
 
