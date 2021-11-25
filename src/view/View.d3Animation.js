@@ -9,6 +9,7 @@ import {calculateEnterAndExitPositions} from "../CalculateTree/CalculateTree.han
 export default function d3AnimationView({store, cont, Card}) {
   const svg = createSvg();
   setupSvg(svg, store.state.zoom_polite);
+  let initial = true;
 
   return {update: updateView, svg, setCard: card => Card = card}
 
@@ -21,9 +22,13 @@ export default function d3AnimationView({store, cont, Card}) {
 
     updateCards();
     updateLinks();
-    if (tree_position === 'fit') treeFit({svg, svg_dim: svg.getBoundingClientRect(), tree_dim: tree.dim, transition_time})
+    if (initial) treeFit({svg, svg_dim: svg.getBoundingClientRect(), tree_dim: tree.dim, transition_time: 0})
+    else if (tree_position === 'fit') treeFit({svg, svg_dim: svg.getBoundingClientRect(), tree_dim: tree.dim, transition_time})
     else if (tree_position === 'main_to_middle') mainToMiddle({datum: tree.data[0], svg, svg_dim: svg.getBoundingClientRect(), scale: props.scale, transition_time})
     else if (tree_position === 'inherit') {}
+
+    if (initial) initial = false;
+    return true
 
     function updateLinks() {
       const links_data = tree.data.reduce((acc, d) => acc.concat(createLinks({d, tree:tree.data})), []),
@@ -43,7 +48,8 @@ export default function d3AnimationView({store, cont, Card}) {
 
       function linkUpdate(d) {
         const path = d3.select(this);
-        path.transition('path').duration(transition_time).attr("d", createPath(d)).style("opacity", 1)
+        const delay = initial ? d.depth*500 : 0;
+        path.transition('path').duration(transition_time).delay(delay).attr("d", createPath(d)).style("opacity", 1)
       }
 
       function linkExit(d) {
@@ -81,7 +87,8 @@ export default function d3AnimationView({store, cont, Card}) {
       function cardUpdate(d) {
         this.innerHTML = ""
         this.appendChild(CardElement(this, d))
-        d3.select(this).transition().duration(transition_time).attr("transform", `translate(${d.x}, ${d.y})`).style("opacity", 1)
+        const delay = initial ? d.depth*500 : 0;
+        d3.select(this).transition().duration(transition_time).delay(delay).attr("transform", `translate(${d.x}, ${d.y})`).style("opacity", 1)
       }
 
       function cardExit(d) {

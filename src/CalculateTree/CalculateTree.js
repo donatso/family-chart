@@ -91,6 +91,7 @@ export default function CalculateTree({data_stash, main_id=null, is_vertical=tru
           spouse.x = d.x-(node_separation*(i+1))*side;
           spouse.y = d.y
           spouse.sx = i > 0 ? spouse.x : spouse.x + (node_separation/2)*side
+          spouse.depth = d.depth;
           spouse.spouse = d;
           if (!d.spouses) d.spouses = []
           d.spouses.push(spouse)
