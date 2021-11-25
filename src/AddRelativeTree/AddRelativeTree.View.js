@@ -4,10 +4,8 @@ import {
   handleRelsOfNewDatum,
 } from "../handlers/newPerson.js"
 
-export default function View(store, tree, datum, props) {
-  if (!props) props = {}
-  const data_stash = store.getData(),
-    svg_dim = store.state.cont.getBoundingClientRect(),
+export default function View(tree, {store, data_stash, cont, datum, card_dim, cardEditForm, scale}) {
+  const svg_dim = cont.getBoundingClientRect(),
     tree_fit = calculateTreeFit(svg_dim),
     mounted = (node) => {
       addEventListeners(node)
@@ -29,7 +27,7 @@ export default function View(store, tree, datum, props) {
   }
 
   function calculateTreeFit(svg_dim) {
-    const k = props.scale || 1;
+    const k = scale || 1;
     return {k, x:svg_dim.width/2, y: svg_dim.height/2}
   }
 
@@ -66,7 +64,7 @@ export default function View(store, tree, datum, props) {
     `)}
 
     function createPath() {
-      const {w,h} = store.state.card_dim;
+      const {w,h} = card_dim;
       let parent = (is_vertical && d.y < 0)
         ? {x: 0, y: -h/2}
         : (is_vertical && d.y > 0)
@@ -115,7 +113,7 @@ export default function View(store, tree, datum, props) {
           handleRelsOfNewDatum({datum: new_datum, data_stash, rel_datum, rel_type})
           store.update.tree();
         }
-      store.state.cardEditForm({datum: new_datum, rel_datum, rel_type, postSubmit, store})
+      cardEditForm({datum: new_datum, rel_datum, rel_type, postSubmit, store})
       return true
     }
   }

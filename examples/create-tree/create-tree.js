@@ -9,33 +9,46 @@ import {Form} from "../../src/view/elements/Form.js"
 
 
 (async () => {
-  const store = f3.createStore({
+  const cont = document.querySelector("#FamilyChart"),
+    card_dim = {w:220,h:70,text_x:75,text_y:15,img_w:60,img_h:60,img_x:5,img_y:5},
+    store = f3.createStore({
       data: firstNode(),
-      cont: document.querySelector("#chart"),
-      card_display: cardDisplay(),
-      card_edit: cardEditParams(),
-      cardEditForm,
-      card_dim: {w:220,h:70,text_x:75,text_y:15,img_w:60,img_h:60,img_x:5,img_y:5}
+      node_separation: 250,
+      level_separation: 150
     }),
-    view = f3.d3AnimationView(store),
+    view = f3.d3AnimationView({
+      store,
+      cont: document.querySelector("#FamilyChart"),
+      card_edit: cardEditParams(),
+    }),
+    Card = f3.elements.Card({
+      store,
+      svg: view.svg,
+      card_dim,
+      card_display: cardDisplay(),
+      mini_tree: true,
+      link_break: false,
+      cardEditForm,
+      addRelative: f3.handlers.AddRelative({store, cont, card_dim, cardEditForm, labels: {mother: 'add mater'}}),
+    }),
     reactiveTextArea = ReactiveTextarea(data => {store.update.data(data)}, "#textarea", "#update_btn"),
-    reactiveVanila = ReactiveVanila( "#ReactiveVanila"),
-    reactiveVue = ReactiveVue( "#ReactiveVue"),
-    reactiveReact = ReactiveReact( "#ReactiveReact"),
-    edit = Edit('#edit_cont', store),
-    display = Display('#display_cont', store),
+    // reactiveVanila = ReactiveVanila( "#ReactiveVanila"),
+    // reactiveVue = ReactiveVue( "#ReactiveVue"),
+    // reactiveReact = ReactiveReact( "#ReactiveReact"),
+    // edit = Edit('#edit_cont', store),
+    // display = Display('#display_cont', store),
     onUpdate = (props) => {
       view.update(props || {});
       reactiveTextArea.update(store.getData());
-      reactiveVanila.update(store);
-      reactiveVue.update(store);
-      reactiveReact.update(store);
+      // reactiveVanila.update(store);
+      // reactiveVue.update(store);
+      // reactiveReact.update(store);
     }
 
+  view.setCard(Card)
   fetch('./elements/family-chart.css').then(r => r.text()).then(text => document.querySelector('#family-chart-css').innerText = text)
   store.setOnUpdate(onUpdate)
   store.update.tree()
-
 })();
 
 function firstNode() {
