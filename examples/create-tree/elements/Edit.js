@@ -1,8 +1,7 @@
 import f3 from "../../../src/index.js"
 
-export default function Edit(cont_selector, store) {
-  const cont = document.querySelector(cont_selector),
-    card_edit = store.state.card_edit;
+export default function Edit(cont_selector, card_edit) {
+  const cont = document.querySelector(cont_selector)
 
   cont.innerHTML = (`   
     <h5>Edit</h5>

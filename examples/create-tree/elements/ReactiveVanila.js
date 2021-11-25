@@ -1,13 +1,7 @@
-import {createTreeJs, getState} from "./Reactive.js"
+import Reactive from "./Reactive.js"
 
 export default function ReactiveVanila(selector) {
-  const element = document.querySelector(selector)
-
-  return {update: updateElement}
-
-  function updateElement(store) {
-   element.innerText = getHtml(createTreeJs(getState(store)))
-  }
+  return Reactive(selector, getHtml)
 
   function getHtml(create_tree_js) {
     return (`
@@ -23,7 +17,7 @@ export default function ReactiveVanila(selector) {
 </head>
 <body>
   <div id="FamilyChart" class="f3"></div>
-  <script>
+  <script type="module">
     ${create_tree_js}
   </script>
 </body>

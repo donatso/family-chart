@@ -1,13 +1,7 @@
-import {createTreeJs, getState} from "./Reactive.js"
+import Reactive from "./Reactive.js"
 
 export default function ReactiveVue(selector) {
-  const element = document.querySelector(selector)
-
-  return {update: updateElement}
-
-  function updateElement(store) {
-   element.innerText = getComponent(createTreeJs(getState(store)))
-  }
+  return Reactive(selector, getComponent)
 
   function getComponent(create_tree_js) {
     return (`

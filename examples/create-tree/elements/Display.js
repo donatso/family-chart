@@ -1,6 +1,5 @@
-export default function Display(cont_selector, store) {
-  const cont = document.querySelector(cont_selector),
-    card_display = store.state.card_display;
+export default function Display(cont_selector, store, card_display) {
+  const cont = document.querySelector(cont_selector)
 
   cont.innerHTML = (`   
     <h5>Display</h5>

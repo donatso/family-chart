@@ -1,11 +1,13 @@
 export function Form({datum, rel_datum, data_stash, rel_type, card_edit, postSubmit, card_display}) {
   const modal_el = document.querySelector('#form_modal'),
     modal = M.Modal.getInstance(modal_el);
+  console.log(card_edit)
 
   setupFromHtml();
   modal.open();
 
   function setupFromHtml() {
+    console.log(card_edit)
     modal_el.innerHTML = (`
       <div class="modal-content">
         <form>
