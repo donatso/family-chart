@@ -55,7 +55,10 @@ import {Form} from "../../src/view/elements/Form.js"
   function cardEditForm(props) {
     const postSubmit = props.postSubmit;
     props.postSubmit = (ps_props) => {postSubmit(ps_props)}
-    Form({...props, card_edit})
+    const el = document.querySelector('#form_modal'),
+      modal = M.Modal.getInstance(el),
+      edit = {el, open:()=>modal.open(), close:()=>modal.close()}
+    Form({...props, card_edit, edit})
   }
 })();
 

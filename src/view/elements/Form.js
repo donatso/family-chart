@@ -1,14 +1,9 @@
-export function Form({datum, rel_datum, data_stash, rel_type, card_edit, postSubmit, card_display}) {
-  const modal_el = document.querySelector('#form_modal'),
-    modal = M.Modal.getInstance(modal_el);
-  console.log(card_edit)
-
+export function Form({datum, rel_datum, data_stash, rel_type, card_edit, postSubmit, card_display, edit: {el, open, close}}) {
   setupFromHtml();
-  modal.open();
+  open();
 
   function setupFromHtml() {
-    console.log(card_edit)
-    modal_el.innerHTML = (`
+    el.innerHTML = (`
       <div class="modal-content">
         <form>
           <div>
@@ -29,9 +24,9 @@ export function Form({datum, rel_datum, data_stash, rel_type, card_edit, postSub
         </form>
       </div>
     `)
-    modal_el.querySelector("form").addEventListener('submit', submitFormChanges)
-    modal_el.querySelector(".delete").addEventListener('click', deletePerson)
-    M.FormSelect.init(modal_el.querySelectorAll("select"));
+    el.querySelector("form").addEventListener('submit', submitFormChanges)
+    el.querySelector(".delete").addEventListener('click', deletePerson)
+    M.FormSelect.init(el.querySelectorAll("select"));
   }
 
   function otherParentSelect() {
@@ -56,12 +51,12 @@ export function Form({datum, rel_datum, data_stash, rel_type, card_edit, postSub
     const form_data = new FormData(e.target)
     form_data.forEach((v, k) => datum.data[k] = v)
 
-    modal.close()
+    close()
     postSubmit()
   }
 
   function deletePerson() {
-    modal.close()
+    close()
     postSubmit({delete: true})
   }
 
