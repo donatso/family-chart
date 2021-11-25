@@ -1,4 +1,4 @@
-export function Form({datum, rel_datum, store, rel_type, card_edit, postSubmit, card_display, edit: {el, open, close}}) {
+export function Form({datum, rel_datum, data_stash, rel_type, card_edit, postSubmit, card_display, edit: {el, open, close}}) {
   setupFromHtml();
   open();
 
@@ -30,7 +30,6 @@ export function Form({datum, rel_datum, store, rel_type, card_edit, postSubmit, 
   }
 
   function otherParentSelect() {
-    const data_stash = store.getData();
     return (`
       <div class="input-field">
         <select name="other_parent">
