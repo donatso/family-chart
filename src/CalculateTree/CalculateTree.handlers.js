@@ -25,7 +25,7 @@ export function calculateEnterAndExitPositions(d, entering, exiting) {
     if (d.depth === 0) {d._x = d.x; d._y = d.y}
     else if (d.added) {d._x = d.spouse.x; d._y = d.spouse.y;}
     else if (d.is_ancestry) {d._x = d.parent.x; d._y = d.parent.y;}
-    else {d._x = d.parent.x; d._y = d.parent.y;}
+    else {d._x = d.psx; d._y = d.parent.y;}
   } else if (exiting) {
     const x = d.x > 0 ? 1 : -1,
       y = d.y > 0 ? 1 : -1

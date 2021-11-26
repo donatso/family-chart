@@ -16,8 +16,8 @@ export function createLinks({d, tree, is_vertical}) {
     links.push({
       d: Link(d, p),
       _d: () => {
-        const _d = {x: _or(d, 'x'), y: _or(d, 'y')},
-          _p = {x: getMid(p1, p2, 'x', true), y: getMid(p1, p2, 'y', true)}
+        const _d = {x: d.x, y: d.y},
+          _p = {x: d.x, y: d.y}
         return Link(_d, _p)
       },
       curve: true, id: linkId(d, d.parents[0], d.parents[1]), depth: d.depth+1, is_ancestry: true
@@ -34,7 +34,7 @@ export function createLinks({d, tree, is_vertical}) {
 
       links.push({
         d: Link(child, {x: sx, y: d.y}),
-        _d: () => Link({x: _or(child, 'x'), y: _or(child, 'y')}, {x: _or(d, 'x'), y: _or(d, 'y')}),
+        _d: () => Link({x: sx, y: d.y}, {x: _or(child, 'x'), y: _or(child, 'y')}),
         curve: true, id: linkId(child, d, other_parent), depth: d.depth+1
       })
     })

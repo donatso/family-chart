@@ -96,6 +96,12 @@ export default function CalculateTree({data_stash, main_id=null, is_vertical=tru
           if (!d.spouses) d.spouses = []
           d.spouses.push(spouse)
           tree.push(spouse)
+
+          tree.forEach(d0 => (
+            (d0.data.rels.father === d.data.id && d0.data.rels.mother === spouse.data.id) ||
+            (d0.data.rels.mother === d.data.id && d0.data.rels.father === spouse.data.id)
+            ) ? d0.psx = spouse.sx : null
+          )
         })
       }
       if (d.parents && d.parents.length === 2) {
