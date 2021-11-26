@@ -35,7 +35,7 @@ import {Form} from "../../src/view/elements/Form.js"
     }),
     edit = Edit('#edit_cont', card_edit),
     display = Display('#display_cont', store, card_display),
-    reactiveTextArea = ReactiveTextarea(data => {store.update.data(data)}, "#textarea", "#update_btn"),
+    reactiveTextArea = ReactiveTextarea(data => {store.update.data(data); store.update.tree()}, "#textarea", "#update_btn"),
     reactiveVanila = ReactiveVanila( "#ReactiveVanila"),
     reactiveVue = ReactiveVue( "#ReactiveVue"),
     reactiveReact = ReactiveReact( "#ReactiveReact"),

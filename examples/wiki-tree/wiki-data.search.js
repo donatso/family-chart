@@ -4,10 +4,10 @@ import {getFamilyTreeFromWikidata} from "./wiki-data.cleanData.js"
 
 export function setupWikiSearch(store, cont) {
   let wiki_stash = [];
-  const search = Search({
-      cont: document.body.insertBefore(document.createElement("div"), document.body.firstElementChild),
-      onSelect: updateDataWithWDItem
-    })
+  Search({
+    cont: document.body.insertBefore(document.createElement("div"), document.body.firstElementChild),
+    onSelect: updateDataWithWDItem
+  })
 
   onLoad(updateDataWithWDItem);
 
@@ -19,7 +19,11 @@ export function setupWikiSearch(store, cont) {
   function updateDataWithWDItem({wiki_id}) {
     const loader = insertLoader();
     return getFamilyTreeFromWikidata(wiki_stash, wiki_id)
-      .then(d => {wiki_stash = d.wiki_stash.slice(0, 500);store.update.mainId(d.data.find(d => d.id === wiki_id).id);store.update.data(d.data);})
+      .then(d => {
+        wiki_stash = d.wiki_stash.slice(0, 500);
+        store.update.mainId(d.data.find(d => d.id === wiki_id).id);
+        store.update.data(d.data);store.update.tree({initial: true})
+      })
       .finally(() => loader.remove())
   }
 

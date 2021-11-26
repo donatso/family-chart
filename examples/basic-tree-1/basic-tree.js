@@ -21,5 +21,5 @@ fetch("./data.json").then(r => r.json()).then(data => {
 
   view.setCard(Card)
   store.setOnUpdate(props => view.update(props || {}))
-  store.update.tree()
+  store.update.tree({initial: true})
 })

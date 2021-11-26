@@ -9,7 +9,6 @@ import {calculateEnterAndExitPositions} from "../CalculateTree/CalculateTree.han
 export default function d3AnimationView({store, cont, Card}) {
   const svg = createSvg();
   setupSvg(svg, store.state.zoom_polite);
-  let initial = true;
 
   return {update: updateView, svg, setCard: card => Card = card}
 
@@ -22,12 +21,11 @@ export default function d3AnimationView({store, cont, Card}) {
 
     updateCards();
     updateLinks();
-    if (initial) treeFit({svg, svg_dim: svg.getBoundingClientRect(), tree_dim: tree.dim, transition_time: 0})
+    if (props.initial) treeFit({svg, svg_dim: svg.getBoundingClientRect(), tree_dim: tree.dim, transition_time: 0})
     else if (tree_position === 'fit') treeFit({svg, svg_dim: svg.getBoundingClientRect(), tree_dim: tree.dim, transition_time})
     else if (tree_position === 'main_to_middle') mainToMiddle({datum: tree.data[0], svg, svg_dim: svg.getBoundingClientRect(), scale: props.scale, transition_time})
     else if (tree_position === 'inherit') {}
 
-    if (initial) initial = false;
     return true
 
     function updateLinks() {
@@ -48,7 +46,7 @@ export default function d3AnimationView({store, cont, Card}) {
 
       function linkUpdate(d) {
         const path = d3.select(this);
-        const delay = initial ? d.depth*500 : 0;
+        const delay = calculateDelay(d)
         path.transition('path').duration(transition_time).delay(delay).attr("d", createPath(d)).style("opacity", 1)
       }
 
@@ -87,7 +85,7 @@ export default function d3AnimationView({store, cont, Card}) {
       function cardUpdate(d) {
         this.innerHTML = ""
         this.appendChild(CardElement(this, d))
-        const delay = initial ? d.depth*500 : 0;
+        const delay = calculateDelay(d);
         d3.select(this).transition().duration(transition_time).delay(delay).attr("transform", `translate(${d.x}, ${d.y})`).style("opacity", 1)
       }
 
@@ -101,6 +99,19 @@ export default function d3AnimationView({store, cont, Card}) {
         if (Card) return Card({node, d})
         else return CardDefault({store, svg})({node, d})
       }
+    }
+
+    function calculateDelay(d) {
+      if (!props.initial) return 0
+      const delay_level = 800,
+        ancestry_levels = Math.max(...tree.data.map(d=>d.is_ancestry ? d.depth : 0))
+      let delay = d.depth*delay_level;
+      if ((d.depth !== 0 || !!d.spouse) && !d.is_ancestry) {
+        delay+=(ancestry_levels+1)*delay_level  // after ancestry
+        if (d.spouse) delay+=delay_level  // spouse after bloodline
+        delay+=(d.depth)*delay_level  // double the delay for each level because of additional spouse delay
+      }
+      return delay
     }
 
   }

@@ -10,14 +10,12 @@ export default function createStore(initial_state) {
         if (onUpdate) onUpdate(props)
       },
       mainId: main_id => state.main_id = main_id,
-      data: data => {state.data = data; update.tree()}
+      data: data => state.data = data
     },
     getData = () => state.data,
     getTree = () => state.tree,
     setOnUpdate = (f) => onUpdate = f,
     methods = {}
-
-  if (!state.data || state.data.length === 0) state.data = createTreeDataWithMainNode({}).data
 
   return {state, update, getData, getTree, setOnUpdate, methods}
 
