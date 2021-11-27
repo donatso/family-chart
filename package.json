@@ -25,13 +25,15 @@
     "dist/**/*.js"
   ],
   "scripts": {
-    "build": "node build.js"
+    "build": "node build.js",
+    "test": "yarn run cypress open --project tests"
   },
   "sideEffects": false,
   "dependencies": {
     "d3": "6"
   },
   "devDependencies": {
+    "cypress": "^9.1.0",
     "rollup": "2",
     "rollup-plugin-terser": "7"
   }
