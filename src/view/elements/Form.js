@@ -26,14 +26,14 @@ export function Form({datum, rel_datum, store, rel_type, card_edit, postSubmit, 
     `)
     el.querySelector("form").addEventListener('submit', submitFormChanges)
     el.querySelector(".delete").addEventListener('click', deletePerson)
-    M.FormSelect.init(el.querySelectorAll("select"));
   }
 
   function otherParentSelect() {
     const data_stash = store.getData();
     return (`
-      <div class="input-field">
-        <select name="other_parent">
+      <div>
+        <label>Select other</label>
+        <select name="other_parent" style="display: block">
           ${(!rel_datum.rels.spouses || rel_datum.rels.spouses.length === 0) 
               ? '' 
               : rel_datum.rels.spouses.map((sp_id, i) => {
@@ -42,7 +42,6 @@ export function Form({datum, rel_datum, store, rel_type, card_edit, postSubmit, 
                 }).join("\n")}
           <option value="${'_new'}">NEW</option>
         </select>
-        <label>Select other parent</label>
       </div>
     `)
   }
