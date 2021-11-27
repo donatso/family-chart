@@ -1,5 +1,5 @@
 import {getWikiDataElementByStr, isHuman} from "./wiki-data.handleWikiData.js"
-import wikidata_peps from "../data/wikidata_peps.js"
+import wikidata_peps from "./wikidata_peps.js"
 import {getFamilyTreeFromWikidata} from "./wiki-data.cleanData.js"
 
 export function setupWikiSearch(store, cont) {
