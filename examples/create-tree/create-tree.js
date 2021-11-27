@@ -50,7 +50,7 @@ import {Form} from "../../src/view/elements/Form.js"
   view.setCard(Card)
   fetch('./elements/family-chart.css').then(r => r.text()).then(text => document.querySelector('#family-chart-css').innerText = text)
   store.setOnUpdate(onUpdate)
-  store.update.tree()
+  store.update.tree({initial: true})
 
   function cardEditForm(props) {
     const postSubmit = props.postSubmit;
