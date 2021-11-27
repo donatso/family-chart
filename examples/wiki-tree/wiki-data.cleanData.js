@@ -4,7 +4,7 @@ import {props} from './wiki-data.dict.js';
 export async function getFamilyTreeFromWikidata(wiki_stash, wiki_id) {
   addWikiIdToURL(wiki_id)
   const data_wd = await getFamilyDataForItem(wiki_stash, wiki_id, 2)
-  return {wiki_stash, data: parentsToSpousesFix(wdToFamilyTree(data_wd))}
+  return {wiki_stash, data: childrenToParentsFix(parentsToSpousesFix(wdToFamilyTree(data_wd)))}
 }
 
 function addWikiIdToURL(wiki_id){
@@ -63,6 +63,21 @@ function parentsToSpousesFix(data) {
       p2 = data.find(d => d.id === r.father)
     if (!p1.rels.spouses.includes(p2.id)) p1.rels.spouses.push(p2.id)
     if (!p2.rels.spouses.includes(p1.id)) p2.rels.spouses.push(p1.id)
+  })
+
+  return data
+}
+
+function childrenToParentsFix(data) {
+  data.forEach(datum => {
+    const r = datum.rels;
+    if (!r.children) return
+    r.children.forEach(ch_id => {
+      if (ch_id === "Q107325744") console.log(ch_id)
+      const child = data.find(d => d.id === ch_id)
+      if (datum.data.gender === 'F' && !child.rels.mother) child.rels.mother = datum.id;
+      if (datum.data.gender === 'M' && !child.rels.father) child.rels.father = datum.id;
+    })
   })
 
   return data
