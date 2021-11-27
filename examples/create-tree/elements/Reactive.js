@@ -20,7 +20,6 @@ function getCleanedData(data) {
 
 function createTreeJs({data, card_display}) {
   return (`
-    import f3 from '/src/index.js'  // for development
     const store = f3.createStore({
         data: data(),
         node_separation: 250,
