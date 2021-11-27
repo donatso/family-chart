@@ -43,8 +43,8 @@ import {Form} from "../../src/view/elements/Form.js"
       view.update(props || {});
       reactiveTextArea.update(store.getData());
       reactiveVanila.update(store, card_display);
-      reactiveVue.update(store);
-      reactiveReact.update(store);
+      reactiveVue.update(store, card_display);
+      reactiveReact.update(store, card_display);
     }
 
   view.setCard(Card)
