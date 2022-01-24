@@ -8,7 +8,7 @@ export function createLinks({d, tree, is_vertical}) {
   return links;
 
   function handleAncestrySide({d}) {
-    if (!d.parents || d.parents.length === 0) return
+    if (!d.parents || d.parents.length !== 2) return
     const p1 = d.parents[0], p2 = d.parents[1]
 
     const p = {x: getMid(p1, p2, 'x'), y: getMid(p1, p2, 'y')}
