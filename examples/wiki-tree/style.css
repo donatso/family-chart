@@ -1,4 +1,3 @@
-
 .lds-roller-cont {
   position: absolute;
   z-index: 2;
@@ -9,6 +8,13 @@
   background-color: rgba(0,0,0,.3);
   margin: auto;
   color: #fff;
+}
+
+.lds-roller-input-cont {
+  transform: scale(.4);
+  position: absolute;
+  top: -19px;
+  right: -21px;
 }
 
 .lds-roller {

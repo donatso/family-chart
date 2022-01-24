@@ -128,7 +128,11 @@ export async function getWikiPersonData({wiki_id, exclude_props=true}) {
       if(!image_claim || !image_claim[0].mainsnak.datavalue) resolve(null)
       const image_name = image_claim[0].mainsnak.datavalue.value;
       jsonpQuery('https://commons.wikimedia.org/w/api.php?action=query&format=json&prop=imageinfo&iiprop=url&titles=File:' + image_name)
-        .then(function(response) {resolve(response.query.pages[Object.keys(response.query.pages)[0]].imageinfo[0].url);})
+        .then(function(response) {
+          const wikimedia_first_page = response.query.pages[Object.keys(response.query.pages)[0]]
+          if (wikimedia_first_page.imageinfo) resolve(wikimedia_first_page.imageinfo[0].url);
+          else resolve(null)
+        })
     })
   }
 }

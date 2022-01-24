@@ -43,6 +43,9 @@ function Search({cont, onSelect}) {
     <div class="input-field" style="width: 450px; max-width: 85%; margin: auto; position: absolute; top: 13px; left: 0; right: 0">
       <input type="text" id="autocomplete-input" class="autocomplete" style="color: #fff;">
       <label for="autocomplete-input">Search Wikidata</label>
+      <div class="lds-roller-input-cont" style="display: none">
+        <div class="lds-roller" style="color: #9e9e9e"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+      </div>
     </div>
   `)
 
@@ -62,7 +65,9 @@ function Search({cont, onSelect}) {
 
     function search() {
       if (input.value.length < 3) return
+      autocomplete.el.parentNode.querySelector(".lds-roller-input-cont").style.display = null
       getWikiDataElementByStr(input.value).then(data => {
+        autocomplete.el.parentNode.querySelector(".lds-roller-input-cont").style.display = "none"
         data.forEach(d => {
           isHuman(d.datum.wiki_id).then(is => is ? insertHuman(d) : '')
         })

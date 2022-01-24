@@ -23,5 +23,15 @@ import {setupWikiSearch} from "./wiki-data.search.js"
 
   view.setCard(Card)
   setupWikiSearch(store, document.querySelector("#FamilyChart"))
-  store.setOnUpdate(props => view.update(props || {}))
+  store.setOnUpdate(props => {
+    addWikiIdToURL(store.state.main_id)
+    view.update(props || {})
+  })
+
+  function addWikiIdToURL(wiki_id){
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set('wiki_id', wiki_id);
+    window.history.pushState('page2', 'Title', location.pathname+"?wiki_id="+wiki_id);
+    document.title = "wiki tree - " + store.getData().find(d => d.id === store.state.main_id).data.label
+  }
 })();

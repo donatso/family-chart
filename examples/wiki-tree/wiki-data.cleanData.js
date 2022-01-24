@@ -2,20 +2,8 @@ import {getFamilyDataForItem} from './wiki-data.handleWikiData.js';
 import {props} from './wiki-data.dict.js';
 
 export async function getFamilyTreeFromWikidata(wiki_stash, wiki_id) {
-  addWikiIdToURL(wiki_id)
   const data_wd = await getFamilyDataForItem(wiki_stash, wiki_id, 2)
   return {wiki_stash, data: childrenToParentsFix(parentsToSpousesFix(wdToFamilyTree(data_wd)))}
-}
-
-function addWikiIdToURL(wiki_id){
-  const urlParams = new URLSearchParams(window.location.search);
-  urlParams.set('wiki_id', wiki_id);
-  window.history.pushState('page2', 'Title', location.pathname+"?wiki_id="+wiki_id);
-  function addParameterToURL(param){
-    let _url = location.href;
-    _url += (_url.split('?')[1] ? '&':'?') + param;
-    return _url;
-  }
 }
 
 function wdToFamilyTree(data_wd) {
@@ -39,6 +27,7 @@ function wdToFamilyTree(data_wd) {
     if (father && data_wd.find(d => d.wiki_id === father)) ft_datum.rels.father = father
     if (mother && data_wd.find(d => d.wiki_id === mother)) ft_datum.rels.mother = mother
     ft_datum.rels.spouses = spouses.filter(d_id => data_wd.find(d => d.wiki_id === d_id))
+    ft_datum.rels.spouses = [...new Set(ft_datum.rels.spouses)]  // if its remarried there are 2 entries
     ft_datum.rels.children = children.filter(d_id => data_wd.find(d => d.wiki_id === d_id))
 
     return ft_datum
@@ -73,10 +62,16 @@ function childrenToParentsFix(data) {
     const r = datum.rels;
     if (!r.children) return
     r.children.forEach(ch_id => {
-      if (ch_id === "Q107325744") console.log(ch_id)
       const child = data.find(d => d.id === ch_id)
       if (datum.data.gender === 'F' && !child.rels.mother) child.rels.mother = datum.id;
       if (datum.data.gender === 'M' && !child.rels.father) child.rels.father = datum.id;
+    })
+
+    r.children = r.children.filter(ch_id => {
+      const child = data.find(d => d.id === ch_id)
+      if (datum.data.gender === 'F' && child.rels.mother && child.rels.mother !== datum.id) return false
+      else if (datum.data.gender === 'M' && child.rels.father && child.rels.father !== datum.id) return false
+      else return true
     })
   })
 
