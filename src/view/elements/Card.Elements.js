@@ -4,8 +4,7 @@ export function CardBody({d,card_dim,card_display}) {
       <rect width="${card_dim.w}" height="${card_dim.h}" class="card-body-rect" />
       <g transform="translate(${card_dim.text_x}, ${card_dim.text_y})">
         <text clip-path="url(#card_text_clip)">
-          <tspan x="${0}" dy="${14}">${card_display[0](d.data)}</tspan>
-          <tspan x="${0}" dy="${14}" font-size="10">${card_display[1](d.data)}</tspan>
+          ${Array.isArray(card_display) ? card_display.map(cd => `<tspan x="${0}" dy="${14}">${cd(d.data)}</tspan>`).join('\n') : card_display(d.data)}
         </text>
         <rect width="${card_dim.w-card_dim.text_x-10}" height="${card_dim.h-20}" style="mask: url(#fade)" class="text-overflow-mask" /> 
       </g>
