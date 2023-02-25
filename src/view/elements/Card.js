@@ -15,7 +15,7 @@ export function Card(props) {
   const store = props.store;
   setupSvgDefs()
 
-  return function ({node, d}) {
+  return function (d) {
     const el = document.createElementNS("http://www.w3.org/2000/svg", 'g'),
       gender_class = d.data.data.gender === 'M' ? 'card-male' : d.data.data.gender === 'F' ? 'card-female' : 'card-genderless',
       card_dim = props.card_dim,
@@ -49,7 +49,7 @@ export function Card(props) {
     `)
     setupListeners(el, d, store);
 
-    return el
+    this.appendChild(el)
   }
 
   function setupListeners(el, d, store) {
