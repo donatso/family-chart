@@ -2,12 +2,19 @@ export function CardBody({d,card_dim,card_display}) {
   return {template: (`
     <g class="card-body">
       <rect width="${card_dim.w}" height="${card_dim.h}" class="card-body-rect" />
-      <g transform="translate(${card_dim.text_x}, ${card_dim.text_y})">
-        <text clip-path="url(#card_text_clip)">
-          ${Array.isArray(card_display) ? card_display.map(cd => `<tspan x="${0}" dy="${14}">${cd(d.data)}</tspan>`).join('\n') : card_display(d.data)}
-        </text>
-        <rect width="${card_dim.w-card_dim.text_x-10}" height="${card_dim.h-20}" style="mask: url(#fade)" class="text-overflow-mask" /> 
-      </g>
+      ${CardText({d,card_dim,card_display}).template}
+    </g>
+  `)
+  }
+}
+
+export function CardText({d,card_dim,card_display}) {
+  return {template: (`
+    <g transform="translate(${card_dim.text_x}, ${card_dim.text_y})">
+      <text clip-path="url(#card_text_clip)">
+        ${Array.isArray(card_display) ? card_display.map(cd => `<tspan x="${0}" dy="${14}">${cd(d.data)}</tspan>`).join('\n') : card_display(d.data)}
+      </text>
+      <rect width="${card_dim.w-card_dim.text_x-10}" height="${card_dim.h-20}" style="mask: url(#fade)" class="text-overflow-mask" /> 
     </g>
   `)
   }
@@ -139,7 +146,7 @@ export function LinkBreakIconWrapper({d,card_dim}) {
       g+=LinkBreakIcon({x:d.sx - d.x + card_dim.w/2 +24.4,y: (d.x !== d.sx ? card_dim.h/2 : card_dim.h)+1, rt: 135, closed}).template
     }
   }
-  return g
+  return {template: g}
 }
 
 export function CardImage({d, image, card_dim, maleIcon, femaleIcon}) {
@@ -166,4 +173,12 @@ export function CardImage({d, image, card_dim, maleIcon, femaleIcon}) {
       </g>
     `)
   }
+}
+
+export function appendTemplate(template, parent, is_first) {
+  const g = document.createElementNS("http://www.w3.org/2000/svg", 'g')
+  g.innerHTML = template
+
+  if (is_first) parent.insertBefore(g, parent.firstChild)
+  else parent.appendChild(g)
 }
