@@ -111,7 +111,7 @@ export default function View(tree, {store, data_stash, cont, datum, card_dim, ca
           view.remove();
           addNewPerson({data_stash, datum: new_datum})
           handleRelsOfNewDatum({datum: new_datum, data_stash, rel_datum, rel_type})
-          store.update.tree();
+          store.updateTree();
         }
       cardEditForm({datum: new_datum, rel_datum, rel_type, postSubmit, store})
       return true

@@ -27,13 +27,13 @@ import view from "../../src/view/view.js"
       card_dim,
       card_display,
       mini_tree: true,
-      link_break: false,
       cardEditForm,
       addRelative: f3.handlers.AddRelative({store, cont, card_dim, cardEditForm, labels: {mother: 'Add mother'}}),
     }),
+
     edit = Edit('#edit_cont', card_edit),
     display = Display('#display_cont', store, card_display),
-    reactiveTextArea = ReactiveTextarea(data => {store.update.data(data); store.update.tree()}, "#textarea", "#update_btn"),
+    reactiveTextArea = ReactiveTextarea(data => {store.update.data(data); store.updateTree()}, "#textarea", "#update_btn"),
     reactiveVanila = ReactiveVanila( "#ReactiveVanila"),
     reactiveVue = ReactiveVue( "#ReactiveVue"),
     reactiveReact = ReactiveReact( "#ReactiveReact"),
@@ -47,7 +47,7 @@ import view from "../../src/view/view.js"
 
   fetch('./elements/family-chart.css').then(r => r.text()).then(text => document.querySelector('#family-chart-css').innerText = text)
   store.setOnUpdate(onUpdate)
-  store.update.tree({initial: true})
+  store.updateTree({initial: true})
 
   function cardEditForm(props) {
     const postSubmit = props.postSubmit;

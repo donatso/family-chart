@@ -22,7 +22,7 @@ export default function Display(cont_selector, store, card_display) {
       cont.querySelector("input").addEventListener("input", function () {
         card_display[i] = labelCreator(this.value)
         clearTimeout(timeout)
-        timeout = setTimeout(store.update.tree, 300)
+        timeout = setTimeout(store.updateTree, 300)
       })
 
       inputs.appendChild(cont)

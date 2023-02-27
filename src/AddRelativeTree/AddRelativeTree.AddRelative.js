@@ -7,8 +7,8 @@ export function AddRelative({store, cont, card_dim, cardEditForm, labels}) {
 
     if (!scale && window.innerWidth < 650) scale = window.innerWidth / 650
     toggleAllRels(store.getTree().data, false)
-    store.update.mainId(d.data.id);
-    store.update.tree({tree_position: 'main_to_middle', transition_time, scale})
+    store.updateMainId(d.data.id);
+    store.updateTree({tree_position: 'main_to_middle', transition_time, scale})
     const props = {
       store,
       data_stash: store.getData(),

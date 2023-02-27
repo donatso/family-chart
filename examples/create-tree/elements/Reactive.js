@@ -40,7 +40,7 @@ function createTreeJs({data, card_display}) {
   
     view.setCard(Card)
     store.setOnUpdate(props => view.update(props || {}))
-    store.update.tree({initial: true})
+    store.updateTree({initial: true})
     
     function data() {
       return ${data}

@@ -1,9 +1,11 @@
 import d3 from "../d3.js"
 import {sortChildrenWithSpouses} from "./CalculateTree.handlers.js"
 import {createNewPerson} from "../handlers/newPerson.js"
+import {isAllRelativeDisplayed} from "../handlers/general.js"
 
-export default function CalculateTree({data_stash, main_id=null, is_vertical=true, node_separation=250, level_separation=150}) {
-  data_stash = createRelsToAdd(data_stash)
+export default function CalculateTree({data, main_id=null, node_separation=250, level_separation=150}) {
+  const is_vertical = true;
+  const data_stash = createRelsToAdd(data)
   sortChildrenWithSpouses(data_stash)
   const main = main_id !== null ? data_stash.find(d => d.id === main_id) : data_stash[0],
     tree_children = calculateTreePositions(main, 'children', false),
@@ -15,6 +17,7 @@ export default function CalculateTree({data_stash, main_id=null, is_vertical=tru
   setupChildrenAndParents({tree})
   setupSpouses({tree, node_separation})
   nodePositioning({tree, is_vertical})
+  tree.forEach(d => d.all_rels_displayed = isAllRelativeDisplayed(d, tree))
 
   const dim = calculateTreeDim(tree, node_separation, level_separation, is_vertical)
 

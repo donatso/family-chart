@@ -23,9 +23,13 @@ export default CardElements
 function miniTree(d, props) {
   if (d.data.to_add) return
   const card_dim = props.card_dim;
-  if (isAllRelativeDisplayed(d, props.tree.data)) return
+  if (d.all_rels_displayed) return
   const g = d3.create('svg:g').html(MiniTree({d,card_dim}).template)
-  g.on("click", (e) => {e.stopPropagation();cardChangeMain(props.store, {d})})
+  g.on("click", function (e) {
+    e.stopPropagation();
+    if (props.onMiniTreeClick) props.onMiniTreeClick.call(this, e, d)
+    else cardChangeMain(props.store, {d})
+  })
   return g.node()
 }
 
@@ -44,7 +48,11 @@ function cardBody(d, props) {
   let g;
   if (!d.data.to_add) {
     g = d3.create('svg:g').html(CardBody({d, card_dim, card_display: props.card_display}).template)
-    g.on("click", (e) => {e.stopPropagation();cardChangeMain(props.store, {d})})
+    g.on("click", function (e) {
+      e.stopPropagation();
+      if (props.onCardClick) props.onCardClick.call(this, e, d)
+      else cardChangeMain(props.store, {d})
+    })
   } else {
     g = d3.create('svg:g').html(CardBodyAddNew({d, card_dim, card_add: props.cardEditForm, label: unknown_lbl}).template)
     g.on("click", (e) => {e.stopPropagation();cardEdit(props.store, {d, cardEditForm: props.cardEditForm})})

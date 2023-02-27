@@ -19,5 +19,5 @@ fetch("./data.json").then(r => r.json()).then(data => {
     })
 
   store.setOnUpdate(props => view(store.getTree(), svg, Card, props || {}))
-  store.update.tree({initial: true})
+  store.updateTree({initial: true})
 })

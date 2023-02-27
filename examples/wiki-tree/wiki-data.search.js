@@ -21,8 +21,8 @@ export function setupWikiSearch(store, cont) {
     return getFamilyTreeFromWikidata(wiki_stash, wiki_id)
       .then(d => {
         wiki_stash = d.wiki_stash.slice(0, 500);
-        store.update.mainId(d.data.find(d => d.id === wiki_id).id);
-        store.update.data(d.data);store.update.tree({initial: true})
+        store.updateMainId(d.data.find(d => d.id === wiki_id).id);
+        store.updateData(d.data);store.updateTree({initial: true})
       })
       .finally(() => loader.remove())
   }
