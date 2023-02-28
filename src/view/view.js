@@ -1,12 +1,14 @@
 import {mainToMiddle, treeFit} from "./view.handlers.js"
 import updateLinks from "./view.links.js"
 import updateCards from "./view.cards.js"
+import updateCardsHtml from "./view.cardsHtml.js"
 
 export default function (tree, svg, Card, props={}) {
 
   props.initial = props.hasOwnProperty('initial') ? props.initial : !d3.select(svg).select('.card_cont').node()
   props.transition_time = props.hasOwnProperty('transition_time') ? props.transition_time : 2000;
-  updateCards(svg, tree, Card, props);
+  if (props.cardHtml) updateCardsHtml(props.cardHtml, tree, Card, props);
+  else updateCards(svg, tree, Card, props);
   updateLinks(svg, tree, props);
 
   const tree_position = props.tree_position || 'fit';
