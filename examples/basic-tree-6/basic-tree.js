@@ -19,8 +19,8 @@ fetch("./data.json").then(r => r.json()).then(data => {
   function onZoom(e) {
     const t = e.transform
 
-    view_el.style('transform', `scale(${t.k}) translate(${t.x}px, ${t.y}px)`)
-    cardHtml.select('.cards_view').style('transform', `scale(${t.k}) translate(${t.x}px, ${t.y}px)`)
+    view_el.style('transform', `translate(${t.x}px, ${t.y}px) scale(${t.k}) `)
+    cardHtml.select('.cards_view').style('transform', `translate(${t.x}px, ${t.y}px) scale(${t.k}) `)
   }
 
   updateTree({initial: true})
