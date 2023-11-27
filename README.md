@@ -115,8 +115,6 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Donat Soric - [@linkedin](https://linkedin.com/in/donat-sorić-342a92161) - soricdonat@gmail.com
-
 Project Link: [https://github.com/donatso/family-chart](https://github.com/donatso/family-chart)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
