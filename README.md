@@ -85,7 +85,7 @@ This is an ongoing project and any suggestion or request will be appreciated :)
 
 ### [Static](https://codesandbox.io/s/family-chart-static-zqzck?file=/FamilyChart.js)
 
-### [React](https://codesandbox.io/s/family-chart-react-eobxc?file=/src/FamilyChart.js)
+### [React](https://codesandbox.io/p/sandbox/family-chart-react-xsl2f3?file=%2Fsrc%2FFamilyChart.js)
 
 ### [Vue](https://codesandbox.io/s/family-chart-vue-bsrv9?file=/src/components/FamilyChart.vue)
 
