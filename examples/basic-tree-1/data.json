@@ -6,7 +6,7 @@
       "ln": "",
       "desc": "ancient Greek philosopher",
       "label": "Aristotle",
-      "image": "https://upload.wikimedia.org/wikipedia/commons/a/ae/Aristotle_Altemps_Inv8575.jpg",
+      "avatar": "https://upload.wikimedia.org/wikipedia/commons/a/ae/Aristotle_Altemps_Inv8575.jpg",
       "gender": "M"
     },
     "rels": {
@@ -29,7 +29,7 @@
       "ln": "",
       "desc": "Greek biologist and embryologist",
       "label": "Pythias",
-      "image": null,
+      "avatar": null,
       "gender": "F"
     },
     "rels": {
@@ -49,7 +49,7 @@
       "ln": "",
       "desc": "Ancient Greek philosopher, son of Aristotle",
       "label": "Nicomachus",
-      "image": null,
+      "avatar": null,
       "gender": "M"
     },
     "rels": {
@@ -67,7 +67,7 @@
       "ln": "",
       "desc": "father of Aristotle",
       "label": "Nicomachus",
-      "image": null,
+      "avatar": null,
       "gender": "M"
     },
     "rels": {
@@ -88,7 +88,7 @@
       "ln": "",
       "desc": "Aristotle's lover",
       "label": "Herpyllis",
-      "image": null,
+      "avatar": null,
       "gender": "F"
     },
     "rels": {
@@ -108,7 +108,7 @@
       "ln": "",
       "desc": "Aristotle's father in law",
       "label": "Hermias of Atarneus",
-      "image": null,
+      "avatar": null,
       "gender": "M"
     },
     "rels": {
@@ -128,7 +128,7 @@
       "ln": "",
       "desc": "sister of Aristotle",
       "label": "Arimneste",
-      "image": null,
+      "avatar": null,
       "gender": "F"
     },
     "rels": {
