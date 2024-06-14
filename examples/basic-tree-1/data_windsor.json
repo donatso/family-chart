@@ -62,8 +62,7 @@
     "rels": {
       "father": "Q2",
       "mother": "Q1",
-      "spouses": ["Q11", "Q12"],
-      "children": ["Q23", "Q24"]
+      "spouses": ["Q11", "Q12"]
     },
     "main": false
   },
@@ -182,8 +181,7 @@
       "gender": "M"
     },
     "rels": {
-      "spouses": ["Q4"],
-      "children": ["Q23", "Q24"]
+      "spouses": ["Q4"]
     },
     "main": false
   },
