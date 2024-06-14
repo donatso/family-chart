@@ -10,7 +10,7 @@ import {Form} from "../../src/view/elements/Form.js"
 
 (async () => {
   const cont = document.querySelector("#FamilyChart"),
-    card_dim = {w:220,h:70,text_x:75,text_y:15,img_w:60,img_h:60,img_x:5,img_y:5},
+    card_dim = {w:220,h:80,text_x:60,text_y:50,img_w:60,img_h:60},
     card_display = cardDisplay(),
     card_edit = cardEditParams(),
     store = f3.createStore({

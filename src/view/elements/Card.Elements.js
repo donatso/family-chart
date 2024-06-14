@@ -1,41 +1,51 @@
-export function CardBody({d,card_dim,card_display}) {
-  return {template: (`
+export function CardBody({d, card_dim, card_display}) {
+    const w = card_dim.w
+    const h = card_dim.h
+
+    return {
+        template: (`
     <g class="card-body">
-      <rect width="${card_dim.w}" height="${card_dim.h}" class="card-body-rect" />
-      <g transform="translate(${card_dim.text_x}, ${card_dim.text_y})">
-        <text clip-path="url(#card_text_clip)">
-          <tspan x="${0}" dy="${14}">${card_display[0](d.data)}</tspan>
-          <tspan x="${0}" dy="${14}" font-size="10">${card_display[1](d.data)}</tspan>
+      <circle cx="${card_dim.img_w / 2}" cy="${card_dim.img_h / 4}"" r="${(card_dim.img_w / 2)+5}" class="card-body-rect"/>
+      <rect width="${w}" height="${h}" rx="5" class="card-body-rect" />
+      <g transform="translate(${card_dim.img_w + 5}, ${(h / 2)})">
+        <text text-anchor="start">
+          <tspan x="0" dy="0" onClick="window.open('/user/${d.data.id}')" class="clickable-text">${card_display[0](d.data)}</tspan>
+          <tspan x="0" dy="14" font-size="10">${card_display[1](d.data)}</tspan>
         </text>
-        <rect width="${card_dim.w-card_dim.text_x-10}" height="${card_dim.h-20}" style="mask: url(#fade)" class="text-overflow-mask" /> 
       </g>
     </g>
   `)
-  }
+    }
 }
 
-export function CardBodyAddNew({d,card_dim,card_add,label}) {
-  return {template: (`
+export function CardBodyAddNew({d, card_dim, card_add, label}) {
+    const w = card_dim.w
+    const h = card_dim.h
+
+    return {
+        template: (`
     <g class="card-body ${card_add ? 'card_add' : 'card-unknown'}">
-      <rect class="card-body-rect" width="${card_dim.w}" height="${card_dim.h}" fill="rgb(59, 85, 96)" />
-      <text transform="translate(${card_dim.w/2}, ${card_dim.h/2})" text-anchor="middle" fill="#fff">
+      <rect class="card-body-rect" width="${w}" height="${h}" rx="5" fill="rgb(59, 85, 96)" />
+      <text transform="translate(${w / 2}, ${h / 2})" text-anchor="middle" fill="#fff">
         <tspan font-size="18" dy="${8}">${label}</tspan>
       </text>
     </g>
   `)
-  }
+    }
 }
 
-export function CardBodyOutline({d,card_dim, is_new}) {
-  return {template: (`
+export function CardBodyOutline({d, card_dim, is_new}) {
+    return {
+        template: (`
     <rect width="${card_dim.w}" height="${card_dim.h}" rx="4" ry="4" class="card-outline ${(d.data.main && !is_new) ? 'card-main-outline' : ''} ${is_new ? 'card-new-outline' : ''}" />
   `)
-  }
+    }
 }
 
-export function PencilIcon({d,card_dim,x,y}) {
-  return ({template: (`
-    <g transform="translate(${x || card_dim.w-20},${y || card_dim.h-20})scale(.6)" style="cursor: pointer" class="card_edit pencil_icon">
+export function PencilIcon({d, card_dim, x, y}) {
+    return ({
+        template: (`
+    <g transform="translate(${x || card_dim.w - 20},${y || card_dim.h - 20})scale(.6)" style="cursor: pointer" class="card_edit pencil_icon">
       <circle fill="rgba(0,0,0,0)" r="17" cx="8.5" cy="8.5" />
       <path fill="currentColor" transform="translate(-1.5, -1.5)"
          d="M19.082,2.123L17.749,0.79c-1.052-1.052-2.766-1.054-3.819,0L1.925,12.794c-0.06,0.06-0.104,0.135-0.127,0.216
@@ -44,12 +54,14 @@ export function PencilIcon({d,card_dim,x,y}) {
           l3.738,3.739l-9.428,9.428L3.076,13.057z M2.566,13.961l3.345,3.344l-4.683,1.339L2.566,13.961z M18.375,5.235L16.95,6.66
           l-3.738-3.739l1.425-1.425c0.664-0.663,1.741-0.664,2.405,0l1.333,1.333C19.038,3.493,19.038,4.572,18.375,5.235z"/>
     </g>
-  `)})
+  `)
+    })
 }
 
-export function HideIcon({d,card_dim}) {
-  return ({template: (`
-    <g transform="translate(${card_dim.w-50},${card_dim.h-20})scale(.035)" style="cursor: pointer" class="card_hide_rels hide_rels_icon">
+export function HideIcon({d, card_dim}) {
+    return ({
+        template: (`
+    <g transform="translate(${card_dim.w - 50},${card_dim.h - 20})scale(.035)" style="cursor: pointer" class="card_hide_rels hide_rels_icon">
       <circle fill="rgba(0,0,0,0)" r="256" cx="256" cy="256" />
       <g fill="currentColor">
         <path d="m34,256l26.2,26.2c108,108 283.7,108 391.7,0l26.1-26.2-26.2-26.2c-108-108-283.7-108-391.7,0l-26.1,
@@ -59,14 +71,16 @@ export function HideIcon({d,card_dim}) {
           164c-50.5,0-91.5-41.1-91.5-91.5 0-50.5 41.1-91.5 91.5-91.5s91.5,41.1 91.5,91.5c0,50.5-41,91.5-91.5,91.5z"/>
       </g>
     </g>
-  `)})
+  `)
+    })
 }
 
-export function MiniTree({d,card_dim}) {
-  return ({template: (`
+export function MiniTree({d, card_dim}) {
+    return ({
+        template: (`
     <g class="card_family_tree" style="cursor: pointer">
       <rect x="-31" y="-25" width="72" height="15" fill="rgba(0,0,0,0)"></rect>
-      <g transform="translate(${card_dim.w*.8},6)scale(.9)">
+      <g transform="translate(${card_dim.w * .8},6)scale(.9)">
         <rect x="-31" y="-25" width="72" height="15" fill="rgba(0,0,0,0)"></rect>
         <line y2="-17.5" stroke="#fff" />
         <line x1="-20" x2="20" y1="-17.5" y2="-17.5" stroke="#fff" />
@@ -74,13 +88,15 @@ export function MiniTree({d,card_dim}) {
         <rect x="6" y="-25" width="25" height="15" rx="5" ry="5" class="card-female" />
       </g>
     </g>
-  `)})
+  `)
+    })
 }
 
-export function PlusIcon({d,card_dim,x,y}) {
-  return ({template: (`
+export function PlusIcon({d, card_dim, x, y}) {
+    return ({
+        template: (`
     <g class="card_add_relative">
-      <g transform="translate(${x || card_dim.w/2},${y || card_dim.h})scale(.13)">
+      <g transform="translate(${x || card_dim.w / 2},${y || card_dim.h})scale(.13)">
         <circle r="80" cx="40" cy="40" fill="rgba(0,0,0,0)" />
         <g transform="translate(-10, -8)">
           <line
@@ -94,18 +110,20 @@ export function PlusIcon({d,card_dim,x,y}) {
         </g>
       </g>
     </g>
-  `)})
+  `)
+    })
 }
 
-export function LinkBreakIcon({x,y,rt,closed}) {
-  return ({template: (`
+export function LinkBreakIcon({x, y, rt, closed}) {
+    return ({
+        template: (`
     <g style="
           transform: translate(-12.2px, -.5px);
           cursor: pointer;
         " 
         fill="currentColor" class="card_break_link${closed ? ' closed' : ''}"
       >
-      <g style="transform: translate(${x}px,${y}px)scale(.02)rotate(${rt+'deg'})">
+      <g style="transform: translate(${x}px,${y}px)scale(.02)rotate(${rt + 'deg'})">
         <rect width="1000" height="700" y="150" style="opacity: 0" />
         <g class="link_upper">
           <g>
@@ -124,47 +142,60 @@ export function LinkBreakIcon({x,y,rt,closed}) {
         </g>
       </g>
     </g>
-  `)})
+  `)
+    })
 }
 
-export function LinkBreakIconWrapper({d,card_dim}) {
-  let g = "",
-    r = d.data.rels, _r = d.data._rels || {},
-    closed = d.data.hide_rels,
-    areParents = r => r.father || r.mother,
-    areChildren = r => r.children && r.children.length > 0
-  if ((d.is_ancestry || d.data.main) && (areParents(r) || areParents(_r))) {g+=LinkBreakIcon({x:card_dim.w/2,y:0, rt: -45, closed}).template}
-  if (!d.is_ancestry && d.added) {
-    const sp = d.spouse, sp_r = sp.data.rels, _sp_r = sp.data._rels || {};
-    if ((areChildren(r) || areChildren(_r)) && (areChildren(sp_r) || areChildren(_sp_r))) {
-      g+=LinkBreakIcon({x:d.sx - d.x + card_dim.w/2 +24.4,y: (d.x !== d.sx ? card_dim.h/2 : card_dim.h)+1, rt: 135, closed}).template
+export function LinkBreakIconWrapper({d, card_dim}) {
+    let g = "",
+        r = d.data.rels, _r = d.data._rels || {},
+        closed = d.data.hide_rels,
+        areParents = r => r.father || r.mother,
+        areChildren = r => r.children && r.children.length > 0
+    if ((d.is_ancestry || d.data.main) && (areParents(r) || areParents(_r))) {
+        g += LinkBreakIcon({x: card_dim.w / 2, y: 0, rt: -45, closed}).template
     }
-  }
-  return g
+    if (!d.is_ancestry && d.added) {
+        const sp = d.spouse, sp_r = sp.data.rels, _sp_r = sp.data._rels || {};
+        if ((areChildren(r) || areChildren(_r)) && (areChildren(sp_r) || areChildren(_sp_r))) {
+            g += LinkBreakIcon({
+                x: d.sx - d.x + card_dim.w / 2 + 24.4,
+                y: (d.x !== d.sx ? card_dim.h / 2 : card_dim.h) + 1,
+                rt: 135,
+                closed
+            }).template
+        }
+    }
+    return g
 }
 
 export function CardImage({d, image, card_dim, maleIcon, femaleIcon}) {
-  return ({template: (`
-    <g style="transform: translate(${card_dim.img_x}px,${card_dim.img_y}px);" class="card_image" clip-path="url(#card_image_clip)">
-      ${image 
-        ? `<image href="${image}" height="${card_dim.img_h}" width="${card_dim.img_w}" preserveAspectRatio="xMidYMin slice" />`
-        : (d.data.data.gender === "F" && !!femaleIcon) ? femaleIcon({card_dim}) 
-        : (d.data.data.gender === "M" && !!maleIcon) ? maleIcon({card_dim}) 
-        : GenderlessIcon()
-      }      
-    </g>
-  `)})
+    const w = card_dim.w
+    const h = card_dim.h
 
-  function GenderlessIcon() {
-    return (`
+    return ({
+        template: (`
+    <g onclick="window.open('/user/${d.data.id}')" transform="translate(0, ${-card_dim.img_h/4})" class="card_image clickable-image" clip-path="url(#card_image_clip)">
+      ${image
+            ? `<image href="${image}" clippath="url(#card_image_clip)" height="${card_dim.img_h}" width="${card_dim.img_w}" preserveAspectRatio="xMidYMin slice" style="border-radius: 50%;"/>`
+            : (d.data.data.gender === "F" && !!femaleIcon) ? femaleIcon({card_dim})
+                : (d.data.data.gender === "M" && !!maleIcon) ? maleIcon({card_dim})
+                    : GenderlessIcon()
+        }      
+    </g>
+  `)
+    })
+
+    function GenderlessIcon() {
+        return (`
       <g class="genderless-icon">
         <rect height="${card_dim.img_h}" width="${card_dim.img_w}" fill="rgb(59, 85, 96)" />
-        <g transform="scale(${card_dim.img_w*0.001616})">
+        <g transform="scale(${card_dim.img_w * 0.001616})">
          <path transform="translate(50,40)" fill="lightgrey" d="M256 288c79.5 0 144-64.5 144-144S335.5 0 256 0 112 
             64.5 112 144s64.5 144 144 144zm128 32h-55.1c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16H128C57.3 320 0 377.3 
             0 448v16c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48v-16c0-70.7-57.3-128-128-128z" />
         </g>
       </g>
     `)
-  }
+    }
 }

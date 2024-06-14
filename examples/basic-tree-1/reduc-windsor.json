@@ -1,0 +1,196 @@
+[
+  {
+    "id": "Q1",
+    "data": {
+      "fn": "Elizabeth",
+      "ln": "Windsor",
+      "desc": "Queen of the United Kingdom",
+      "label": "Queen Elizabeth II",
+      "avatar": "https://example.com/queen_elizabeth.jpg",
+      "gender": "F"
+    },
+    "rels": {
+      "spouses": ["Q2"],
+      "children": ["Q3", "Q4", "Q5", "Q6"]
+    },
+    "main": true
+  },
+  {
+    "id": "Q2",
+    "data": {
+      "fn": "Philip",
+      "ln": "Mountbatten",
+      "desc": "Duke of Edinburgh",
+      "label": "Prince Philip",
+      "avatar": "https://example.com/prince_philip.jpg",
+      "gender": "M"
+    },
+    "rels": {
+      "spouses": ["Q1"],
+      "children": ["Q3", "Q4", "Q5", "Q6"]
+    },
+    "main": false
+  },
+  {
+    "id": "Q3",
+    "data": {
+      "fn": "Charles",
+      "ln": "Windsor",
+      "desc": "Prince of Wales",
+      "label": "Prince Charles",
+      "avatar": "https://example.com/prince_charles.jpg",
+      "gender": "M"
+    },
+    "rels": {
+      "father": "Q2",
+      "mother": "Q1",
+      "spouses": ["Q7", "Q8"],
+      "children": ["Q9", "Q10"]
+    },
+    "main": false
+  },
+  {
+    "id": "Q4",
+    "data": {
+      "fn": "Anne",
+      "ln": "Windsor",
+      "desc": "Princess Royal",
+      "label": "Princess Anne",
+      "avatar": "https://example.com/princess_anne.jpg",
+      "gender": "F"
+    },
+    "rels": {
+      "father": "Q2",
+      "mother": "Q1",
+      "spouses": ["Q11", "Q12"]
+    },
+    "main": false
+  },
+  {
+    "id": "Q5",
+    "data": {
+      "fn": "Andrew",
+      "ln": "Windsor",
+      "desc": "Duke of York",
+      "label": "Prince Andrew",
+      "avatar": "https://example.com/prince_andrew.jpg",
+      "gender": "M"
+    },
+    "rels": {
+      "father": "Q2",
+      "mother": "Q1"
+    },
+    "main": false
+  },
+  {
+    "id": "Q6",
+    "data": {
+      "fn": "Edward",
+      "ln": "Windsor",
+      "desc": "Earl of Wessex",
+      "label": "Prince Edward",
+      "avatar": "https://example.com/prince_edward.jpg",
+      "gender": "M"
+    },
+    "rels": {
+      "father": "Q2",
+      "mother": "Q1"
+    },
+    "main": false
+  },
+  {
+    "id": "Q7",
+    "data": {
+      "fn": "Diana",
+      "ln": "Spencer",
+      "desc": "Princess of Wales",
+      "label": "Princess Diana",
+      "avatar": "https://example.com/princess_diana.jpg",
+      "gender": "F"
+    },
+    "rels": {
+      "spouses": ["Q3"],
+      "children": ["Q9", "Q10"]
+    },
+    "main": false
+  },
+  {
+    "id": "Q8",
+    "data": {
+      "fn": "Camilla",
+      "ln": "Parker Bowles",
+      "desc": "Duchess of Cornwall",
+      "label": "Camilla",
+      "avatar": "https://example.com/camilla.jpg",
+      "gender": "F"
+    },
+    "rels": {
+      "spouses": ["Q3"],
+      "children": []
+    },
+    "main": false
+  },
+  {
+    "id": "Q9",
+    "data": {
+      "fn": "William",
+      "ln": "Windsor",
+      "desc": "Duke of Cambridge",
+      "label": "Prince William",
+      "avatar": "https://example.com/prince_william.jpg",
+      "gender": "M"
+    },
+    "rels": {
+      "father": "Q3",
+      "mother": "Q7"
+    },
+    "main": false
+  },
+  {
+    "id": "Q10",
+    "data": {
+      "fn": "Harry",
+      "ln": "Windsor",
+      "desc": "Duke of Sussex",
+      "label": "Prince Harry",
+      "avatar": "https://example.com/prince_harry.jpg",
+      "gender": "M"
+    },
+    "rels": {
+      "father": "Q3",
+      "mother": "Q7"
+    },
+    "main": false
+  },
+  {
+    "id": "Q11",
+    "data": {
+      "fn": "Mark",
+      "ln": "Phillips",
+      "desc": "Captain Mark Phillips",
+      "label": "Mark Phillips",
+      "avatar": "https://example.com/mark_phillips.jpg",
+      "gender": "M"
+    },
+    "rels": {
+      "spouses": ["Q4"]
+    },
+    "main": false
+  },
+  {
+    "id": "Q12",
+    "data": {
+      "fn": "Timothy",
+      "ln": "Laurence",
+      "desc": "Vice Admiral Sir Timothy Laurence",
+      "label": "Timothy Laurence",
+      "avatar": "https://example.com/timothy_laurence.jpg",
+      "gender": "M"
+    },
+    "rels": {
+      "spouses": ["Q4"],
+      "children": []
+    },
+    "main": false
+  }
+]

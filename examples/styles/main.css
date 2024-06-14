@@ -103,3 +103,12 @@ g.card_add text {
   -webkit-transform: translateY(-8px) scale(0.8);
   transform: translateY(-8px) scale(0.8);
 }
+
+/* clickable text */
+.clickable-text, .clickable-image {
+  cursor: pointer;
+}
+
+.clickable-text:hover {
+  text-decoration: underline;
+}
