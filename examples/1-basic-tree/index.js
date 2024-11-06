@@ -1,6 +1,4 @@
 import f3 from '../../src/index.js'
-import createSvg from "../../src/view/view.svg.js"
-import view from "../../src/view/view.js"
 
 fetch("./data.json").then(r => r.json()).then(data => {
   const store = f3.createStore({
@@ -8,7 +6,7 @@ fetch("./data.json").then(r => r.json()).then(data => {
       node_separation: 250,
       level_separation: 150
     }),
-    svg = createSvg(document.querySelector("#FamilyChart")),
+    svg = f3.createSvg(document.querySelector("#FamilyChart")),
     Card = f3.elements.Card({
       store,
       svg,
@@ -18,6 +16,6 @@ fetch("./data.json").then(r => r.json()).then(data => {
       link_break: false
     })
 
-  store.setOnUpdate(props => view(store.getTree(), svg, Card, props || {}))
+  store.setOnUpdate(props => f3.view(store.getTree(), svg, Card, props || {}))
   store.updateTree({initial: true})
 })

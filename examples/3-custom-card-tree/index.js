@@ -1,9 +1,7 @@
-import CalculateTree from "../../src/CalculateTree/CalculateTree.js"
-import createSvg from "../../src/view/view.svg.js"
-import view from "../../src/view/view.js"
+import f3 from "../../src/index.js"
 
 fetch("./data.json").then(r => r.json()).then(data => {
-  const svg = createSvg(document.querySelector("#FamilyChart"))
+  const svg = f3.createSvg(document.querySelector("#FamilyChart"))
 
   let tree_data = null;
   let main_id = null;
@@ -11,14 +9,14 @@ fetch("./data.json").then(r => r.json()).then(data => {
   update()
 
   function update() {
-    tree_data = CalculateTree({
+    tree_data = f3.CalculateTree({
       data,
       node_separation: 250,
       level_separation: 150,
       main_id
     })
-    updateSvgHeading()
-    view(tree_data, svg, Card(onCardClick))
+    updateSvgHeading(svg, tree_data.data[0].data)
+    f3.view(tree_data, svg, Card(onCardClick))
   }
 
   function onCardClick(d) {
@@ -26,12 +24,6 @@ fetch("./data.json").then(r => r.json()).then(data => {
     console.log(d)
     main_id = d.data.id;
     update()
-  }
-
-  function updateSvgHeading() {
-    let svg_heading = d3.select(svg).select('.svg-heading')
-    if (!svg_heading.node()) svg_heading = d3.select(svg).append('text').attr('class', 'svg-heading').attr('transform', `translate(${[10, 22]})`).style('fill', '#fff')
-    svg_heading.text(`${tree_data.data[0].data.data['first name']} ${tree_data.data[0].data.data['last name']}`)
   }
 
 })
@@ -60,4 +52,10 @@ function Card(onClick) {
         .text(`${d.data.data['first name']} ${d.data.data['last name']}`)
     }
   }
+}
+
+function updateSvgHeading(svg, main_datum) {
+  let svg_heading = d3.select(svg).select('.svg-heading')
+  if (!svg_heading.node()) svg_heading = d3.select(svg).append('text').attr('class', 'svg-heading').attr('transform', `translate(${[10, 22]})`).style('fill', '#fff')
+  svg_heading.text(`${main_datum.data['first name']} ${main_datum.data['last name']}`)
 }

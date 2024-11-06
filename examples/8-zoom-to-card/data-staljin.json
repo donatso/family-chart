@@ -1,0 +1,1040 @@
+[
+  {
+    "id": "Q855",
+    "data": {
+      "fn": "Iosif",
+      "ln": "Stalin Jughashvili",
+      "desc": "Soviet politician, general secretary of the Communist Party of the Soviet Union and premier of the Soviet Union (1878–1953)",
+      "label": "Joseph Stalin",
+      "avatar": "https://upload.wikimedia.org/wikipedia/commons/7/72/JStalin_Secretary_general_CCCP_1942_flipped.jpg",
+      "gender": "M"
+    },
+    "rels": {
+      "father": "Q717406",
+      "mother": "Q241535",
+      "spouses": [
+        "Q254673",
+        "Q233999",
+        "Q105756153",
+        "99948b56-f9bc-450b-8906-fce57c9446fb"
+      ],
+      "children": [
+        "Q163816",
+        "Q459216",
+        "Q228584",
+        "Q108722703",
+        "Q105756206",
+        "Q3302174"
+      ]
+    },
+    "main": true
+  },
+  {
+    "id": "Q105756206",
+    "data": {
+      "fn": "",
+      "ln": "",
+      "desc": "illegitimate son of Joseph Stalin",
+      "label": "Alexander Davydov",
+      "avatar": null,
+      "gender": "M"
+    },
+    "rels": {
+      "father": "Q855",
+      "mother": "Q105756153",
+      "spouses": [],
+      "children": []
+    },
+    "main": false
+  },
+  {
+    "id": "Q108722703",
+    "data": {
+      "fn": "",
+      "ln": "",
+      "desc": "first child of Joseph Stalin and Lidia Pereprygina",
+      "label": "unnamed infant Jughashvili",
+      "avatar": null
+    },
+    "rels": {
+      "father": "Q855",
+      "mother": "Q105756153",
+      "spouses": [],
+      "children": []
+    },
+    "main": false
+  },
+  {
+    "id": "Q4416801",
+    "data": {
+      "fn": "Artyom",
+      "ln": "Sergeyev",
+      "desc": "Soviet general, adopted son of Stalin (1921-2008)",
+      "label": "Artem Sergeev",
+      "avatar": null,
+      "gender": "M"
+    },
+    "rels": {
+      "father": "Q1332918",
+      "spouses": [],
+      "children": [],
+      "mother": "6f22957e-6176-42fd-97de-e152f1ee3342"
+    },
+    "main": false
+  },
+  {
+    "id": "Q3302174",
+    "data": {
+      "fn": "Konstantin",
+      "ln": "no label",
+      "desc": "illegitimate son of Joseph Stalin",
+      "label": "Konstantin Kuzakov",
+      "avatar": null,
+      "gender": "M"
+    },
+    "rels": {
+      "father": "Q855",
+      "spouses": [
+        "e77cb3a5-5b80-476c-a6b4-816c8ada6f62"
+      ],
+      "children": [
+        "Q56230675"
+      ],
+      "mother": "99948b56-f9bc-450b-8906-fce57c9446fb"
+    },
+    "main": false
+  },
+  {
+    "id": "Q254673",
+    "data": {
+      "fn": "Ekaterina",
+      "ln": "Svanidze",
+      "desc": "first wife of Josef Stalin (1885-1907)",
+      "label": "Ekaterina Svanidze",
+      "avatar": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Ekaterina_Svanidze.jpg",
+      "gender": "F"
+    },
+    "rels": {
+      "father": "Q28038544",
+      "mother": "Q28038546",
+      "spouses": [
+        "Q855"
+      ],
+      "children": [
+        "Q163816"
+      ]
+    },
+    "main": false
+  },
+  {
+    "id": "Q241535",
+    "data": {
+      "fn": "Ekaterina Keke",
+      "ln": "Geladze",
+      "desc": "mother of Joseph Stalin",
+      "label": "Keke Geladze",
+      "avatar": "https://upload.wikimedia.org/wikipedia/commons/5/56/Yekaterina_Geladze.jpg",
+      "gender": "F"
+    },
+    "rels": {
+      "father": "Q56219116",
+      "mother": "Q56231163",
+      "spouses": [
+        "Q717406"
+      ],
+      "children": [
+        "Q108723194",
+        "Q108723531",
+        "Q855"
+      ]
+    },
+    "main": false
+  },
+  {
+    "id": "Q459216",
+    "data": {
+      "fn": "Vasily",
+      "ln": "Stalin",
+      "desc": "Soviet general and son of Joseph Stalin",
+      "label": "Vasily Dzhugashvili",
+      "avatar": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Vasily_Dzhugashvili.png",
+      "gender": "M"
+    },
+    "rels": {
+      "father": "Q855",
+      "mother": "Q233999",
+      "spouses": [
+        "fa9f54ad-2828-4e63-9f39-702a4d86ede8"
+      ],
+      "children": [
+        "Q4099484"
+      ]
+    },
+    "main": false
+  },
+  {
+    "id": "Q717406",
+    "data": {
+      "fn": "Vissarion",
+      "ln": "",
+      "desc": "father of Joseph Stalin",
+      "label": "Besarion Jughashvili",
+      "avatar": "https://upload.wikimedia.org/wikipedia/commons/a/af/Vissarion_Jughashvili.jpg",
+      "gender": "M"
+    },
+    "rels": {
+      "father": "Q56218448",
+      "mother": "Q107291873",
+      "spouses": [
+        "Q241535",
+        "f67b7b1a-0153-4fe3-a1da-36826012f3be"
+      ],
+      "children": [
+        "Q108723194",
+        "Q108723531",
+        "Q855",
+        "Q22344319"
+      ]
+    },
+    "main": false
+  },
+  {
+    "id": "Q163816",
+    "data": {
+      "fn": "Yakov",
+      "ln": "Jughashvili",
+      "desc": "first child of Josef Stalin",
+      "label": "Yakov Dzhugashvili",
+      "avatar": "https://upload.wikimedia.org/wikipedia/commons/1/17/%D0%94%D0%B6%D1%83%D0%B3%D0%B0%D1%88%D0%B2%D0%B8%D0%BB%D0%B8_%D0%AF%D0%BA%D0%BE%D0%B2_%D0%98%D0%BE%D1%81%D0%B8%D1%84%D0%BE%D0%B2%D0%B8%D1%87.jpg",
+      "gender": "M"
+    },
+    "rels": {
+      "father": "Q855",
+      "mother": "Q254673",
+      "spouses": [
+        "Q108724670",
+        "Q56230882",
+        "3a8980f1-0706-4427-b281-624749ed5116"
+      ],
+      "children": [
+        "Q108724582",
+        "Q1984422",
+        "Q4160519"
+      ]
+    },
+    "main": false
+  },
+  {
+    "id": "Q233999",
+    "data": {
+      "fn": "Nadezhda",
+      "ln": "",
+      "desc": "Second wife of Joseph Stalin",
+      "label": "Nadezhda Alliluyeva",
+      "avatar": "https://upload.wikimedia.org/wikipedia/commons/6/6e/05_stalina.JPG",
+      "gender": "F"
+    },
+    "rels": {
+      "father": "Q4062652",
+      "spouses": [
+        "Q855"
+      ],
+      "children": [
+        "Q228584",
+        "Q459216"
+      ],
+      "mother": "ae832b4d-5cfd-46b6-8245-182814ae20ae"
+    },
+    "main": false
+  },
+  {
+    "id": "Q105756153",
+    "data": {
+      "fn": "Lidiya",
+      "ln": "",
+      "desc": "mother of two of Joseph Stalin's illegitimate children",
+      "label": "Lidia Pereprygina",
+      "avatar": null,
+      "gender": "F"
+    },
+    "rels": {
+      "spouses": [
+        "Q855"
+      ],
+      "children": [
+        "Q108722703",
+        "Q105756206"
+      ]
+    },
+    "main": false
+  },
+  {
+    "id": "Q105756153",
+    "data": {
+      "fn": "Lidiya",
+      "ln": "",
+      "desc": "mother of two of Joseph Stalin's illegitimate children",
+      "label": "Lidia Pereprygina",
+      "avatar": null,
+      "gender": "F"
+    },
+    "rels": {
+      "spouses": [],
+      "children": [
+        "Q108722703",
+        "Q105756206"
+      ]
+    },
+    "main": false
+  },
+  {
+    "id": "Q228584",
+    "data": {
+      "fn": "Svetlana",
+      "ln": "",
+      "desc": "Joseph Stalin's daughter (1926–2011)",
+      "label": "Svetlana Alliluyeva",
+      "avatar": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Svetlana_Alliluyeva_1970.jpg",
+      "gender": "F"
+    },
+    "rels": {
+      "father": "Q855",
+      "mother": "Q233999",
+      "spouses": [
+        "Q4302955",
+        "Q4178491",
+        "Q6616173",
+        "Q4409943"
+      ],
+      "children": [
+        "Q57469252",
+        "Q98102305",
+        "Q4062650"
+      ]
+    },
+    "main": false
+  },
+  {
+    "id": "Q56230675",
+    "data": {
+      "fn": "",
+      "ln": "",
+      "desc": "no description",
+      "label": "Vladimir Kuzakov",
+      "avatar": null,
+      "gender": "M"
+    },
+    "rels": {
+      "father": "Q3302174",
+      "spouses": [],
+      "children": [],
+      "mother": "e77cb3a5-5b80-476c-a6b4-816c8ada6f62"
+    },
+    "main": false
+  },
+  {
+    "id": "Q28038544",
+    "data": {
+      "fn": "",
+      "ln": "",
+      "desc": "no description",
+      "label": "Svimon Svanidze",
+      "avatar": null,
+      "gender": "M"
+    },
+    "rels": {
+      "spouses": [
+        "Q28038546"
+      ],
+      "children": [
+        "Q254673"
+      ]
+    },
+    "main": false
+  },
+  {
+    "id": "Q28038546",
+    "data": {
+      "fn": "",
+      "ln": "",
+      "desc": "first mother-in-law of Joseph Stalin",
+      "label": "Sepora Dvali",
+      "avatar": null,
+      "gender": "F"
+    },
+    "rels": {
+      "spouses": [
+        "Q28038544"
+      ],
+      "children": [
+        "Q254673"
+      ]
+    },
+    "main": false
+  },
+  {
+    "id": "Q4099484",
+    "data": {
+      "fn": "Aleksandr",
+      "ln": "",
+      "desc": "Soviet theatre director",
+      "label": "Aleksandr Burdonsky",
+      "avatar": null,
+      "gender": "M"
+    },
+    "rels": {
+      "father": "Q459216",
+      "spouses": [],
+      "children": [],
+      "mother": "fa9f54ad-2828-4e63-9f39-702a4d86ede8"
+    },
+    "main": false
+  },
+  {
+    "id": "Q108723194",
+    "data": {
+      "fn": "Mikhail Mikheil",
+      "ln": "Jughashvili",
+      "desc": "eldest brother of Joseph Stalin",
+      "label": "Mikhail Jughashvili",
+      "avatar": null,
+      "gender": "M"
+    },
+    "rels": {
+      "father": "Q717406",
+      "mother": "Q241535",
+      "spouses": [],
+      "children": []
+    },
+    "main": false
+  },
+  {
+    "id": "Q56218448",
+    "data": {
+      "fn": "",
+      "ln": "",
+      "desc": "paternal grandfather of Stalin",
+      "label": "Vano Zazovich Dzhugashvili",
+      "avatar": null,
+      "gender": "M"
+    },
+    "rels": {
+      "spouses": [
+        "Q107291873"
+      ],
+      "children": [
+        "Q717406"
+      ]
+    },
+    "main": false
+  },
+  {
+    "id": "Q56219116",
+    "data": {
+      "fn": "",
+      "ln": "Geladze",
+      "desc": "maternal grandfather of Stalin",
+      "label": "Glakha Geladze",
+      "avatar": null,
+      "gender": "M"
+    },
+    "rels": {
+      "spouses": [
+        "Q56231163"
+      ],
+      "children": [
+        "Q241535"
+      ]
+    },
+    "main": false
+  },
+  {
+    "id": "Q56231163",
+    "data": {
+      "fn": "Melania",
+      "ln": "",
+      "desc": "adoptive maternal grandmother of Stalin",
+      "label": "Melania Homesurashvili",
+      "avatar": null,
+      "gender": "F"
+    },
+    "rels": {
+      "spouses": [
+        "Q56219116"
+      ],
+      "children": [
+        "Q241535"
+      ]
+    },
+    "main": false
+  },
+  {
+    "id": "Q1332918",
+    "data": {
+      "fn": "Fyodor",
+      "ln": "Sergeyev",
+      "desc": "Russian revolutionary, Soviet politician, agitator, and journalist (1883-1921)",
+      "label": "Fyodor Sergeyev",
+      "avatar": "https://upload.wikimedia.org/wikipedia/commons/b/b3/Fyodor_Sergeyev.JPG",
+      "gender": "M"
+    },
+    "rels": {
+      "spouses": [
+        "6f22957e-6176-42fd-97de-e152f1ee3342"
+      ],
+      "children": [
+        "Q4416801"
+      ]
+    },
+    "main": false
+  },
+  {
+    "id": "Q107291873",
+    "data": {
+      "fn": "",
+      "ln": "",
+      "desc": "paternal grandmother of Joseph Stalin",
+      "label": "Besarion Jughashvili's mother",
+      "avatar": null,
+      "gender": "F"
+    },
+    "rels": {
+      "spouses": [
+        "Q56218448"
+      ],
+      "children": [
+        "Q717406"
+      ]
+    },
+    "main": false
+  },
+  {
+    "id": "Q108724582",
+    "data": {
+      "fn": "",
+      "ln": "",
+      "desc": "granddaughter of Joseph Stalin",
+      "label": "Elena Yakovlevna Dzhugashvili",
+      "avatar": null,
+      "gender": "F"
+    },
+    "rels": {
+      "father": "Q163816",
+      "mother": "Q108724670",
+      "spouses": [],
+      "children": []
+    },
+    "main": false
+  },
+  {
+    "id": "Q108724670",
+    "data": {
+      "fn": "",
+      "ln": "",
+      "desc": "daughter-in-law of Joseph Stalin",
+      "label": "Zoya Gunina",
+      "avatar": null,
+      "gender": "F"
+    },
+    "rels": {
+      "spouses": [
+        "Q163816"
+      ],
+      "children": [
+        "Q108724582"
+      ]
+    },
+    "main": false
+  },
+  {
+    "id": "Q108723531",
+    "data": {
+      "fn": "Giorgi Georgiy",
+      "ln": "Jughashvili",
+      "desc": "older brother of Joseph Stalin",
+      "label": "Giorgi Jughashvili",
+      "avatar": null,
+      "gender": "M"
+    },
+    "rels": {
+      "father": "Q717406",
+      "mother": "Q241535",
+      "spouses": [],
+      "children": []
+    },
+    "main": false
+  },
+  {
+    "id": "Q108723531",
+    "data": {
+      "fn": "Giorgi Georgiy",
+      "ln": "Jughashvili",
+      "desc": "older brother of Joseph Stalin",
+      "label": "Giorgi Jughashvili",
+      "avatar": null,
+      "gender": "M"
+    },
+    "rels": {
+      "father": "Q717406",
+      "mother": "Q241535",
+      "spouses": [],
+      "children": []
+    },
+    "main": false
+  },
+  {
+    "id": "Q56230882",
+    "data": {
+      "fn": "Julia",
+      "ln": "",
+      "desc": "ballerina, wife of Yakov Dzhugashvili",
+      "label": "Yulia Meltzer",
+      "avatar": null,
+      "gender": "F"
+    },
+    "rels": {
+      "spouses": [
+        "Q163816"
+      ],
+      "children": [
+        "Q1984422"
+      ]
+    },
+    "main": false
+  },
+  {
+    "id": "Q22344319",
+    "data": {
+      "fn": "Iosif",
+      "ln": "",
+      "desc": "French author and double agent (1882-1975)",
+      "label": "Joseph Davrichachvili",
+      "avatar": null,
+      "gender": "M"
+    },
+    "rels": {
+      "father": "Q717406",
+      "spouses": [],
+      "children": [],
+      "mother": "f67b7b1a-0153-4fe3-a1da-36826012f3be"
+    },
+    "main": false
+  },
+  {
+    "id": "Q1984422",
+    "data": {
+      "fn": "Galina",
+      "ln": "",
+      "desc": "Russian translator (1938-2007)",
+      "label": "Galina Dzhugashvili",
+      "avatar": null,
+      "gender": "F"
+    },
+    "rels": {
+      "father": "Q163816",
+      "mother": "Q56230882",
+      "spouses": [],
+      "children": []
+    },
+    "main": false
+  },
+  {
+    "id": "Q108723194",
+    "data": {
+      "fn": "Mikhail Mikheil",
+      "ln": "Jughashvili",
+      "desc": "eldest brother of Joseph Stalin",
+      "label": "Mikhail Jughashvili",
+      "avatar": null,
+      "gender": "M"
+    },
+    "rels": {
+      "father": "Q717406",
+      "mother": "Q241535",
+      "spouses": [],
+      "children": []
+    },
+    "main": false
+  },
+  {
+    "id": "Q4160519",
+    "data": {
+      "fn": "Yevgeny",
+      "ln": "Jughashvili",
+      "desc": "Russian politician",
+      "label": "Yevgeny Dzhugashvili",
+      "avatar": null,
+      "gender": "M"
+    },
+    "rels": {
+      "father": "Q163816",
+      "spouses": [],
+      "children": [],
+      "mother": "3a8980f1-0706-4427-b281-624749ed5116"
+    },
+    "main": false
+  },
+  {
+    "id": "Q4062652",
+    "data": {
+      "fn": "Sergey",
+      "ln": "Alliluyev",
+      "desc": "(1866-1945)",
+      "label": "Sergey Alliluyev",
+      "avatar": null,
+      "gender": "M"
+    },
+    "rels": {
+      "spouses": [
+        "ae832b4d-5cfd-46b6-8245-182814ae20ae"
+      ],
+      "children": [
+        "Q233999"
+      ]
+    },
+    "main": false
+  },
+  {
+    "id": "Q4062650",
+    "data": {
+      "fn": "Iosif",
+      "ln": "Alliluyev",
+      "desc": "Russian cardiologist; grandson of Joseph Stalin (1945-2008)",
+      "label": "Joseph Alliluyev",
+      "avatar": null,
+      "gender": "M"
+    },
+    "rels": {
+      "father": "Q4302955",
+      "mother": "Q228584",
+      "spouses": [],
+      "children": []
+    },
+    "main": false
+  },
+  {
+    "id": "Q98102305",
+    "data": {
+      "fn": "Ekaterina",
+      "ln": "Zhdanov",
+      "desc": "Soviet/Russian volcanologist,Stalin's granddaughter",
+      "label": "Yekaterina Zhdanova",
+      "avatar": null,
+      "gender": "F"
+    },
+    "rels": {
+      "father": "Q4178491",
+      "mother": "Q228584",
+      "spouses": [],
+      "children": []
+    },
+    "main": false
+  },
+  {
+    "id": "Q163816",
+    "data": {
+      "fn": "Yakov",
+      "ln": "Jughashvili",
+      "desc": "first child of Josef Stalin",
+      "label": "Yakov Dzhugashvili",
+      "avatar": "https://upload.wikimedia.org/wikipedia/commons/1/17/%D0%94%D0%B6%D1%83%D0%B3%D0%B0%D1%88%D0%B2%D0%B8%D0%BB%D0%B8_%D0%AF%D0%BA%D0%BE%D0%B2_%D0%98%D0%BE%D1%81%D0%B8%D1%84%D0%BE%D0%B2%D0%B8%D1%87.jpg",
+      "gender": "M"
+    },
+    "rels": {
+      "father": "Q855",
+      "mother": "Q254673",
+      "spouses": [
+        "Q108724670",
+        "Q56230882"
+      ],
+      "children": [
+        "Q4160519",
+        "Q108724582",
+        "Q1984422"
+      ]
+    },
+    "main": false
+  },
+  {
+    "id": "Q4409943",
+    "data": {
+      "fn": "Ivan John Reed",
+      "ln": "Svanidze",
+      "desc": "Soviet academic, nephew and son-in-law of Joseph Stalin",
+      "label": "Ivan Svanidze",
+      "avatar": null,
+      "gender": "M"
+    },
+    "rels": {
+      "spouses": [
+        "Q228584"
+      ],
+      "children": []
+    },
+    "main": false
+  },
+  {
+    "id": "Q57469252",
+    "data": {
+      "fn": "Olga Chris",
+      "ln": "Evans Peters",
+      "desc": "American antique dealer and daughter of Svetlana Alliluyeva",
+      "label": "Chrese Evans",
+      "avatar": null,
+      "gender": "F"
+    },
+    "rels": {
+      "father": "Q6616173",
+      "mother": "Q228584",
+      "spouses": [],
+      "children": []
+    },
+    "main": false
+  },
+  {
+    "id": "Q6616173",
+    "data": {
+      "fn": "William",
+      "ln": "Peters",
+      "desc": "American architect",
+      "label": "William Wesley Peters",
+      "avatar": null,
+      "gender": "M"
+    },
+    "rels": {
+      "spouses": [
+        "Q228584"
+      ],
+      "children": [
+        "Q57469252"
+      ]
+    },
+    "main": false
+  },
+  {
+    "id": "Q228584",
+    "data": {
+      "fn": "Svetlana",
+      "ln": "",
+      "desc": "Joseph Stalin's daughter (1926–2011)",
+      "label": "Svetlana Alliluyeva",
+      "avatar": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Svetlana_Alliluyeva_1970.jpg",
+      "gender": "F"
+    },
+    "rels": {
+      "father": "Q855",
+      "mother": "Q233999",
+      "spouses": [
+        "Q4302955",
+        "Q4178491",
+        "Q6616173",
+        "Q4409943"
+      ],
+      "children": [
+        "Q57469252",
+        "Q98102305",
+        "Q4062650"
+      ]
+    },
+    "main": false
+  },
+  {
+    "id": "Q717406",
+    "data": {
+      "fn": "Vissarion",
+      "ln": "",
+      "desc": "father of Joseph Stalin",
+      "label": "Besarion Jughashvili",
+      "avatar": "https://upload.wikimedia.org/wikipedia/commons/a/af/Vissarion_Jughashvili.jpg",
+      "gender": "M"
+    },
+    "rels": {
+      "father": "Q56218448",
+      "mother": "Q107291873",
+      "spouses": [
+        "Q241535"
+      ],
+      "children": [
+        "Q22344319",
+        "Q108723194",
+        "Q108723531",
+        "Q855"
+      ]
+    },
+    "main": false
+  },
+  {
+    "id": "Q233999",
+    "data": {
+      "fn": "Nadezhda",
+      "ln": "",
+      "desc": "Second wife of Joseph Stalin",
+      "label": "Nadezhda Alliluyeva",
+      "avatar": "https://upload.wikimedia.org/wikipedia/commons/6/6e/05_stalina.JPG",
+      "gender": "F"
+    },
+    "rels": {
+      "father": "Q4062652",
+      "spouses": [
+        "Q855"
+      ],
+      "children": [
+        "Q228584",
+        "Q459216"
+      ]
+    },
+    "main": false
+  },
+  {
+    "id": "Q4302955",
+    "data": {
+      "fn": "Grigori",
+      "ln": "Morozov",
+      "desc": "no description",
+      "label": "Grigory Morozov",
+      "avatar": null,
+      "gender": "M"
+    },
+    "rels": {
+      "spouses": [
+        "Q228584"
+      ],
+      "children": [
+        "Q4062650"
+      ]
+    },
+    "main": false
+  },
+  {
+    "id": "Q4178491",
+    "data": {
+      "fn": "Yury",
+      "ln": "Zhdanov",
+      "desc": "Russian chemist (1919-2006)",
+      "label": "Yuri Zhdanov",
+      "avatar": "https://upload.wikimedia.org/wikipedia/commons/a/ad/%D0%96%D0%B4%D0%B0%D0%BD%D0%BE%D0%B2_%D0%AE%D1%80%D0%B8%D0%B9_%D0%90%D0%BD%D0%B4%D1%80%D0%B5%D0%B5%D0%B2%D0%B8%D1%87.jpg",
+      "gender": "M"
+    },
+    "rels": {
+      "spouses": [
+        "Q228584"
+      ],
+      "children": [
+        "Q98102305"
+      ]
+    },
+    "main": false
+  },
+  {
+    "id": "99948b56-f9bc-450b-8906-fce57c9446fb",
+    "data": {
+      "gender": "F"
+    },
+    "rels": {
+      "spouses": [
+        "Q855"
+      ],
+      "children": [
+        "Q3302174"
+      ]
+    },
+    "to_add": true,
+    "main": false
+  },
+  {
+    "id": "e77cb3a5-5b80-476c-a6b4-816c8ada6f62",
+    "data": {
+      "gender": "F"
+    },
+    "rels": {
+      "spouses": [
+        "Q3302174"
+      ],
+      "children": [
+        "Q56230675"
+      ]
+    },
+    "to_add": true,
+    "main": false
+  },
+  {
+    "id": "fa9f54ad-2828-4e63-9f39-702a4d86ede8",
+    "data": {
+      "gender": "F"
+    },
+    "rels": {
+      "spouses": [
+        "Q459216"
+      ],
+      "children": [
+        "Q4099484"
+      ]
+    },
+    "to_add": true,
+    "main": false
+  },
+  {
+    "id": "f67b7b1a-0153-4fe3-a1da-36826012f3be",
+    "data": {
+      "gender": "F"
+    },
+    "rels": {
+      "spouses": [
+        "Q717406"
+      ],
+      "children": [
+        "Q22344319"
+      ]
+    },
+    "to_add": true,
+    "main": false
+  },
+  {
+    "id": "3a8980f1-0706-4427-b281-624749ed5116",
+    "data": {
+      "gender": "F"
+    },
+    "rels": {
+      "spouses": [
+        "Q163816"
+      ],
+      "children": [
+        "Q4160519"
+      ]
+    },
+    "to_add": true,
+    "main": false
+  },
+  {
+    "id": "6f22957e-6176-42fd-97de-e152f1ee3342",
+    "data": {
+      "gender": "F"
+    },
+    "rels": {
+      "spouses": [
+        "Q1332918"
+      ],
+      "children": [
+        "Q4416801"
+      ]
+    },
+    "to_add": true,
+    "main": false
+  },
+  {
+    "id": "ae832b4d-5cfd-46b6-8245-182814ae20ae",
+    "data": {
+      "gender": "F"
+    },
+    "rels": {
+      "spouses": [
+        "Q4062652"
+      ],
+      "children": [
+        "Q233999"
+      ]
+    },
+    "to_add": true,
+    "main": false
+  }
+]

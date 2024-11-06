@@ -1,4 +1,4 @@
-import {mainToMiddle, treeFit} from "./view.handlers.js"
+import {cardToMiddle, treeFit} from "./view.handlers.js"
 import updateLinks from "./view.links.js"
 import updateCards from "./view.cards.js"
 import updateCardsHtml from "./view.cardsHtml.js"
@@ -14,7 +14,7 @@ export default function (tree, svg, Card, props={}) {
   const tree_position = props.tree_position || 'fit';
   if (props.initial) treeFit({svg, svg_dim: svg.getBoundingClientRect(), tree_dim: tree.dim, transition_time: 0})
   else if (tree_position === 'fit') treeFit({svg, svg_dim: svg.getBoundingClientRect(), tree_dim: tree.dim, transition_time: props.transition_time})
-  else if (tree_position === 'main_to_middle') mainToMiddle({datum: tree.data[0], svg, svg_dim: svg.getBoundingClientRect(), scale: props.scale, transition_time: props.transition_time})
+  else if (tree_position === 'main_to_middle') cardToMiddle({datum: tree.data[0], svg, svg_dim: svg.getBoundingClientRect(), scale: props.scale, transition_time: props.transition_time})
   else if (tree_position === 'inherit') {}
 
   return true

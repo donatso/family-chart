@@ -1,11 +1,9 @@
-import createSvg from "../../src/view/view.svg.js"
-import view from "../../src/view/view.js"
-import CalculateTree from "../../src/CalculateTree/CalculateTree.js"
+import f3 from "../../src/index.js"
 
 fetch("./data.json").then(r => r.json()).then(data => {
   let tree, main_id;
 
-  const svg = createSvg(document.querySelector("#FamilyChart"), {onZoom})
+  const svg = f3.createSvg(document.querySelector("#FamilyChart"), {onZoom})
 
   const cont = d3.select(document.querySelector('#FamilyChart'))
   cont.style('position', 'relative').style('overflow', 'hidden')
@@ -26,9 +24,9 @@ fetch("./data.json").then(r => r.json()).then(data => {
   updateTree({initial: true})
 
   function updateTree(props) {
-    tree = CalculateTree({ data, main_id })
+    tree = f3.CalculateTree({ data, main_id })
     props = Object.assign({}, props || {}, {cardHtml: cardHtml.node()})
-    view(tree, svg, Card(tree, svg), props || {})
+    f3.view(tree, svg, Card(tree, svg), props || {})
   }
 
   function updateMainId(_main_id) {

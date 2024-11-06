@@ -4,7 +4,7 @@ import {deletePerson, moveToAddToAdded} from "./general.js"
 export function cardChangeMain(store, {d}) {
   toggleAllRels(store.getTree().data, false)
   store.updateMainId(d.data.id)
-  store.updateTree({tree_position: 'inherit'})
+  store.updateTree({tree_position: store.state.tree_fit_on_change})
   return true
 }
 
@@ -24,5 +24,5 @@ export function cardEdit(store, {d, cardEditForm}) {
 export function cardShowHideRels(store, {d}) {
   d.data.hide_rels = !d.data.hide_rels
   toggleRels(d, d.data.hide_rels)
-  store.updateTree({tree_position: 'inherit'})
+  store.updateTree({tree_position: store.state.tree_fit_on_change})
 }
