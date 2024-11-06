@@ -12,7 +12,7 @@ fetch("./data.json").then(r => r.json()).then(data => {
 
   function update() {
     tree_data = CalculateTree({
-      data_stash: data,
+      data,
       node_separation: 250,
       level_separation: 150,
       main_id

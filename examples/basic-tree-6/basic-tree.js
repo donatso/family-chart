@@ -10,7 +10,7 @@ fetch("./data.json").then(r => r.json()).then(data => {
   const cont = d3.select(document.querySelector('#FamilyChart'))
   cont.style('position', 'relative').style('overflow', 'hidden')
   const cardHtml = cont.append('div').attr('id', 'htmlSvg')
-    .attr('style', 'position: absolute; width: 100%; height: 100%; z-index: 2; top: 0; left: 0; pointer-events: none')
+    .attr('style', 'position: absolute; width: 100%; height: 100%; z-index: 2; top: 0; left: 0')
   cardHtml.append('div').attr('class', 'cards_view').style('transform-origin', '0 0')
 
 
@@ -28,19 +28,14 @@ fetch("./data.json").then(r => r.json()).then(data => {
   function updateTree(props) {
     tree = CalculateTree({ data, main_id })
     props = Object.assign({}, props || {}, {cardHtml: cardHtml.node()})
-    view(tree, svg, Card(tree, svg, onCardClick), props || {})
+    view(tree, svg, Card(tree, svg), props || {})
   }
 
   function updateMainId(_main_id) {
     main_id = _main_id
   }
 
-  function onCardClick(e, d) {
-    updateMainId(d.data.id)
-    updateTree()
-  }
-
-  function Card(tree, svg, onCardClick) {
+  function Card(tree, svg) {
     const card_dim = {w:220,h:70,text_x:75,text_y:15,img_w:60,img_h:60,img_x:5,img_y:5}
     return function (d) {
       this.innerHTML = ''
@@ -50,6 +45,12 @@ fetch("./data.json").then(r => r.json()).then(data => {
         .on('click', e => onCardClick(e, d))
       div_inner.append('div').attr('style', 'padding: 10px 20px;').html(`${d.data.data["first name"]} ${d.data.data["last name"]}`)
     }
+
+    function onCardClick(e, d) {
+      updateMainId(d.data.id)
+      updateTree()
+    }
+
   }
 
 })

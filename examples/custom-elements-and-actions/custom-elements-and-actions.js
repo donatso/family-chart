@@ -1,4 +1,4 @@
-import f3 from '../../src/index.js'
+import f3 from '../../src_old/index.js'
 fetch("./data.json").then(r => r.json()).then(data => {
   const card_dim = {w:220,h:70,text_x:75,text_y:15,img_w:60,img_h:60,img_x:5,img_y:5}
 

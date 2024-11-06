@@ -24,18 +24,18 @@ export default function createSvg(cont, props={}) {
   cont.innerHTML = ""
   cont.appendChild(svg)
 
-  setupZoom(svg, props)
+  setupZoom(cont, props)
 
   return svg
 }
 
-function setupZoom(svg, props={}) {
-  if (svg.__zoom) return
-  const view = svg.querySelector('.view'),
+function setupZoom(el, props={}) {
+  if (el.__zoom) return
+  const view = el.querySelector('.view'),
     zoom = d3.zoom().on("zoom", (props.onZoom || zoomed))
 
-  d3.select(svg).call(zoom)
-  svg.__zoomObj = zoom
+  d3.select(el).call(zoom)
+  el.__zoomObj = zoom
 
   if (props.zoom_polite) zoom.filter(zoomFilter)
 

@@ -1,11 +1,10 @@
 import d3 from "../d3.js"
 
 function positionTree({t, svg, transition_time=2000}) {
-  const zoom = svg.__zoomObj
+  const el_listener = svg.__zoomObj ? svg : svg.parentNode  // if we need listener for svg and html, we will use parent node
+  const zoom = el_listener.__zoomObj
 
-  // d3.select(svg).call(zoom.transform, d3.zoomIdentity.translate(x*k, y*k))
-
-  d3.select(svg).transition().duration(transition_time || 0).delay(transition_time ? 100 : 0)  // delay 100 because of weird error of undefined something in d3 zoom
+  d3.select(el_listener).transition().duration(transition_time || 0).delay(transition_time ? 100 : 0)  // delay 100 because of weird error of undefined something in d3 zoom
     .call(zoom.transform, d3.zoomIdentity.scale(t.k).translate(t.x, t.y))
 }
 
