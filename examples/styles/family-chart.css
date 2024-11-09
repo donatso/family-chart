@@ -1,18 +1,11 @@
-.f3 {
-  height: 700px;
-  max-height: calc(100vh - 80px);
-  width: 900px;
-  max-width: 100%;
-  margin: auto;
-  position: relative;
-}
-
 .f3 .cursor-pointer {
   cursor: pointer;
 }
 .f3 svg.main_svg {
   width: 100%;
   height: 100%;
+  /* background-color: #3b5560;
+  color: #3b5560; */
 }
 .f3 svg.main_svg text {
   fill: currentColor;
