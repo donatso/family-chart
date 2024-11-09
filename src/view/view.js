@@ -1,3 +1,4 @@
+import d3 from "../d3.js"
 import {cardToMiddle, treeFit} from "./view.handlers.js"
 import updateLinks from "./view.links.js"
 import updateCards from "./view.cards.js"

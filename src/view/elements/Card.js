@@ -1,3 +1,4 @@
+import d3 from "../../d3.js"
 import {appendTemplate, CardBodyOutline} from "./Card.templates.js"
 import cardElements, {appendElement} from "./Card.elements.js"
 import setupCardSvgDefs from "./Card.defs.js"

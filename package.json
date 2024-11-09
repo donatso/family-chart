@@ -16,7 +16,14 @@
   },
   "main": "dist/family-chart.js",
   "unpkg": "dist/family-chart.min.js",
-  "module": "src/index.js",
+  "module": "dist/family-chart.esm.js",
+  "exports": {
+    ".": {
+      "import": "./dist/family-chart.esm.js",
+      "require": "./dist/family-chart.js"
+    },
+    "./styles/*": "./dist/styles/*"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/donatso/family-chart.git"

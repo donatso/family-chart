@@ -15,6 +15,8 @@ function rollup() {
 function afterRollup() {
   const script = fs.readFileSync('./src/d3.js', 'utf-8')
   fs.writeFileSync('./src/d3.js', COMMENT+script, 'utf-8');
+  // copy styles directory
+  fs.cpSync('./examples/styles', './dist/styles', {recursive: true});
 }
 
 beforeRollup();
