@@ -57,7 +57,7 @@ export default function CalculateTree({data, main_id=null, node_separation=250, 
     }
 
     function offsetOnPartners(a,b) {
-      return (Math.max((a.data.rels.spouses || []).length, (b.data.rels.spouses || []).length))*.5+.5
+      return ((a.data.rels.spouses || []).length + (b.data.rels.spouses || []).length)*.5
     }
   }
 
