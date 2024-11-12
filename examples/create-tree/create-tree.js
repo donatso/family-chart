@@ -6,8 +6,6 @@ import ReactiveVue from "./elements/ReactiveVue.js"
 import ReactiveReact from "./elements/ReactiveReact.js"
 import Display from "./elements/Display.js"
 import {Form} from "../../src/view/elements/Form.js"
-import createSvg from "../../src/view/view.svg.js"
-import view from "../../src/view/view.js"
 
 
 (async () => {
@@ -15,7 +13,7 @@ import view from "../../src/view/view.js"
     card_dim = {w:220,h:70,text_x:75,text_y:15,img_w:60,img_h:60,img_x:5,img_y:5},
     card_display = cardDisplay(),
     card_edit = cardEditParams(),
-    svg = createSvg(cont),
+    svg = f3.createSvg(cont),
     store = f3.createStore({
       data: firstNode(),
       node_separation: 250,
@@ -38,7 +36,7 @@ import view from "../../src/view/view.js"
     reactiveVue = ReactiveVue( "#ReactiveVue"),
     reactiveReact = ReactiveReact( "#ReactiveReact"),
     onUpdate = (props) => {
-      view(store.getTree(), svg, Card, props)
+      f3.view(store.getTree(), svg, Card, props)
       reactiveTextArea.update(store.getData());
       reactiveVanila.update(store, card_display);
       reactiveVue.update(store, card_display);
