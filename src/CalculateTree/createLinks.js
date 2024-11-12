@@ -43,7 +43,7 @@ export function createLinks({d, tree, is_vertical}) {
 
   function handleSpouse({d}) {
     d.data.rels.spouses.forEach(sp_id => {
-      const spouse = tree.find(d0 => d0.data.id === sp_id);
+      const spouse = getRel(tree, d0 => d0.data.id === sp_id)
       if (!spouse || d.spouse) return
       links.push({
         d: [[d.x, d.y], [spouse.x, spouse.y]],
@@ -83,7 +83,15 @@ export function createLinks({d, tree, is_vertical}) {
   }
 
   function otherParent(d, p1, data) {
-    return data.find(d0 => (d0.data.id !== p1.data.id) && ((d0.data.id === d.data.rels.mother) || (d0.data.id === d.data.rels.father)))
+    const condition = d0 => (d0.data.id !== p1.data.id) && ((d0.data.id === d.data.rels.mother) || (d0.data.id === d.data.rels.father))
+    return getRel(data, condition)
+  }
+
+  // if there is overlapping of personas in different branches of same family tree, return the closest one
+  function getRel(data, condition) {
+    const rels = data.filter(condition)
+    if (rels.length > 1) return rels.sort((d0, d1) => Math.abs(d0.x - d.x) - Math.abs(d1.x - d.x))[0]
+    else return rels[0]
   }
 }
 
