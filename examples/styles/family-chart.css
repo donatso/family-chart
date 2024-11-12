@@ -28,8 +28,9 @@
 .f3 g.card_add text {
   fill: #fff;
 }
-.f3 .card-main {
-  stroke: #000;
+.f3 .card-main-outline {
+  stroke: currentColor;
+  stroke-width: 3px;
 }
 .f3 .card_family_tree rect {
   transition: 0.3s;
