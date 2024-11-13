@@ -4,6 +4,7 @@ import view from "./view/view.js"
 import createSvg from "./view/view.svg.js"
 import * as handlers from './handlers.js'
 import * as elements from './elements.js'
+import * as htmlHandlers from './view/view.html.handlers.js'
 
 export default {
   CalculateTree,
@@ -11,5 +12,6 @@ export default {
   view,
   createSvg,
   handlers,
-  elements
+  elements,
+  htmlHandlers
 }

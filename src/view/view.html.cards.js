@@ -20,7 +20,6 @@ export default function updateCardsHtml(div, tree, Card, props={}) {
     d3.select(this)
       .style('position', 'absolute')
       .style('top', '0').style('left', '0')
-      // .style("left", d._x+'px').style("top", d._y+'px')
       .style("transform", `translate(${d._x}px, ${d._y}px)`)
       .style("opacity", 0)
 
