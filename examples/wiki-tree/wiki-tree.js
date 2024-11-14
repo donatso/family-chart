@@ -1,29 +1,27 @@
 import f3 from '../../src/index.js'
 import {setupWikiSearch} from "./wiki-data.search.js"
-import createSvg from "../../src/view/view.svg.js"
-import view from "../../src/view/view.js"
 
 
 (() => {
   const store = f3.createStore({
-      data: null,
-      node_separation: 250,
-      level_separation: 150
-    }),
-    svg = createSvg(document.querySelector("#FamilyChart")),
-    Card = f3.elements.Card({
-      store,
-      svg,
-      card_dim: {w:220,h:70,text_x:75,text_y:15,img_w:60,img_h:60,img_x:5,img_y:5},
-      card_display: [d => d.data.label || '', d => d.data.desc || ''],
-      mini_tree: true,
-      link_break: true
-    })
+    data: null,
+    node_separation: 250,
+    level_separation: 150
+  })
+  const svg = f3.createSvg(document.querySelector("#FamilyChart"))
+  const Card = f3.elements.Card({
+    store,
+    svg,
+    card_dim: {w:220,h:70,text_x:75,text_y:15,img_w:60,img_h:60,img_x:5,img_y:5},
+    card_display: [d => d.data.label || '', d => d.data.desc || ''],
+    mini_tree: true,
+    link_break: true
+  })
 
   setupWikiSearch(store, document.querySelector("#FamilyChart"))
   store.setOnUpdate(props => {
     addWikiIdToURL(store.state.main_id)
-    view(store.getTree(), svg, Card, props || {})
+    f3.view(store.getTree(), svg, Card, props || {})
   })
 
   function addWikiIdToURL(wiki_id){
