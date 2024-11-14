@@ -21,7 +21,8 @@ export default function createSvg(cont, props={}) {
   const fake_cont = document.createElement("div")
   fake_cont.innerHTML = svg_html
   const svg = fake_cont.firstElementChild
-  // cont.innerHTML = ""
+
+  cont.style.position = "relative"
   cont.appendChild(svg)
 
   setupZoom(cont, props)
