@@ -1,6 +1,6 @@
 {
   "name": "family-chart",
-  "version": "0.0.0-beta-2",
+  "version": "0.0.0-beta-3",
   "description": "family tree creator and viewer",
   "keywords": [
     "datafull",
@@ -11,8 +11,7 @@
   "homepage": "https://donatso.github.io/family-chart/",
   "license": "ISC",
   "author": {
-    "name": "Donat Soric",
-    "url": "https://www.linkedin.com/in/donat-sori%C4%87-342a92161/"
+    "name": "donatso"
   },
   "main": "dist/family-chart.js",
   "unpkg": "dist/family-chart.min.js",
@@ -29,7 +28,8 @@
     "url": "git+https://github.com/donatso/family-chart.git"
   },
   "files": [
-    "dist/**/*.js"
+    "dist/**/*.js",
+    "dist/styles/**"
   ],
   "scripts": {
     "build": "node build.js",
