@@ -18,12 +18,12 @@
 <h3 align="center">Family Chart</h3>
 
   <p align="center">
-    Interactive family tree chart built on top of d3.js
+    Create beautiful, interactive family trees with this powerful D3.js-based visualization library
     <br />
     <a href="https://github.com/donatso/family-chart"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://donatso.github.io/family-chart/examples/wiki-tree/?wiki_id=Q10633">View Demo</a>
+    <a href="https://donatso.github.io/family-chart-doc/wiki-tree?wiki_id=Q43274">View Demo</a>
     ·
     <a href="https://github.com/donatso/family-chart/issues">Report Bug</a>
     ·
@@ -55,39 +55,52 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://donatso.github.io/family-chart/examples/wiki-tree/?wiki_id=Q10633)
+[![Product Name Screen Shot][product-screenshot]](https://donatso.github.io/family-chart-doc/wiki-tree/?wiki_id=Q43274)
 
-family-chart is tool for creating and displaying family trees. 
-Although it has many default features, family trees created with this tool are very customizable. 
-This is an ongoing project and any suggestion or request will be appreciated :)
+Family Chart is a powerful D3.js-based visualization library for creating beautiful, interactive family trees. The library offers:
+
+- **Example-based Learning**: Explore pre-built examples and customize them to match your needs
+- **Create from Scratch**: Build your family tree from the ground up with an intuitive interface
+- **Full Customization**: Complete control over your tree's structure and styling
+- **Interactive Features**: Built-in interactivity for engaging user experience
 
 ## Examples
-1. Interactive family tree of all people in wikidata database.
-[![Product Name Screen Shot][product-wiki-tree-screenshot]](https://donatso.github.io/family-chart/examples/wiki-tree/?wiki_id=Q1035)
 
-2. Basic tree
-[![Product Name Screen Shot][product-basic-tree-screenshot]](https://donatso.github.io/family-chart/examples/basic-tree-1)
+### 1. WikiData Integration
+Explore our interactive family tree viewer that connects to the WikiData database, allowing you to visualize family relationships for millions of historical figures and notable people. Simply enter a WikiData ID to generate a complete family tree.
+
+[![WikiData Family Tree Example][product-wiki-tree-screenshot]](https://donatso.github.io/family-chart-doc/wiki-tree/?wiki_id=Q43274)
+
+Try it with:
+- [British Royal Family (Q43274)](https://donatso.github.io/family-chart-doc/wiki-tree/?wiki_id=Q43274)
+- [Albert Einstein (Q937)](https://donatso.github.io/family-chart-doc/wiki-tree/?wiki_id=Q937)
+- [Leonardo da Vinci (Q762)](https://donatso.github.io/family-chart-doc/wiki-tree/?wiki_id=Q762)
+
+### 2. Basic Implementation
+A simple example showing how to create a custom family tree from scratch. This demo features Aristotle's family tree with basic styling and interactions.
+
+[![Basic Family Tree Example][product-basic-tree-screenshot]](https://donatso.github.io/family-chart-doc/examples/2-basic-tree-aristotle)
+
 
 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-1. Visit [examples/create-tree](https://donatso.github.io/family-chart/examples/create-tree/) 
+1. Visit [doc/create-tree](https://donatso.github.io/family-chart-doc/create-tree/) 
 2. Create your family tree
 3. Copy/paste generated code for Vanila, Vue or React.
-4. Copy/paste family-chart.css
-5. Give me some github stars (:
+4. Give me some github stars (:
 
 
 
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-### [Static](https://codesandbox.io/s/family-chart-static-zqzck?file=/FamilyChart.js)
+### [Static](https://codepen.io/donatso/pen/ExqJVEQ?editors=1000)
 
-### [React](https://codesandbox.io/s/family-chart-react-eobxc?file=/src/FamilyChart.js)
+### [React](https://codepen.io/donatso/pen/mdNgeQN?editors=0010)
 
-### [Vue](https://codesandbox.io/s/family-chart-vue-bsrv9?file=/src/components/FamilyChart.vue)
+### [Vue](https://codepen.io/donatso/pen/poMBjZe)
 
 
 
@@ -114,8 +127,6 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <!-- CONTACT -->
 ## Contact
-
-Donat Soric - [@linkedin](https://linkedin.com/in/donat-sorić-342a92161) - soricdonat@gmail.com
 
 Project Link: [https://github.com/donatso/family-chart](https://github.com/donatso/family-chart)
 
