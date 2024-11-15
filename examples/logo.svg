@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
      viewBox="0 0 110 60" style="enable-background:new 0 0 110 60;" xml:space="preserve">
-    <rect width="110" height="60" fill="rgb(59, 85, 96)"></rect>
+    <rect width="110" height="60" fill="rgba(33,33,33, 0.1)"></rect>
     <g transform="translate(5,5)">
         <line x1="50" x2="50" y1="35" y2="7.5" stroke-width="1" stroke="white"></line>
         <line x1="40" x2="60" y1="7.5" y2="7.5" stroke-width="1" stroke="white"></line>
