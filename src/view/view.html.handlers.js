@@ -52,6 +52,16 @@ export function setupReactiveTreeData(getHtmlSvg) {
   }
 }
 
+export function createHtmlSvg(cont) {
+  const f3Canvas = d3.select(cont).select('#f3Canvas')
+  const cardHtml = f3Canvas.append('div').attr('id', 'htmlSvg')
+    .attr('style', 'position: absolute; width: 100%; height: 100%; z-index: 2; top: 0; left: 0')
+  cardHtml.append('div').attr('class', 'cards_view').style('transform-origin', '0 0')
+  setupHtmlSvg(() => cardHtml.node())
+
+  return cardHtml.node()
+}
+
 function getTreeDataExit(new_tree_data, old_tree_data) {
   if (old_tree_data.length > 0) {
     return old_tree_data.filter(d => !new_tree_data.find(t => t.data.id === d.data.id))

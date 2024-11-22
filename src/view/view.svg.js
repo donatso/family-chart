@@ -18,16 +18,27 @@ export default function createSvg(cont, props={}) {
       </g>
     </svg>
   `)
-  const fake_cont = document.createElement("div")
-  fake_cont.innerHTML = svg_html
-  const svg = fake_cont.firstElementChild
 
-  cont.style.position = "relative"
-  cont.appendChild(svg)
+  const f3Canvas = getOrCreateF3Canvas(cont)
 
-  setupZoom(cont, props)
+  const temp_div = d3.create('div').node()
+  temp_div.innerHTML = svg_html
+  const svg = temp_div.querySelector('svg')
+  f3Canvas.appendChild(svg)
+
+  cont.appendChild(f3Canvas)
+
+  setupZoom(f3Canvas, props)
 
   return svg
+
+  function getOrCreateF3Canvas(cont) {
+    let f3Canvas = cont.querySelector('#f3Canvas')
+    if (!f3Canvas) {
+      f3Canvas = d3.create('div').attr('id', 'f3Canvas').attr('style', 'position: relative; overflow: hidden; width: 100%; height: 100%;').node()
+    }
+    return f3Canvas
+  }
 }
 
 function setupZoom(el, props={}) {
