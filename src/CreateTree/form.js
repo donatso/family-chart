@@ -8,6 +8,7 @@ export function createForm({datum, rel_datum, store, rel_type, card_edit, postSu
   }
 
   if (!datum.to_add && !rel_datum) form_creator.onDelete = deletePerson
+  if (form_creator.onDelete) form_creator.can_delete = checkIfRelativesConnectedWithoutPerson(datum, store.getData())
 
   form_creator.gender_field = {
     id: 'gender', 

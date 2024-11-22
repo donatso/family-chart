@@ -136,6 +136,13 @@
   color: #fff;
 }
 
+.f3-delete-btn:disabled {
+  opacity: 0.5;
+  background-color: transparent;
+  color: #f44336;
+  cursor: not-allowed;
+}
+
 .f3-radio-group {
   margin: 15px 0;
 }

@@ -74,7 +74,7 @@ export function formInfoSetup(form_creator, closeCallback) {
   function deleteBtn() {
     return (`
       <div>
-        <button type="button" class="f3-delete-btn">
+        <button type="button" class="f3-delete-btn" ${form_creator.can_delete ? '' : 'disabled'}>
           Delete
         </button>
       </div>
