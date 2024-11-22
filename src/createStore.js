@@ -15,7 +15,13 @@ export default function createStore(initial_state) {
     getData: () => state.data,
     getTree: () => state.tree,
     setOnUpdate: (f) => onUpdate = f,
-    methods: {}
+
+    getMainDatum: () => state.data.find(d => d.main),
+    getDatum: id => state.data.find(d => d.id === id),
+    getTreeMainDatum,
+    getTreeDatum,
+
+    methods: {},
   }
 
   return store
@@ -25,5 +31,15 @@ export default function createStore(initial_state) {
       data: state.data, main_id: state.main_id,
       node_separation: state.node_separation, level_separation: state.level_separation
     })
+  }
+
+  function getTreeMainDatum() {
+    if (!state.tree) return null;
+    return state.tree.data.find(d => d.data.main)
+  }
+
+  function getTreeDatum(id) {
+    if (!state.tree) return null;
+    return state.tree.data.find(d => d.id === id)
   }
 }
