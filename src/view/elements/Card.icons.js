@@ -7,6 +7,17 @@ export function userIcon() {
   `)
 }
 
+export function userEditIcon() {
+  return (`
+    <g>
+      ${bgCircle()}
+      <path d="M21.7,13.35L20.7,14.35L18.65,12.3L19.65,11.3C19.86,11.09 20.21,11.09 20.42,11.3L21.7,12.58C21.91,
+      12.79 21.91,13.14 21.7,13.35M12,18.94L18.06,12.88L20.11,14.93L14.06,21H12V18.94M12,14C7.58,14 4,15.79 4,
+      18V20H10V18.11L14,14.11C13.34,14.03 12.67,14 12,14M12,4A4,4 0 0,0 8,8A4,4 0 0,0 12,12A4,4 0 0,0 16,8A4,4 0 0,0 12,4Z" />
+    </g>
+  `)
+}
+
 export function plusIcon() {
   return (`
     <g>
@@ -34,7 +45,7 @@ export function pencilOffIcon() {
   `)
 }
 
-function trashIcon() {
+export function trashIcon() {
   return (`
     <g>
       ${bgCircle()}
@@ -43,11 +54,32 @@ function trashIcon() {
   `)
 }
 
+export function historyBackIcon() {
+  return (`
+    <g>
+      ${bgCircle()}
+      <path d="M20 13.5C20 17.09 17.09 20 13.5 20H6V18H13.5C16 18 18 16 18 13.5S16 9 13.5 9H7.83L10.91 12.09L9.5 13.5L4 8L9.5 2.5L10.92 3.91L7.83 7H13.5C17.09 7 20 9.91 20 13.5Z" />
+    </g>
+  `)
+}
+
+export function historyForwardIcon() {
+  return (`
+    <g>
+      ${bgCircle()}
+      <path d="M10.5 18H18V20H10.5C6.91 20 4 17.09 4 13.5S6.91 7 10.5 7H16.17L13.08 3.91L14.5 2.5L20 8L14.5 13.5L13.09 12.09L16.17 9H10.5C8 9 6 11 6 13.5S8 18 10.5 18Z" />
+    </g>
+  `)
+}
+
 export function userSvgIcon() { return svgWrapper(userIcon()) }
+export function userEditSvgIcon() { return svgWrapper(userEditIcon()) }
 export function plusSvgIcon() { return svgWrapper(plusIcon()) }
 export function pencilSvgIcon() { return svgWrapper(pencilIcon()) }
 export function pencilOffSvgIcon() { return svgWrapper(pencilOffIcon()) }
 export function trashSvgIcon() { return svgWrapper(trashIcon()) }
+export function historyBackSvgIcon() { return svgWrapper(historyBackIcon()) }
+export function historyForwardSvgIcon() { return svgWrapper(historyForwardIcon()) }
 
 function svgWrapper(icon) {
   return (`
