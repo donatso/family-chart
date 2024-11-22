@@ -5,6 +5,7 @@ import createSvg from "./view/view.svg.js"
 import * as handlers from './handlers.js'
 import * as elements from './elements.js'
 import * as htmlHandlers from './view/view.html.handlers.js'
+import * as icons from './view/elements/Card.icons.js'
 
 export default {
   CalculateTree,
@@ -13,5 +14,6 @@ export default {
   createSvg,
   handlers,
   elements,
-  htmlHandlers
+  htmlHandlers,
+  icons
 }

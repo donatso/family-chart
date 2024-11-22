@@ -80,3 +80,110 @@
 .f3.f3-cont {
   width:100%;height:900px;max-height:70vh;background-color:rgb(33,33,33);color:#fff;
 }
+
+
+
+
+/* form-info */
+.f3-form input[type="text"],
+.f3-form textarea,
+.f3-form select {
+  width: 100%;
+  padding: 8px 12px;
+  margin: 8px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.f3-form input[type="text"]:focus,
+.f3-form textarea:focus,
+.f3-form select:focus {
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.2);
+}
+
+.f3-form button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin: 10px 0;
+  transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.f3-form button[type="submit"] {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.f3-cancel-btn {
+  background-color: #ccc;
+}
+
+.f3-form .f3-delete-btn {
+  background-color: transparent;
+  border: 1px solid #f44336;
+  color: #f44336;
+  width: 100%;
+  padding: 5px 10px;
+}
+
+.f3-delete-btn:hover {
+  background-color: #da190b;
+  border-color: #da190b;
+  color: #fff;
+}
+
+.f3-radio-group {
+  margin: 15px 0;
+}
+
+.f3-radio-group label {
+  margin-right: 15px;
+  cursor: pointer;
+}
+
+.f3-radio-group input[type="radio"] {
+  margin-right: 5px;
+}
+
+.f3-info-field-label, .f3-form-field label {
+  font-weight: bold;
+  font-size: 12px;
+  display: block;
+  opacity: 0.8;
+}
+
+.f3-info-field-value {
+  font-weight: normal;
+  display: block;
+  border: none;
+  outline: none;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  padding-bottom: 1px;
+  margin-bottom: 10px;
+  min-height: 18px;
+}
+
+.f3-form-buttons {
+  text-align: right;
+}
+
+.f3-form.non-editable .f3-form-buttons, .f3-form.non-editable .f3-delete-btn {
+  display: none;
+}
+
+.f3-close-btn {
+  cursor: pointer;
+  position: absolute;
+  left: 10px;
+  top: 0;
+  font-size: 30px;
+  color: #fff;
+}
+
+.f3-edit-btn {
+  cursor: pointer;
+}
