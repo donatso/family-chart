@@ -7,9 +7,9 @@ export default function CalculateTree({data, main_id=null, node_separation=250, 
   const is_vertical = true;
   const data_stash = createRelsToAdd(data)
   sortChildrenWithSpouses(data_stash)
-  const main = main_id !== null ? data_stash.find(d => d.id === main_id) : data_stash[0],
-    tree_children = calculateTreePositions(main, 'children', false),
-    tree_parents = calculateTreePositions(main, 'parents', true)
+  const main = (main_id !== null && data_stash.find(d => d.id === main_id)) || data_stash[0]
+  const tree_children = calculateTreePositions(main, 'children', false)
+  const tree_parents = calculateTreePositions(main, 'parents', true)
 
   data_stash.forEach(d => d.main = d === main)
   levelOutEachSide(tree_parents, tree_children)
@@ -21,7 +21,7 @@ export default function CalculateTree({data, main_id=null, node_separation=250, 
 
   const dim = calculateTreeDim(tree, node_separation, level_separation, is_vertical)
 
-  return {data: tree, data_stash, dim}
+  return {data: tree, data_stash, dim, main_id: main.id}
 
   function calculateTreePositions(datum, rt, is_ancestry) {
     const hierarchyGetter = rt === "children" ? hierarchyGetterChildren : hierarchyGetterParents,
