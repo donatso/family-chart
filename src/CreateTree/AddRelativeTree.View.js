@@ -2,7 +2,7 @@ import {
   addNewPerson,
   createNewPersonWithGenderFromRel,
   handleRelsOfNewDatum,
-} from "../handlers/newPerson.js"
+} from "./newPerson.js"
 
 export default function View(tree, {store, data_stash, cont, datum, card_dim, cardEditForm, scale}) {
   const svg_dim = cont.getBoundingClientRect(),

@@ -1,6 +1,6 @@
 import d3 from "../d3.js"
 import {sortChildrenWithSpouses} from "./CalculateTree.handlers.js"
-import {createNewPerson} from "../handlers/newPerson.js"
+import {createNewPerson} from "../CreateTree/newPerson.js"
 import {isAllRelativeDisplayed} from "../handlers/general.js"
 
 export default function CalculateTree({data, main_id=null, node_separation=250, level_separation=150}) {

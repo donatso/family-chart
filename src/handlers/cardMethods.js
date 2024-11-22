@@ -1,5 +1,5 @@
 import {toggleAllRels, toggleRels} from "../CalculateTree/CalculateTree.handlers.js"
-import {deletePerson, moveToAddToAdded} from "./general.js"
+import {deletePerson, moveToAddToAdded} from "../CreateTree/form.js"
 
 export function cardChangeMain(store, {d}) {
   toggleAllRels(store.getTree().data, false)
