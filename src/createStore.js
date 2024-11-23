@@ -13,6 +13,7 @@ export default function createStore(initial_state) {
     },
     updateData: data => state.data = data,
     updateMainId,
+    getMainId: () => state.main_id,
     getData: () => state.data,
     getTree: () => state.tree,
     setOnUpdate: (f) => onUpdate = f,
