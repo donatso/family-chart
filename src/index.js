@@ -6,6 +6,10 @@ import * as handlers from './handlers.js'
 import * as elements from './elements.js'
 import * as htmlHandlers from './view/view.html.handlers.js'
 import * as icons from './view/elements/Card.icons.js'
+import createChart from './createChart.js'
+
+import CardSvg from './Cards/CardSvg.js'
+import CardHtml from './Cards/CardHtml.js'
 
 export default {
   CalculateTree,
@@ -15,5 +19,9 @@ export default {
   handlers,
   elements,
   htmlHandlers,
-  icons
+  icons,
+  createChart,
+
+  CardSvg,
+  CardHtml,
 }
