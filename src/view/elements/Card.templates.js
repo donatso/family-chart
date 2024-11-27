@@ -12,9 +12,11 @@ export function CardText({d,card_dim,card_display}) {
   return {template: (`
     <g>
       <g class="card-text" clip-path="url(#card_text_clip)">
-        <text transform="translate(${card_dim.text_x}, ${card_dim.text_y})">
-          ${Array.isArray(card_display) ? card_display.map(cd => `<tspan x="${0}" dy="${14}">${cd(d.data)}</tspan>`).join('\n') : card_display(d.data)}
-        </text>
+        <g transform="translate(${card_dim.text_x}, ${card_dim.text_y})">
+          <text>
+            ${Array.isArray(card_display) ? card_display.map(cd => `<tspan x="${0}" dy="${14}">${cd(d.data)}</tspan>`).join('\n') : card_display(d.data)}
+          </text>
+        </g>
       </g>
       <rect width="${card_dim.w-10}" height="${card_dim.h}" style="mask: url(#fade)" class="text-overflow-mask" /> 
     </g>

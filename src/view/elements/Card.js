@@ -21,7 +21,7 @@ export function Card(props) {
     appendTemplate(CardBodyOutline({d,card_dim,is_new:d.data.to_add}).template, card.node(), true)
     appendElement(cardElements.cardBody(d, props), this.querySelector('.card-inner'))
 
-    if (props.img) appendElement(cardElements.cardImage(d, props), this.querySelector('.card-inner'))
+    if (props.img) appendElement(cardElements.cardImage(d, props), this.querySelector('.card'))
     if (props.mini_tree) appendElement(cardElements.miniTree(d, props), this.querySelector('.card'), true)
     if (props.link_break) appendElement(cardElements.lineBreak(d, props), this.querySelector('.card'))
 
@@ -30,6 +30,7 @@ export function Card(props) {
       appendElement(cardElements.cardAdd(d, props), this.querySelector('.card-inner'))
     }
 
+    if (props.onCardUpdates) props.onCardUpdates.map(fn => fn.call(this, d))
     if (props.onCardUpdate) props.onCardUpdate.call(this, d)
   }
 
