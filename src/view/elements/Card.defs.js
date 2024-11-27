@@ -28,3 +28,10 @@ export default function setupCardSvgDefs(svg, card_dim) {
     return (`${lx} ${rx} ${ry} ${ly} z`)
   }
 }
+
+export function updateCardSvgDefs(svg, card_dim) {
+  if (svg.querySelector("defs#f3CardDef")) {
+    svg.querySelector("defs#f3CardDef").remove()
+  }
+  setupCardSvgDefs(svg, card_dim)
+}
