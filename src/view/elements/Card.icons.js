@@ -72,6 +72,31 @@ export function historyForwardIcon() {
   `)
 }
 
+export function personIcon() {
+  return (`
+    <g>
+      <path d="M256 288c79.5 0 144-64.5 144-144S335.5 0 256 0 112 
+        64.5 112 144s64.5 144 144 144zm128 32h-55.1c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16H128C57.3 320 0 377.3 
+        0 448v16c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48v-16c0-70.7-57.3-128-128-128z" />
+    </g>
+  `)
+}
+
+export function miniTreeIcon() {
+  return (`
+    <g transform="translate(31,25)">
+      <rect x="-31" y="-25" width="72" height="15" fill="rgba(0,0,0,0)"></rect>
+      <g>
+        <rect x="-31" y="-25" width="72" height="15" fill="rgba(0,0,0,0)"></rect>
+        <line y2="-17.5" stroke="#fff" />
+        <line x1="-20" x2="20" y1="-17.5" y2="-17.5" stroke="#fff" />
+        <rect x="-31" y="-25" width="25" height="15" rx="5" ry="5" class="card-male" />
+        <rect x="6" y="-25" width="25" height="15" rx="5" ry="5" class="card-female" />
+      </g>
+    </g>
+  `)
+}
+
 export function userSvgIcon() { return svgWrapper(userIcon()) }
 export function userEditSvgIcon() { return svgWrapper(userEditIcon()) }
 export function plusSvgIcon() { return svgWrapper(plusIcon()) }
@@ -80,10 +105,12 @@ export function pencilOffSvgIcon() { return svgWrapper(pencilOffIcon()) }
 export function trashSvgIcon() { return svgWrapper(trashIcon()) }
 export function historyBackSvgIcon() { return svgWrapper(historyBackIcon()) }
 export function historyForwardSvgIcon() { return svgWrapper(historyForwardIcon()) }
+export function personSvgIcon() { return svgWrapper(personIcon(), '0 0 512 512') }
+export function miniTreeSvgIcon() { return svgWrapper(miniTreeIcon(), '0 0 72 25') }
 
-function svgWrapper(icon) {
+function svgWrapper(icon, viewBox='0 0 24 24') {
   return (`
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="fill: currentColor">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" style="fill: currentColor">
       ${icon}
     </svg>
   `)
