@@ -30,7 +30,7 @@ export default function updateCardsHtml(div, tree, Card, props={}) {
 
   function cardUpdate(d) {
     Card.call(this, d)
-    const delay = props.initial ? calculateDelay(tree, d) : 0;
+    const delay = props.initial ? calculateDelay(tree, d, props.transition_time) : 0;
     d3.select(this).transition().duration(props.transition_time).delay(delay).style("transform", `translate(${d.x}px, ${d.y}px)`).style("opacity", 1)
   }
 

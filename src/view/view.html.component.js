@@ -30,7 +30,7 @@ export default function updateCardsComponent(div, tree, Card, props={}) {
 
   function cardUpdate(d) {
     const card_element = d3.select(Card(d))
-    const delay = props.initial ? calculateDelay(tree, d) : 0;
+    const delay = props.initial ? calculateDelay(tree, d, props.transition_time) : 0;
     card_element.transition().duration(props.transition_time).delay(delay).style("transform", `translate(${d.x}px, ${d.y}px)`).style("opacity", 1)
   }
 

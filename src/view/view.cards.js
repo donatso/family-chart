@@ -28,7 +28,7 @@ export default function updateCards(svg, tree, Card, props={}) {
 
   function cardUpdate(d) {
     Card.call(this, d)
-    const delay = props.initial ? calculateDelay(tree, d) : 0;
+    const delay = props.initial ? calculateDelay(tree, d, props.transition_time) : 0;
     d3.select(this).transition().duration(props.transition_time).delay(delay).attr("transform", `translate(${d.x}, ${d.y})`).style("opacity", 1)
   }
 

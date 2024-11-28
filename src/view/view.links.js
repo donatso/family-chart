@@ -22,7 +22,7 @@ export default function updateLinks(svg, tree, props={}) {
 
   function linkUpdate(d) {
     const path = d3.select(this);
-    const delay = props.initial ? calculateDelay(tree, d) : 0
+    const delay = props.initial ? calculateDelay(tree, d, props.transition_time) : 0
     path.transition('path').duration(props.transition_time).delay(delay).attr("d", createPath(d)).style("opacity", 1)
   }
 

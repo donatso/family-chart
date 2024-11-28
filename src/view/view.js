@@ -23,8 +23,8 @@ export default function (tree, svg, Card, props={}) {
   return true
 }
 
-export function calculateDelay(tree, d) {
-  const delay_level = 800,
+export function calculateDelay(tree, d, transition_time) {
+  const delay_level = transition_time*.4,
     ancestry_levels = Math.max(...tree.data.map(d=>d.is_ancestry ? d.depth : 0))
   let delay = d.depth*delay_level;
   if ((d.depth !== 0 || !!d.spouse) && !d.is_ancestry) {
