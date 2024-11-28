@@ -25,7 +25,7 @@ export function formInfoSetup(form_creator, closeCallback) {
     cancel_btn.addEventListener('click', onCancel)
 
     const edit_btn = form.querySelector('.f3-edit-btn');
-    edit_btn.addEventListener('click', onEdit)
+    if (edit_btn) edit_btn.addEventListener('click', onEdit)
 
     const delete_btn = form.querySelector('.f3-delete-btn');
     if (delete_btn && form_creator.onDelete) {
@@ -55,7 +55,7 @@ export function formInfoSetup(form_creator, closeCallback) {
   return (` 
     <form id="familyForm" class="f3-form ${form_creator.editable ? '' : 'non-editable'}">
       ${closeBtn()}
-      ${editBtn()}
+      ${form_creator.no_edit ? spaceDiv() : editBtn()}
       ${genderRadio()}
 
       ${fields()}
@@ -162,6 +162,10 @@ export function formInfoSetup(form_creator, closeCallback) {
         ×
       </span>
     `)
+  }
+
+  function spaceDiv() {
+    return `<div style="height: 24px;"></div>`
   }
 }
 

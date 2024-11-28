@@ -1,12 +1,11 @@
 import {checkIfRelativesConnectedWithoutPerson} from "./checkIfRelativesConnectedWithoutPerson.js"
 import {createTreeDataWithMainNode} from "./newPerson.js"
 
-export function createForm({datum, rel_datum, store, rel_type, card_edit, postSubmit, card_display}) {
+export function createForm({datum, rel_datum, store, rel_type, fields, postSubmit, card_display}) {
   const form_creator = {
     fields: [],
     onSubmit: submitFormChanges,
   }
-
   if (!datum.to_add && !rel_datum) form_creator.onDelete = deletePerson
   if (form_creator.onDelete) form_creator.can_delete = checkIfRelativesConnectedWithoutPerson(datum, store.getData())
 
@@ -45,12 +44,12 @@ export function createForm({datum, rel_datum, store, rel_type, card_edit, postSu
     }
   }
 
-  card_edit.forEach(d => {
+  fields.forEach(d => {
     const field = {
-      id: d.key,
+      id: d.id,
       type: d.type,
-      label: d.placeholder,
-      initial_value: datum.data[d.key],
+      label: d.label,
+      initial_value: datum.data[d.id],
     }
     form_creator.fields.push(field)
   })

@@ -68,12 +68,18 @@ export function createHistoryControls(cont, history, onUpdate=()=>{}) {
   return {
     back_btn: back_btn.node(),
     forward_btn: forward_btn.node(),
-    updateButtons
+    updateButtons,
+    destroy
   }
 
   function updateButtons() {
     back_btn.classed("disabled", !history.canBack())
     forward_btn.classed("disabled", !history.canForward())
     history_controls.style("display", !history.canBack() && !history.canForward() ? "none" : null)
+  }
+
+  function destroy() {
+    history = null
+    d3.select(cont).select('.f3-history-controls').remove()
   }
 }

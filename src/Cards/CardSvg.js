@@ -15,6 +15,7 @@ function CardSvg(cont, store) {
   this.card_display = [d => `${d.data["first name"]} ${d.data["last name"]}`]
   this.mini_tree = true
   this.link_break = false
+  this.onCardClick = this.onCardClickDefault
   this.onCardUpdate = null
   this.onCardUpdates = null
 
@@ -33,6 +34,7 @@ CardSvg.prototype.init = function() {
     card_display: this.card_display,
     mini_tree: this.mini_tree,
     link_break: this.link_break,
+    onCardClick: this.onCardClick,
     onCardUpdate: this.onCardUpdate,
     onCardUpdates: this.onCardUpdates
   })
@@ -88,6 +90,17 @@ CardSvg.prototype.setCardTextSvg = function(cardTextSvg) {
   if (!this.onCardUpdates) this.onCardUpdates = []
   this.onCardUpdates = this.onCardUpdates.filter(fn => fn.id !== 'setCardTextSvg')
   this.onCardUpdates.push(onCardUpdate)
+
+  return this
+}
+
+CardSvg.prototype.onCardClickDefault = function(e, d) {
+  this.store.updateMainId(d.data.id)
+  this.store.updateTree({})
+}
+
+CardSvg.prototype.setOnCardClick = function(onCardClick) {
+  this.onCardClick = onCardClick
 
   return this
 }

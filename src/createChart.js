@@ -1,5 +1,6 @@
 import d3 from "./d3.js"
 import f3 from "./index.js"
+import editTree from "./CreateTree/editTree.js"
 
 export default function(...args) { return new CreateChart(...args) }
 
@@ -76,7 +77,6 @@ CreateChart.prototype.setCardXSpacing = function(card_x_spacing) {
 }
 
 CreateChart.prototype.setCard = function(Card) {
-  console.log(Card)
   this.is_card_html = Card.is_html
 
   if (this.is_card_html) {
@@ -95,6 +95,17 @@ CreateChart.prototype.setCard = function(Card) {
 
 CreateChart.prototype.setTransitionTime = function(transition_time) {
   this.transition_time = transition_time
+
+  return this
+}
+
+CreateChart.prototype.editTree = function() {
+  return editTree(this.cont, this.store)
+}
+
+CreateChart.prototype.updateMain = function(d) {
+  this.store.updateMainId(d.data.id)
+  this.store.updateTree({})
 
   return this
 }
