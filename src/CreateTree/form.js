@@ -1,12 +1,24 @@
 import {checkIfRelativesConnectedWithoutPerson} from "./checkIfRelativesConnectedWithoutPerson.js"
 import {createTreeDataWithMainNode} from "./newPerson.js"
 
-export function createForm({datum, rel_datum, store, rel_type, fields, postSubmit, card_display}) {
+export function createForm({datum, store, fields, postSubmit, addRelative, deletePerson, onCancel}) {
   const form_creator = {
     fields: [],
     onSubmit: submitFormChanges,
   }
-  if (!datum.to_add && !rel_datum) form_creator.onDelete = deletePerson
+  if (!datum.to_add && !datum._new_rel_data) {
+    form_creator.onDelete = deletePersonWithPostSubmit
+    form_creator.addRelative = () => addRelative.activate(),
+    form_creator.addRelativeCancel = () => addRelative.onCancel()
+
+    form_creator.editable = false
+  }
+  if (datum._new_rel_data) {
+    form_creator.title = datum.data.label
+    form_creator.new_rel = true
+    form_creator.editable = true
+    form_creator.onCancel = onCancel
+  }
   if (form_creator.onDelete) form_creator.can_delete = checkIfRelativesConnectedWithoutPerson(datum, store.getData())
 
   form_creator.gender_field = {
@@ -15,33 +27,6 @@ export function createForm({datum, rel_datum, store, rel_type, fields, postSubmi
     label: 'Gender',
     initial_value: datum.data.gender,
     options: [{value: 'M', label: 'Male'}, {value: 'F', label: 'Female'}]
-  }
-
-  if (rel_type === "son" || rel_type === "daughter") {
-    const other_parent =  {
-      id: 'other_parent',
-      type: 'select',
-      label: 'Select other parent',
-      initial_value: null,
-      options: []
-    }
-    if (rel_datum.rels.spouses && rel_datum.rels.spouses.length > 0) {
-      other_parent.initial_value = rel_datum.rels.spouses[0]
-      other_parent.options.push(...getOtherParentOptions())
-    }
-    other_parent.options.push({value: '_new', label: 'NEW'})
-    form_creator.other_parent_field = other_parent
-
-    function getOtherParentOptions() {
-      const options = []
-      const data_stash = store.getData();
-      const spouses = rel_datum.rels.spouses || []
-      spouses.forEach((sp_id, i) => {
-        const spouse = data_stash.find(d => d.id === sp_id)
-        options.push({value: sp_id, label: card_display[0](spouse)})
-      })
-      return options
-    }
   }
 
   fields.forEach(d => {
@@ -64,7 +49,8 @@ export function createForm({datum, rel_datum, store, rel_type, fields, postSubmi
     postSubmit()
   }
 
-  function deletePerson() {
+  function deletePersonWithPostSubmit() {
+    deletePerson()
     postSubmit({delete: true})
   }
 }

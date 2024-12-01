@@ -5,7 +5,7 @@ import {calculateDelay} from "./view.js"
 export default function updateCardsHtml(div, tree, Card, props={}) {
   const card = d3.select(div).select(".cards_view").selectAll("div.card_cont").data(tree.data, d => d.data.id),
     card_exit = card.exit(),
-    card_enter = card.enter().append("div").attr("class", "card_cont"),
+    card_enter = card.enter().append("div").attr("class", "card_cont").style('pointer-events', 'none'),
     card_update = card_enter.merge(card)
 
   card_exit.each(d => calculateEnterAndExitPositions(d, false, true))

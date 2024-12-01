@@ -1,5 +1,7 @@
 import d3 from "../d3.js"
 import f3 from "../index.js"
+import addRelative from "./addRelative.js"
+import {deletePerson, moveToAddToAdded} from "./form.js"
 
 export default function(...args) { return new EditTree(...args) }
 
@@ -16,10 +18,12 @@ function EditTree(cont, store) {
 
   this.form_cont = null
 
-  this.is_fixed = false
+  this.is_fixed = true
 
   this.history = null
   this.no_edit = false
+
+  this.onChange = null
 
   this.init()
 
@@ -31,15 +35,42 @@ EditTree.prototype.init = function() {
   this.createHistory()
 }
 
-EditTree.prototype.open = function(d) {
-  if (!d.data.data) d = {data: d}  // make sure it is tree datum
-  f3.handlers.cardEdit(this.store, {d, cardEditForm: this.cardEditForm.bind(this)})
+EditTree.prototype.open = function(datum) {
+  if (datum.data.data) datum = datum.data
+  if (this.addRelativeInstance && !datum._new_rel_data) {
+    this.addRelativeInstance.onCancel()
+    return
+  }
+
+  this.cardEditForm(datum)
 }
 
-EditTree.prototype.cardEditForm = function(props) {
-  const postSubmit = props.postSubmit;
-  props.postSubmit = postSubmitWrapper.bind(this)
-  const form_creator = f3.handlers.createForm({...props, fields: this.fields, card_display: this.card_display})
+EditTree.prototype.cardEditForm = function(datum) {
+  const props = {}
+  const is_new_rel = datum?._new_rel_data
+  if (is_new_rel) {
+    props.onCancel = () => this.addRelativeInstance.onCancel()
+  } else {
+    props.addRelative = addRelative(this.store, datum, activateCallback.bind(this), cancelCallback.bind(this))
+    props.deletePerson = () => {
+      const data = this.store.getData()
+      deletePerson(datum, data)
+      this.store.updateData(data)
+      this.store.updateTree({})
+    }
+  }
+
+  const form_creator = f3.handlers.createForm({
+    store: this.store, 
+    datum, 
+    postSubmit: postSubmit.bind(this),
+    fields: this.fields, 
+    card_display: this.card_display, 
+    addRelative: null,
+    onCancel: () => {},
+    ...props
+  })
+
   form_creator.no_edit = this.no_edit
   const form_cont = f3.handlers.formInfoSetup(form_creator, this.closeForm.bind(this))
 
@@ -48,15 +79,31 @@ EditTree.prototype.cardEditForm = function(props) {
 
   this.openForm()
 
-  function postSubmitWrapper(ps_props) {
-    postSubmit(ps_props)
+  function postSubmit(props) {
+    console.log(props)
+    if (datum?._new_rel_data) this.addRelativeInstance.onSubmit(datum)
+    delete this.addRelativeInstance
     if (!this.is_fixed) this.closeForm()
-    else if (!ps_props?.delete) this.openFormWithId(props.datum.id);
+    else if (!props?.delete) this.openFormWithId(datum.id);
     
+    this.store.updateTree({})
+
     if (this.history) {
       this.history.changed()
       this.history.controls.updateButtons()
     }
+
+    if (this.onChange) this.onChange()
+  }
+
+  function activateCallback(addRelativeInstance) {
+    this.addRelativeInstance = addRelativeInstance
+  }
+
+  function cancelCallback() {
+    delete this.addRelativeInstance
+    this.store.updateTree({})
+    this.openFormWithId(this.store.getMainDatum()?.id)
   }
 }
 
@@ -85,6 +132,10 @@ EditTree.prototype.absolute = function() {
 
 EditTree.prototype.setCardClickOpen = function(card) {
   card.setOnCardClick((e, d) => {
+    if (d._new_rel_data) {
+      this.open(d)
+      return
+    }
     this.open(d)
     this.store.updateMainId(d.data.id)
     this.store.updateTree({})
@@ -127,8 +178,14 @@ EditTree.prototype.destroy = function() {
   return this
 }
 
-EditTree.prototype.setNoEdit = function(no_edit) {
-  this.no_edit = no_edit
+EditTree.prototype.setNoEdit = function() {
+  this.no_edit = true
+
+  return this
+}
+
+EditTree.prototype.setEdit = function() {
+  this.no_edit = false
 
   return this
 }
@@ -153,6 +210,24 @@ EditTree.prototype.setFields = function(fields) {
     }
   }
   this.fields = new_fields
+
+  return this
+}
+
+EditTree.prototype.setOnChange = function(fn) {
+  this.onChange = fn
+
+  return this
+}
+
+EditTree.prototype.addRelative = function(d) {
+  const {onSubmit, onCancel} = addRelative(this.store, d.data)
+  this._onSubmit = (...args) => {
+    delete this._onSubmit
+    onSubmit(...args)
+  }
+
+  return {onSubmit, onCancel}
 
   return this
 }

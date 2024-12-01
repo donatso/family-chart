@@ -18,6 +18,25 @@ export function userEditIcon() {
   `)
 }
 
+export function userPlusIcon() {
+  return (`
+    <g>
+      ${bgCircle()}
+      <path d="M15,14C12.33,14 7,15.33 7,18V20H23V18C23,15.33 17.67,14 15,14M6,10V7H4V10H1V12H4V15H6V12H9V10M15,12A4,4 0 0,0 19,8A4,4 0 0,0 15,4A4,4 0 0,0 11,8A4,4 0 0,0 15,12Z" />
+    </g>
+  `)
+}
+
+export function userPlusCloseIcon() {
+  return (`
+    <g>
+      ${bgCircle()}
+      <path d="M15,14C12.33,14 7,15.33 7,18V20H23V18C23,15.33 17.67,14 15,14M6,10V7H4V10H1V12H4V15H6V12H9V10M15,12A4,4 0 0,0 19,8A4,4 0 0,0 15,4A4,4 0 0,0 11,8A4,4 0 0,0 15,12Z" />
+      <line x1="3" y1="3" x2="24" y2="24" stroke="currentColor" stroke-width="2" />
+    </g>
+  `)
+}
+
 export function plusIcon() {
   return (`
     <g>
@@ -99,6 +118,8 @@ export function miniTreeIcon() {
 
 export function userSvgIcon() { return svgWrapper(userIcon()) }
 export function userEditSvgIcon() { return svgWrapper(userEditIcon()) }
+export function userPlusSvgIcon() { return svgWrapper(userPlusIcon()) }
+export function userPlusCloseSvgIcon() { return svgWrapper(userPlusCloseIcon()) }
 export function plusSvgIcon() { return svgWrapper(plusIcon()) }
 export function pencilSvgIcon() { return svgWrapper(pencilIcon()) }
 export function pencilOffSvgIcon() { return svgWrapper(pencilOffIcon()) }

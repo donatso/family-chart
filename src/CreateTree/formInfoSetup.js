@@ -1,8 +1,6 @@
 import * as icons from '../view/elements/Card.icons.js'
 
 export function formInfoSetup(form_creator, closeCallback) {
-  form_creator.editable = !form_creator.onDelete
-
   const formContainer = document.createElement('div')
   update()
   return formContainer
@@ -32,6 +30,16 @@ export function formInfoSetup(form_creator, closeCallback) {
       delete_btn.addEventListener('click', form_creator.onDelete);
     }
 
+    const add_relative_btn = form.querySelector('.f3-add-relative-btn');
+    if (add_relative_btn && form_creator.addRelative) {
+      add_relative_btn.addEventListener('click', () => {
+        if (form_creator.addRelativeActive) form_creator.addRelativeCancel()
+        else form_creator.addRelative()
+        form_creator.addRelativeActive = !form_creator.addRelativeActive
+        update()
+      });
+    }
+
     const close_btn = form.querySelector('.f3-close-btn');
     close_btn.addEventListener('click', closeCallback)
 
@@ -41,6 +49,7 @@ export function formInfoSetup(form_creator, closeCallback) {
 
     function onCancel() {
       form_creator.editable = false
+      if (form_creator.onCancel) form_creator.onCancel()
       update()
     }
 
@@ -55,7 +64,11 @@ export function formInfoSetup(form_creator, closeCallback) {
   return (` 
     <form id="familyForm" class="f3-form ${form_creator.editable ? '' : 'non-editable'}">
       ${closeBtn()}
-      ${form_creator.no_edit ? spaceDiv() : editBtn()}
+      ${form_creator.title ? `<h3 class="f3-form-title">${form_creator.title}</h3>` : ''}
+      <div style="text-align: right; display: ${form_creator.new_rel ? 'none' : 'block'}">
+        ${form_creator.addRelative && !form_creator.editable ? addRelativeBtn() : ''}
+        ${form_creator.no_edit ? spaceDiv() : editBtn()}
+      </div>
       ${genderRadio()}
 
       ${fields()}
@@ -63,7 +76,7 @@ export function formInfoSetup(form_creator, closeCallback) {
       ${form_creator.other_parent_field ? otherParentField() : ''}
 
       ${form_creator.onDelete ? deleteBtn() : ''}
-
+      
       <div class="f3-form-buttons">
         <button type="button" class="f3-cancel-btn">Cancel</button>
         <button type="submit">Submit</button>
@@ -81,15 +94,19 @@ export function formInfoSetup(form_creator, closeCallback) {
     `)
   }
 
+  function addRelativeBtn() {
+    return (`
+      <span class="f3-add-relative-btn">
+        ${form_creator.addRelativeActive ? icons.userPlusCloseSvgIcon() : icons.userPlusSvgIcon()}
+      </span>
+    `)
+  }
+
   function editBtn() {
     return (`
-      <div style="text-align: right">
-        <span class="f3-edit-btn">
-          <span style="display: inline-block; width: 24px; height: 24px;">
-            ${form_creator.editable ? icons.pencilOffSvgIcon() : icons.pencilSvgIcon()}
-          </span>
-        </span>
-      </div>
+      <span class="f3-edit-btn">
+        ${form_creator.editable ? icons.pencilOffSvgIcon() : icons.pencilSvgIcon()}
+      </span>
     `)
   }
 

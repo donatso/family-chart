@@ -44,7 +44,7 @@ CreateChart.prototype.init = function(cont, data) {
   })
 }
 
-CreateChart.prototype.updateTree = function({initial= false} = {}) {
+CreateChart.prototype.updateTree = function({initial=false} = {}) {
   this.store.updateTree({initial})
 
   return this
@@ -108,6 +108,19 @@ CreateChart.prototype.updateMain = function(d) {
   this.store.updateTree({})
 
   return this
+}
+
+CreateChart.prototype.getMainDatum = function() {
+  return this.store.getMainDatum()
+}
+
+CreateChart.prototype.getDataJson = function(fn) {
+  const data = this.store.getData()
+  return f3.handlers.cleanupDataJson(JSON.stringify(data))
+}
+
+CreateChart.prototype.updateData = function(data) {
+  this.store.updateData(data)
 }
 
 function setCont(cont) {

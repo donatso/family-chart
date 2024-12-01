@@ -1,8 +1,9 @@
 import d3 from "../../d3.js"
-import {personSvgIcon, miniTreeSvgIcon} from "./Card.icons.js"
+import {personSvgIcon, miniTreeSvgIcon, plusSvgIcon} from "./Card.icons.js"
 
 export function CardHtml(props) {
   const cardInner = props.style === 'default' ? cardInnerDefault 
+  : props.style === 'imageCircleRect' ? cardInnerImageCircleRect
   : props.style === 'imageCircle' ? cardInnerImageCircle 
   : props.style === 'imageRect' ? cardInnerImageRect
   : props.style === 'rect' ? cardInnerRect
@@ -10,19 +11,22 @@ export function CardHtml(props) {
 
   return function (d) {
     this.innerHTML = (`
-    <div class="card ${getClassList(d).join(' ')}"" style="transform: translate(-50%, -50%)">
+    <div class="card ${getClassList(d).join(' ')}"" style="transform: translate(-50%, -50%); pointer-events: auto;">
       ${props.mini_tree ? getMiniTree(d) : ''}
       ${cardInner(d)}
     </div>
     `)
     this.querySelector('.card').addEventListener('click', e => props.onCardClick(e, d))
     if (props.onCardUpdate) props.onCardUpdate.call(this, d)
+
+    if (props.onCardMouseenter) d3.select(this).select('.card').on('mouseenter', e => props.onCardMouseenter(e, d))
+    if (props.onCardMouseleave) d3.select(this).select('.card').on('mouseleave', e => props.onCardMouseleave(e, d))
   }
 
   function getCardInnerImageCircle(d) {
     return (`
-    <div class="card-inner card-image-circle">
-      ${d.data.data.avatar ? `<img src="${d.data.data["avatar"]}">` : personSvgIcon()}
+    <div class="card-inner card-image-circle" ${getCardStyle()}>
+      ${d.data.data.avatar ? `<img src="${d.data.data["avatar"]}" ${getCardImageStyle()}>` : noImageIcon(d)}
       <div class="card-label">${textDisplay(d)}</div>
     </div>
     `)
@@ -30,8 +34,8 @@ export function CardHtml(props) {
 
   function getCardInnerImageRect(d) {
     return (`
-    <div class="card-inner card-image-rect">
-      ${d.data.data.avatar ? `<img src="${d.data.data["avatar"]}">` : personSvgIcon()}
+    <div class="card-inner card-image-rect" ${getCardStyle()}>
+      ${d.data.data.avatar ? `<img src="${d.data.data["avatar"]}" ${getCardImageStyle()}>` : noImageIcon(d)}
       <div class="card-label">${textDisplay(d)}</div>
     </div>
     `)
@@ -39,13 +43,14 @@ export function CardHtml(props) {
 
   function getCardInnerRect(d) {
     return (`
-    <div class="card-inner card-rect">
+    <div class="card-inner card-rect" ${getCardStyle()}>
       ${textDisplay(d)}
     </div>
     `)
   }
 
   function textDisplay(d) {
+    if (d.data._new_rel_data) return `<div>${d.data.data.label}</div>`
     return (`
       ${props.card_display.map(display => `<div>${display(d.data)}</div>`).join('')}
     `)
@@ -54,12 +59,17 @@ export function CardHtml(props) {
   function getMiniTree(d) {
     if (!props.mini_tree) return ''
     if (d.data.to_add) return ''
+    if (d.data._new_rel_data) return ''
     if (d.all_rels_displayed) return ''
     return `<div class="mini-tree">${miniTreeSvgIcon()}</div>`
   }
 
-  function cardInnerDefault(d) {
+  function cardInnerImageCircleRect(d) {
     return d.data.data.avatar ? cardInnerImageCircle(d) : cardInnerRect(d)
+  }
+
+  function cardInnerDefault(d) {
+    return getCardInnerImageRect(d)
   }
 
   function cardInnerImageCircle(d) {
@@ -82,6 +92,38 @@ export function CardHtml(props) {
 
     if (d.data.main) class_list.push('card-main')
 
+    if (d.data._new_rel_data) class_list.push('card-new-rel')
+
     return class_list
+  }
+
+  function getCardStyle() {
+    let style = 'style="'
+    if (props.card_dim.w || props.card_dim.h) {
+      style += `width: ${props.card_dim.w}px; min-height: ${props.card_dim.h}px;`
+      if (props.card_dim.height_auto) style += 'height: auto;'
+      else style += `height: ${props.card_dim.h}px;`
+    } else {
+      return ''
+    }
+    style += '"'
+    return style
+  }
+
+  function getCardImageStyle() {
+    let style = 'style="position: relative;'
+    if (props.card_dim.img_w || props.card_dim.img_h || props.card_dim.img_x || props.card_dim.img_y) {
+      style += `width: ${props.card_dim.img_w}px; height: ${props.card_dim.img_h}px;`
+      style += `left: ${props.card_dim.img_x}px; top: ${props.card_dim.img_y}px;`
+    } else {
+      return ''
+    }
+    style += '"'
+    return style
+  }
+
+  function noImageIcon(d) {
+    if (d.data._new_rel_data) return `<div class="person-icon" ${getCardImageStyle()}>${plusSvgIcon()}</div>`
+    return `<div class="person-icon" ${getCardImageStyle()}>${personSvgIcon()}</div>`
   }
 }

@@ -1,3 +1,9 @@
+.f3 {
+  --female-color: rgb(196, 138, 146);
+  --male-color: rgb(120, 159, 172);
+  --background-color: rgb(33, 33, 33);
+}
+
 .f3 .cursor-pointer {
   cursor: pointer;
 }
@@ -9,10 +15,10 @@
   fill: currentColor;
 }
 .f3 rect.card-female, .f3 .card-female .card-body-rect, .f3 .card-female .text-overflow-mask {
-  fill: rgb(196, 138, 146);
+  fill: var(--female-color);
 }
 .f3 rect.card-male, .f3 .card-male .card-body-rect, .f3 .card-male .text-overflow-mask {
-  fill: rgb(120, 159, 172);
+  fill: var(--male-color);
 }
 .f3 .card-genderless .card-body-rect, .f3 .card-genderless .text-overflow-mask {
   fill: lightgray;
@@ -78,7 +84,15 @@
   transform: translateY(-8px) scale(0.8);
 }
 .f3.f3-cont {
-  width:100%;height:900px;max-height:70vh;background-color:rgb(33,33,33);color:#fff;
+  width:100%;
+  height:900px;
+  max-height:70vh;
+  background-color: var(--background-color);
+  color:#fff;
+}
+.f3 {
+  position: relative;
+  display: flex;
 }
 
 
@@ -178,6 +192,10 @@
   text-align: right;
 }
 
+.f3-form-title {
+  text-align: center;
+}
+
 .f3-form.non-editable .f3-form-buttons, .f3-form.non-editable .f3-delete-btn {
   display: none;
 }
@@ -186,11 +204,246 @@
   cursor: pointer;
   position: absolute;
   left: 10px;
-  top: 0;
+  top: 8px;
   font-size: 30px;
   color: #fff;
 }
 
 .f3-edit-btn {
+  position: relative;
+  top: -1px;
+  width: 24px;
+  height: 24px;
   cursor: pointer;
+  display: inline-block;
+}
+
+.f3-add-relative-btn {
+  cursor: pointer;
+  width: 27px;
+  height: 27px;
+  margin-right: 5px;
+  display: inline-block;
+}
+
+/* card-html */
+
+.f3 div.card {
+  cursor: pointer;
+  color: #fff;
+  position: relative;
+  line-height: 1.2;
+}
+
+.f3 div.card-image-circle {
+  border-radius: 50%;
+  padding: 5px;
+  width: 90px;
+  height: 90px;
+}
+
+.f3 div.card-image-circle div.card-label {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  max-width: 150%;
+  min-height: 22px;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-radius: 3px;
+  padding: 0 5px;
+}
+
+.f3 div.card-image-circle img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.f3 div.card-image-circle .person-icon {
+  width: 80px;
+  height: 80px;
+  padding: 10px;
+  border-radius: 50%;
+}
+
+.f3 div.card-image-circle svg {
+  width: 100%;
+  height: 100%;
+  border-radius: 20%;
+  object-fit: cover;
+}
+
+.f3 div.card-image-circle img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.f3 div.card-rect {
+  padding: 5px;
+  border-radius: 3px;
+  width: 120px;
+  min-height: 70px;
+  overflow: hidden;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+
+.f3 div.card-image-rect {
+  width: 200px;
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  border-radius: 5px;
+}
+
+.f3 div.card-image-rect .person-icon {
+  height: 70px;
+  width: 70px;
+  object-fit: cover;
+  flex: 0 0 auto;
+  padding: 5px;
+  margin-right: 10px;
+}
+
+.f3 div.card-image-rect img {
+  height: 70px;
+  width: 70px;
+  object-fit: cover;
+  flex: 0 0 auto;
+  padding: 5px;
+  margin-right: 10px;
+  border-radius: 8px;
+}
+
+.f3 div.card-image-rect svg {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+  border-radius: 7px;
+}
+
+.f3 div.card-image-rect div.card-label {
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.f3 div.mini-tree {
+  text-align: right;
+  position: absolute;
+  top: -15px;
+  right: -2px;
+  z-index: -1;
+}
+.f3 div.mini-tree svg {
+  width: 55px;
+}
+
+.f3 div.card > div {
+  transition: transform 0.2s ease-in-out;
+  box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.8);
+}
+
+.f3 .card-inner {
+  border: 2px solid rgba(0,0,0,0);
+}
+
+.f3 div.card-female .card-inner, .f3 div.card-female .person-icon svg {
+  background-color: var(--female-color);
+}
+.f3 div.card-male .card-inner, .f3 div.card-male .person-icon svg {
+  background-color: var(--male-color);
+}
+.f3 div.card-genderless .card-inner, .f3 div.card-genderless .person-icon svg {
+  background-color: lightgray;
+}
+
+.f3 div.card-new-rel .card-inner, .f3 div.card-new-rel .person-icon svg {
+  background-color: var(--background-color);
+}
+
+.f3 div.card-new-rel .card-inner {
+  border-width: 1px;
+  border-style: dashed;
+}
+.f3 div.card-new-rel.card-female .card-inner {
+  border-color: var(--female-color);
+  color: var(--female-color);
+}
+.f3 div.card-new-rel.card-male .card-inner {
+  color: var(--male-color);
+  border-color: var(--male-color);
+}
+
+.f3 div.card:hover > div {
+  transform: translate(0, -2px);
+}
+.f3 div.card-main .card-inner, .f3 div.card:hover .card-inner {
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.8);
+}
+.f3 div.card-main .card-inner {
+  border-color: rgba(200, 200, 200, 1);
+}
+
+
+
+
+
+
+.f3-form-cont {
+  position: relative;
+  z-index: 4;
+  right: 0;
+  top: 0;
+  width: 0;
+  height: 100%;
+  background-color: var(--background-color);
+  overflow: auto;
+  flex: 0 0 auto;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+}
+
+.f3-form-cont.opened {
+  width: 350px;
+}
+
+.f3-form {
+  padding: 20px;
+}
+
+.f3-history-controls {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+}
+
+.f3-back-button, .f3-forward-button {
+  width: 30px;
+  height: 30px;
+  transition: opacity 0.3s ease;
+  cursor: pointer;
+  display: inline-block;
+  background-color: transparent;
+  border: none;
+  margin-right: 10px;
+}
+
+
+.f3-back-button.disabled, .f3-forward-button.disabled {
+  opacity: 0.5;
 }

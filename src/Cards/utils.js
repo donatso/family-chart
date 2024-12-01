@@ -6,6 +6,8 @@ export function processCardDisplay(card_display) {
         card_display_arr.push(d)
       } else if (typeof d === 'string') {
         card_display_arr.push(d1 => d1.data[d])
+      } else if (Array.isArray(d)) {
+        card_display_arr.push(d1 => d.map(d2 => d1.data[d2]).join(' '))
       }
     })
   } else if (typeof card_display === 'function') {
