@@ -20,7 +20,12 @@ export function createLinks({d, tree, is_vertical}) {
           _p = {x: d.x, y: d.y}
         return Link(_d, _p)
       },
-      curve: true, id: linkId(d, d.parents[0], d.parents[1]), depth: d.depth+1, is_ancestry: true
+      curve: true, 
+      id: linkId(d, d.parents[0], d.parents[1]), 
+      depth: d.depth+1, 
+      is_ancestry: true,
+      source: d,
+      target: [d.parents[0], d.parents[1]]
     })
   }
 
@@ -35,7 +40,12 @@ export function createLinks({d, tree, is_vertical}) {
       links.push({
         d: Link(child, {x: sx, y: d.y}),
         _d: () => Link({x: sx, y: d.y}, {x: _or(child, 'x'), y: _or(child, 'y')}),
-        curve: true, id: linkId(child, d, other_parent), depth: d.depth+1
+        curve: true,
+        id: linkId(child, d, other_parent),
+        depth: d.depth+1,
+        is_ancestry: false,
+        source: [d, other_parent],
+        target: child
       })
     })
   }
@@ -51,7 +61,13 @@ export function createLinks({d, tree, is_vertical}) {
           d.is_ancestry ? [_or(d, 'x')-.0001, _or(d, 'y')] : [d.x, d.y], // add -.0001 to line to have some length if d.x === spouse.x
           d.is_ancestry ? [_or(spouse, 'x', true), _or(spouse, 'y')] : [d.x-.0001, d.y]
         ],
-        curve: false, id: [d.data.id, spouse.data.id].join(", "), depth: d.depth, spouse: true, is_ancestry: spouse.is_ancestry
+        curve: false, 
+        id: linkId(d, spouse), 
+        depth: d.depth, 
+        spouse: true, 
+        is_ancestry: spouse.is_ancestry, 
+        source: d, 
+        target: spouse
       })
     })
   }
@@ -96,6 +112,68 @@ export function createLinks({d, tree, is_vertical}) {
   }
 }
 
+export function pathToMain(links, datum, main_datum) {
+  const is_ancestry = datum.is_ancestry
+  const links_data = links.data()
+  let links_node_to_main = []
+
+  if (is_ancestry) {
+    const links_to_main = []
+
+    let parent = datum
+    let itteration1 = 0
+    while (parent !== main_datum && itteration1 < 100) {
+      itteration1++  // to prevent infinite loop
+      const spouse_link = links_data.find(d => d.spouse === true && (d.source === parent || d.target === parent))
+      if (!spouse_link) break
+      const child_link = links_data.find(d => Array.isArray(d.target) && d.target.includes(spouse_link.source) && d.target.includes(spouse_link.target))
+      if (!child_link) break
+      links_to_main.push(spouse_link)
+      links_to_main.push(child_link)
+      parent = child_link.source
+    }
+    links.each(function(d) {
+      if (links_to_main.includes(d)) {
+        links_node_to_main.push({link: d, node: this})
+      }
+    })
+  } else if (datum.spouse && datum.spouse.data === main_datum) {
+    links.each(function(d) {
+      if (d.target === datum) links_node_to_main.push({link: d, node: this})
+    })
+  } else {
+    let links_to_main = []
+
+    let child = datum
+    let itteration1 = 0
+    while (parent !== main_datum && itteration1 < 100) {
+      itteration1++  // to prevent infinite loop
+      const child_link = links_data.find(d => d.target === child && Array.isArray(d.source))
+      if (child_link) {
+        const spouse_link = links_data.find(d => d.spouse === true && sameArray([d.source, d.target], child_link.source))
+        links_to_main.push(child_link)
+        links_to_main.push(spouse_link)
+        if (spouse_link) child = spouse_link.source
+      } else {
+        const spouse_link = links_data.find(d => d.target === child && !Array.isArray(d.source))  // spouse link
+        if (!spouse_link) break
+        links_to_main.push(spouse_link)
+        child = spouse_link.source
+      }
+    }
+
+    links.each(function(d) {
+      if (links_to_main.includes(d)) {
+        links_node_to_main.push({link: d, node: this})
+      }
+    })
+  }
+  return links_node_to_main
+
+  function sameArray(arr1, arr2) {
+    return arr1.every(d1 => arr2.some(d2 => d1 === d2))
+  }
+}
 
 
 
