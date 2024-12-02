@@ -79,7 +79,8 @@ export function handleNewRel({datum, new_rel_datum, data_stash}) {
     let mother = data_stash.find(d => d.id === new_rel_datum.rels.mother)
     let father = data_stash.find(d => d.id === new_rel_datum.rels.father)
     if (!mother) {
-      mother = createNewPerson({data: {gender: "F", label: "Add Mother"}, rels: {children: [], spouses: [datum.id]}})
+      mother = createNewPerson({data: {gender: "F"}, rels: {children: [], spouses: [datum.id]}})
+      mother.to_add = true
       mother.id = new_rel_datum.rels.mother
       if (!datum.rels.spouses) datum.rels.spouses = []
       datum.rels.spouses.push(mother.id)
@@ -87,7 +88,8 @@ export function handleNewRel({datum, new_rel_datum, data_stash}) {
     }
 
     if (!father) {
-      father = createNewPerson({data: {gender: "F", label: "Add Father"}, rels: {children: [], spouses: [datum.id]}})
+      father = createNewPerson({data: {gender: "F"}, rels: {children: [], spouses: [datum.id]}})
+      father.to_add = true
       father.id = new_rel_datum.rels.father
       if (!datum.rels.spouses) datum.rels.spouses = []
       datum.rels.spouses.push(father.id)
@@ -116,14 +118,26 @@ export function handleNewRel({datum, new_rel_datum, data_stash}) {
   if (rel_type === "father") {
     datum.rels.father = new_rel_datum.id
     new_rel_datum.rels = {
-      children: [datum.id]
+      children: [datum.id],
+    }
+    if (datum.rels.mother) {
+      new_rel_datum.rels.spouses = [datum.rels.mother]
+      const mother = data_stash.find(d => d.id === datum.rels.mother)
+      if (!mother.rels.spouses) mother.rels.spouses = []
+      mother.rels.spouses.push(new_rel_datum.id)
     }
   }
 
   if (rel_type === "mother") {
     datum.rels.mother = new_rel_datum.id
     new_rel_datum.rels = {
-      children: [datum.id]
+      children: [datum.id],
+    }
+    if (datum.rels.father) {
+      new_rel_datum.rels.spouses = [datum.rels.father]
+      const father = data_stash.find(d => d.id === datum.rels.father)
+      if (!father.rels.spouses) father.rels.spouses = []
+      father.rels.spouses.push(new_rel_datum.id)
     }
   }
 

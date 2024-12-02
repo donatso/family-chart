@@ -3,6 +3,7 @@ import CalculateTree from "./CalculateTree/CalculateTree.js"
 export default function createStore(initial_state) {
   let onUpdate;
   const state = initial_state;
+  state.main_id_history = [] 
 
   const store = {
     state,
@@ -22,6 +23,7 @@ export default function createStore(initial_state) {
     getDatum,
     getTreeMainDatum,
     getTreeDatum,
+    getLastAvailableMainDatum,
 
     methods: {},
   }
@@ -29,11 +31,8 @@ export default function createStore(initial_state) {
   return store
 
   function calcTree() {
-    let main_id = null
-    const main_datum = (getDatum(state.main_id) || getDatum(state._main_id))
-    if (main_datum) main_id = main_datum.id
     return CalculateTree({
-      data: state.data, main_id,
+      data: state.data, main_id: state.main_id,
       node_separation: state.node_separation, level_separation: state.level_separation
     })
   }
@@ -58,7 +57,16 @@ export default function createStore(initial_state) {
 
   function updateMainId(id) {
     if (id === state.main_id) return
-    state._main_id = state.main_id
+    state.main_id_history = state.main_id_history.filter(d => d !== id).slice(-10)
+    state.main_id_history.push(id)
     state.main_id = id
+  }
+
+  // if main_id is deleted, get the last available main_id
+  function getLastAvailableMainDatum() {
+    let main_id = state.main_id_history.slice(0).reverse().find(id => getDatum(id))
+    if (!main_id) main_id = state.data[0].id
+    if (main_id !== state.main_id) updateMainId(main_id)
+    return getDatum(main_id)
   }
 }

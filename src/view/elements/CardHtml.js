@@ -11,7 +11,7 @@ export function CardHtml(props) {
 
   return function (d) {
     this.innerHTML = (`
-    <div class="card ${getClassList(d).join(' ')}"" style="transform: translate(-50%, -50%); pointer-events: auto;">
+    <div class="card ${getClassList(d).join(' ')}" data-id="${d.data.id}" style="transform: translate(-50%, -50%); pointer-events: auto;">
       ${props.mini_tree ? getMiniTree(d) : ''}
       ${cardInner(d)}
     </div>
@@ -50,10 +50,18 @@ export function CardHtml(props) {
   }
 
   function textDisplay(d) {
-    if (d.data._new_rel_data) return `<div>${d.data.data.label}</div>`
+    if (d.data._new_rel_data) return newRelDataDisplay(d)
+    if (d.data.to_add) return `<div>ADD</div>`
     return (`
       ${props.card_display.map(display => `<div>${display(d.data)}</div>`).join('')}
     `)
+  }
+
+  function newRelDataDisplay(d) {
+    const attr_list = []
+    attr_list.push(`data-rel-type="${d.data._new_rel_data.rel_type}"`)
+    if (['son', 'daughter'].includes(d.data._new_rel_data.rel_type)) attr_list.push(`data-other-parent-id="${d.data._new_rel_data.other_parent_id}"`)
+    return `<div ${attr_list.join(' ')}>${d.data._new_rel_data.label}</div>`
   }
 
   function getMiniTree(d) {
@@ -93,6 +101,8 @@ export function CardHtml(props) {
     if (d.data.main) class_list.push('card-main')
 
     if (d.data._new_rel_data) class_list.push('card-new-rel')
+
+    if (d.data.to_add) class_list.push('card-to-add')
 
     return class_list
   }

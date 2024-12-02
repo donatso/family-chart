@@ -66,7 +66,7 @@ export function formInfoSetup(form_creator, closeCallback) {
       ${closeBtn()}
       ${form_creator.title ? `<h3 class="f3-form-title">${form_creator.title}</h3>` : ''}
       <div style="text-align: right; display: ${form_creator.new_rel ? 'none' : 'block'}">
-        ${form_creator.addRelative && !form_creator.editable ? addRelativeBtn() : ''}
+        ${form_creator.addRelative ? addRelativeBtn() : ''}
         ${form_creator.no_edit ? spaceDiv() : editBtn()}
       </div>
       ${genderRadio()}

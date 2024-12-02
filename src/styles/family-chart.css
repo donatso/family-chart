@@ -376,15 +376,25 @@
   background-color: var(--background-color);
 }
 
+.f3 div.card-to-add .card-inner {
+  background-color: var(--background-color);
+  border-color: currentColor;
+}
+
+
+.f3 div.card-to-add .person-icon svg {
+  display: none;
+}
+
 .f3 div.card-new-rel .card-inner {
   border-width: 1px;
   border-style: dashed;
 }
-.f3 div.card-new-rel.card-female .card-inner {
+.f3 div.card-new-rel.card-female .card-inner, .f3 div.card-to-add.card-female .card-inner {
   border-color: var(--female-color);
   color: var(--female-color);
 }
-.f3 div.card-new-rel.card-male .card-inner {
+.f3 div.card-new-rel.card-male .card-inner, .f3 div.card-to-add.card-male .card-inner {
   color: var(--male-color);
   border-color: var(--male-color);
 }

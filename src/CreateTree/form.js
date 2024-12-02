@@ -1,25 +1,28 @@
 import {checkIfRelativesConnectedWithoutPerson} from "./checkIfRelativesConnectedWithoutPerson.js"
 import {createTreeDataWithMainNode} from "./newPerson.js"
 
-export function createForm({datum, store, fields, postSubmit, addRelative, deletePerson, onCancel}) {
+export function createForm({datum, store, fields, postSubmit, addRelative, deletePerson, onCancel, editFirst}) {
   const form_creator = {
     fields: [],
     onSubmit: submitFormChanges,
   }
-  if (!datum.to_add && !datum._new_rel_data) {
+  if (!datum._new_rel_data) {
     form_creator.onDelete = deletePersonWithPostSubmit
-    form_creator.addRelative = () => addRelative.activate(),
+    form_creator.addRelative = () => addRelative.activate(datum),
     form_creator.addRelativeCancel = () => addRelative.onCancel()
+    form_creator.addRelativeActive = addRelative.is_active
 
     form_creator.editable = false
   }
   if (datum._new_rel_data) {
-    form_creator.title = datum.data.label
+    form_creator.title = datum._new_rel_data.label
     form_creator.new_rel = true
     form_creator.editable = true
     form_creator.onCancel = onCancel
   }
   if (form_creator.onDelete) form_creator.can_delete = checkIfRelativesConnectedWithoutPerson(datum, store.getData())
+
+  if (editFirst) form_creator.editable = true
 
   form_creator.gender_field = {
     id: 'gender', 
@@ -45,7 +48,7 @@ export function createForm({datum, store, fields, postSubmit, addRelative, delet
     e.preventDefault()
     const form_data = new FormData(e.target)
     form_data.forEach((v, k) => datum.data[k] = v)
-
+    if (datum.to_add) delete datum.to_add
     postSubmit()
   }
 
