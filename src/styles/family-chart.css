@@ -265,17 +265,11 @@
   object-fit: cover;
 }
 
-.f3 div.card-image-circle .person-icon {
-  width: 80px;
-  height: 80px;
-  padding: 10px;
-  border-radius: 50%;
-}
-
 .f3 div.card-image-circle svg {
   width: 100%;
   height: 100%;
-  border-radius: 20%;
+  padding: 5px;
+  border-radius: 50%;
   object-fit: cover;
 }
 
