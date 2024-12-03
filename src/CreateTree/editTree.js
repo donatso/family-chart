@@ -92,7 +92,6 @@ EditTree.prototype.cardEditForm = function(datum) {
   this.openForm()
 
   function postSubmit(props) {
-    console.log(props)
     if (datum?._new_rel_data) this.addRelativeInstance.onSubmit(datum)
     else if (!props?.delete) this.openFormWithId(datum.id);
 
@@ -100,12 +99,7 @@ EditTree.prototype.cardEditForm = function(datum) {
     
     this.store.updateTree({})
 
-    if (this.history) {
-      this.history.changed()
-      this.history.controls.updateButtons()
-    }
-
-    if (this.onChange) this.onChange()
+    this.updateHistory()
   }
 }
 
@@ -249,6 +243,25 @@ EditTree.prototype.isAddingRelative = function() {
 EditTree.prototype.setAddRelLabels = function(add_rel_labels) {
   this.addRelativeInstance.setAddRelLabels(add_rel_labels)
   return this
+}
+
+EditTree.prototype.getStoreData = function() {
+  if (this.addRelativeInstance.is_active) return this.addRelativeInstance.store_data
+  else return this.store.getData()
+}
+
+EditTree.prototype.getDataJson = function(fn) {
+  const data = this.getStoreData()
+  return f3.handlers.cleanupDataJson(JSON.stringify(data))
+}
+
+EditTree.prototype.updateHistory = function() {
+  if (this.history) {
+    this.history.changed()
+    this.history.controls.updateButtons()
+  }
+
+  if (this.onChange) this.onChange()
 }
 
 

@@ -109,9 +109,26 @@ export function handleNewRel({datum, new_rel_datum, data_stash}) {
 
   if (rel_type === "spouse") {
     if (!datum.rels.spouses) datum.rels.spouses = []
-    datum.rels.spouses.push(new_rel_datum.id)
+    if (!datum.rels.spouses.includes(new_rel_datum.id)) datum.rels.spouses.push(new_rel_datum.id)
+
+    // if rel is added in same same add relative tree then we need to clean up duplicate parent
+    new_rel_datum.rels.children = new_rel_datum.rels.children.filter(child_id => {
+      const child = data_stash.find(d => d.id === child_id)
+      if (!child) return false
+      if (child.rels.mother !== datum.id) {
+        if (data_stash.find(d => d.id === child.rels.mother)) data_stash.splice(data_stash.findIndex(d => d.id === child.rels.mother), 1)
+        child.rels.mother = new_rel_datum.id
+      }
+      if (child.rels.father !== datum.id) {
+        if (data_stash.find(d => d.id === child.rels.father)) data_stash.splice(data_stash.findIndex(d => d.id === child.rels.father), 1)
+        child.rels.father = new_rel_datum.id
+      }
+      return true
+    })
+
     new_rel_datum.rels = {
-      spouses: [datum.id]
+      spouses: [datum.id],
+      children: new_rel_datum.rels.children
     }
   }
 

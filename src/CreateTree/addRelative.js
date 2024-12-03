@@ -14,6 +14,7 @@ function AddRelative(store, cancelCallback, onSubmitCallback) {
   this.onCancel = null
 
   this.is_active = false
+  this.store_data = null
 
   this.addRelLabels = this.addRelLabelsDefault()
 
@@ -26,11 +27,11 @@ AddRelative.prototype.activate = function(datum) {
 
   const store = this.store
 
-  const store_data = store.getData()
+  this.store_data = store.getData()
   this.datum = datum
   datum = JSON.parse(JSON.stringify(this.datum))
 
-  const datum_rels = getDatumRelsData(datum, store_data, this.addRelLabels)
+  const datum_rels = getDatumRelsData(datum, this.store_data, this.addRelLabels)
   store.updateData(datum_rels)
   store.updateTree({})
 
@@ -38,10 +39,8 @@ AddRelative.prototype.activate = function(datum) {
   this.onCancel = onCancel.bind(this)
 
   function onSubmit(new_rel_datum) {
-    // this.is_active = false
-
-    // store.updateData(store_data)
-    handleNewRel({datum: this.datum, new_rel_datum, data_stash: store_data})
+    this.datum.data = datum.data  // if in meanwhile the user changed the data for main datum, we need to keep it
+    handleNewRel({datum: this.datum, new_rel_datum, data_stash: this.store_data})
 
     this.onSubmitCallback(this.datum, new_rel_datum)
   }
@@ -50,7 +49,8 @@ AddRelative.prototype.activate = function(datum) {
     if (!this.is_active) return
     this.is_active = false
 
-    store.updateData(store_data)
+    store.updateData(this.store_data)
+    this.store_data = null
     this.cancelCallback(this.datum)
   }
 
@@ -99,7 +99,7 @@ function getDatumRelsData(datum, store_data, addRelLabels) {
 
   mother.rels.children = [datum.id]
   father.rels.children = [datum.id]
-  
+
   if (!datum.rels.spouses) datum.rels.spouses = []
   const new_spouse = createNewPerson({data: {gender: "F"}, rels: {spouses: [datum.id]}})
   new_spouse._new_rel_data = {rel_type: "spouse", label: addRelLabels.spouse}
