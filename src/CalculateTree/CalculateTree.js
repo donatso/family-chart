@@ -4,6 +4,7 @@ import {createNewPerson} from "../CreateTree/newPerson.js"
 import {isAllRelativeDisplayed} from "../handlers/general.js"
 
 export default function CalculateTree({data, main_id=null, node_separation=250, level_separation=150}) {
+  if (!data || !data.length) return {data: [], data_stash: [], dim: {width: 0, height: 0}, main_id: null}
   const is_vertical = true;
   const data_stash = createRelsToAdd(data)
   sortChildrenWithSpouses(data_stash)
