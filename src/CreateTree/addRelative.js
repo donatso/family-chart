@@ -110,6 +110,7 @@ function getDatumRelsData(datum, store_data, addRelLabels) {
   datum.rels.spouses.forEach(spouse_id => {
     const spouse = datum_rels.find(d => d.id === spouse_id)
     if (!spouse.rels.children) spouse.rels.children = []
+    spouse.rels.children = spouse.rels.children.filter(child_id => datum.rels.children.includes(child_id))
     
     const new_son = createNewPerson({data: {gender: "M"}, rels: {father: datum.id, mother: spouse.id}})
     new_son._new_rel_data = {rel_type: "son", label: addRelLabels.son, other_parent_id: spouse.id}
