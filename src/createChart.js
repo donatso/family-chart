@@ -15,6 +15,9 @@ function CreateChart(cont, data) {
 
   this.is_card_html = false
 
+  this.beforeUpdate = null
+  this.afterUpdate = null
+
   this.init(cont, data)
 
   return this
@@ -38,9 +41,11 @@ CreateChart.prototype.init = function(cont, data) {
   this.setCard(f3.CardSvg) // set default card
 
   this.store.setOnUpdate(props => {
+    if (this.beforeUpdate) this.beforeUpdate(props)
     props = Object.assign({}, props || {}, {transition_time: this.transition_time})
     if (this.is_card_html) props = Object.assign({}, props || {}, {cardHtml: getHtmlSvg()})
     f3.view(this.store.getTree(), this.svg, this.getCard(), props || {})
+    if (this.afterUpdate) this.afterUpdate(props)
   })
 }
 
@@ -110,6 +115,12 @@ CreateChart.prototype.updateMain = function(d) {
   return this
 }
 
+CreateChart.prototype.updateMainId = function(id) {
+  this.store.updateMainId(id)
+
+  return this
+}
+
 CreateChart.prototype.getMainDatum = function() {
   return this.store.getMainDatum()
 }
@@ -121,6 +132,16 @@ CreateChart.prototype.getDataJson = function(fn) {
 
 CreateChart.prototype.updateData = function(data) {
   this.store.updateData(data)
+}
+
+CreateChart.prototype.setBeforeUpdate = function(fn) {
+  this.beforeUpdate = fn
+  return this
+}
+
+CreateChart.prototype.setAfterUpdate = function(fn) {
+  this.afterUpdate = fn
+  return this
 }
 
 function setCont(cont) {
