@@ -2,7 +2,7 @@ import d3 from "../d3.js"
 import {cleanupDataJson} from "./form.js"
 import * as icons from "../view/elements/Card.icons.js"
 
-export function createHistory(store, onUpdate) {
+export function createHistory(store, getStoreData, onUpdate) {
   let history = []
   let history_index = -1
   
@@ -16,7 +16,7 @@ export function createHistory(store, onUpdate) {
 
   function changed() {
     if (history_index < history.length - 1) history = history.slice(0, history_index)
-    const clean_data = JSON.parse(cleanupDataJson(JSON.stringify(store.getData())))
+    const clean_data = JSON.parse(cleanupDataJson(JSON.stringify(getStoreData())))
     clean_data.main_id = store.getMainId()
     history.push(clean_data)
     history_index++

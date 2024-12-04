@@ -151,7 +151,7 @@ EditTree.prototype.openFormWithId = function(d_id) {
 }
 
 EditTree.prototype.createHistory = function() {
-  this.history = f3.handlers.createHistory(this.store, historyUpdateTree.bind(this))
+  this.history = f3.handlers.createHistory(this.store, this.getStoreData.bind(this), historyUpdateTree.bind(this))
   this.history.controls = f3.handlers.createHistoryControls(this.cont, this.history)
   this.history.changed()
   this.history.controls.updateButtons()
@@ -159,6 +159,7 @@ EditTree.prototype.createHistory = function() {
   return this
 
   function historyUpdateTree() {
+    if (this.addRelativeInstance.is_active) this.addRelativeInstance.onCancel()
     this.store.updateTree({initial: false})
     this.history.controls.updateButtons()
     this.openFormWithId(this.store.getMainDatum()?.id)
@@ -270,7 +271,7 @@ EditTree.prototype.destroy = function() {
   this.history.controls.destroy()
   this.history = null
   d3.select(this.cont).select('.f3-form-cont').remove()
-  this.addRelativeInstance.onCancel()
+  if (this.addRelativeInstance.onCancel) this.addRelativeInstance.onCancel()
   this.store.updateTree({})
 
   return this
