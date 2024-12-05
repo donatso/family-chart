@@ -353,7 +353,8 @@
 }
 
 .f3 .card-inner {
-  border: 2px solid rgba(0,0,0,0);
+  outline: 0px solid rgba(255, 255, 255, 1);
+  transition: outline 0.5s ease-in-out;
 }
 
 .f3 div.card-female .card-inner, .f3 div.card-female .person-icon svg {
@@ -372,7 +373,7 @@
 
 .f3 div.card-to-add .card-inner {
   background-color: var(--background-color);
-  border-color: currentColor;
+  border: 1px solid;
 }
 
 
@@ -383,6 +384,7 @@
 .f3 div.card-new-rel .card-inner {
   border-width: 1px;
   border-style: dashed;
+  outline: 0px !important;
 }
 .f3 div.card-new-rel.card-female .card-inner, .f3 div.card-to-add.card-female .card-inner {
   border-color: var(--female-color);
@@ -399,10 +401,22 @@
 .f3 div.card-main .card-inner, .f3 div.card:hover .card-inner {
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.8);
 }
+
 .f3 div.card-main .card-inner {
-  border-color: rgba(200, 200, 200, 1);
+  outline: 4px solid rgba(220, 220, 220, 1);
 }
 
+.f3 div.card-inner.f3-path-to-main {
+  outline: 4px solid rgba(255, 255, 255, 1);
+}
+
+.f3 .link {
+  transition: stroke-width 0.2s ease-in-out;
+}
+
+.f3 .link.f3-path-to-main {
+  stroke-width: 4px;
+}
 
 
 

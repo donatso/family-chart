@@ -107,16 +107,31 @@ CardHtml.prototype.unsetOnHoverPathToMain = function() {
 }
 
 CardHtml.prototype.onEnterPathToMain = function(e, datum) {
-  const main_datum = this.store.getMainDatum()
+  this.to_transition = datum.data.id
+  const main_datum = this.store.getTreeMainDatum()
+  const cards = d3.select(this.cont).select('div.cards_view').selectAll('.card_cont')
   const links = d3.select(this.cont).select('svg.main_svg .links_view').selectAll('.link')
-  const links_to_main = pathToMain(links, datum, main_datum)
-  links_to_main.forEach(d => d3.select(d.node).transition().duration(100).attr('stroke-width', 4))
+  const [cards_node_to_main, links_node_to_main] = pathToMain(cards, links, datum, main_datum)
+  cards_node_to_main.forEach(d => {
+    const delay = Math.abs(datum.depth - d.card.depth) * 200
+    d3.select(d.node.querySelector('div.card-inner'))
+      .transition().duration(0).delay(delay)
+      .on('end', () => this.to_transition === datum.data.id && d3.select(d.node.querySelector('div.card-inner')).classed('f3-path-to-main', true))
+  })
+  links_node_to_main.forEach(d => {
+    const delay = Math.abs(datum.depth - d.link.depth) * 200
+    d3.select(d.node)
+      .transition().duration(0).delay(delay)
+      .on('end', () => this.to_transition === datum.data.id && d3.select(d.node).classed('f3-path-to-main', true))
+  })
 
   return this
 }
 
 CardHtml.prototype.onLeavePathToMain = function(e, d) {
-  d3.select(this.cont).select('svg.main_svg .links_view').selectAll('.link').transition().duration(500).attr('stroke-width', 1)
+  this.to_transition = false
+  d3.select(this.cont).select('div.cards_view').selectAll('div.card-inner').classed('f3-path-to-main', false)
+  d3.select(this.cont).select('svg.main_svg .links_view').selectAll('.link').classed('f3-path-to-main', false)
 
   return this
 }

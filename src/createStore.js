@@ -47,7 +47,7 @@ export default function createStore(initial_state) {
 
   function getTreeMainDatum() {
     if (!state.tree) return null;
-    return state.tree.data.find(d => d.id === state.main_id)
+    return state.tree.data.find(d => d.data.id === state.main_id)
   }
 
   function getTreeDatum(id) {
