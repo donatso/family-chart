@@ -10,7 +10,7 @@ function AddRelative(store, cancelCallback, onSubmitCallback) {
 
   this.datum = null
 
-  this.onSubmit = null
+  this.onChange = null
   this.onCancel = null
 
   this.is_active = false
@@ -35,14 +35,19 @@ AddRelative.prototype.activate = function(datum) {
   store.updateData(datum_rels)
   store.updateTree({})
 
-  this.onSubmit = onSubmit.bind(this)
+  this.onChange = onChange.bind(this)
   this.onCancel = onCancel.bind(this)
 
-  function onSubmit(new_rel_datum) {
-    this.datum.data = datum.data  // if in meanwhile the user changed the data for main datum, we need to keep it
-    handleNewRel({datum: this.datum, new_rel_datum, data_stash: this.store_data})
-
-    this.onSubmitCallback(this.datum, new_rel_datum)
+  function onChange(updated_datum) {
+    if (updated_datum?._new_rel_data) {
+      const new_rel_datum = updated_datum
+      handleNewRel({datum: this.datum, new_rel_datum, data_stash: this.store_data})
+      this.onSubmitCallback(this.datum, new_rel_datum)
+    } else if (updated_datum.id === this.datum.id) {
+      this.datum.data = updated_datum.data  // if in meanwhile the user changed the data for main datum, we need to keep it
+    } else {
+      console.error('Something went wrong')
+    }
   }
 
   function onCancel() {
@@ -50,8 +55,12 @@ AddRelative.prototype.activate = function(datum) {
     this.is_active = false
 
     store.updateData(this.store_data)
-    this.store_data = null
     this.cancelCallback(this.datum)
+
+    this.store_data = null
+    this.datum = null
+    this.onChange = null
+    this.onCancel = null
   }
 
 }
@@ -75,6 +84,10 @@ AddRelative.prototype.addRelLabelsDefault = function() {
     son: 'Add Son',
     daughter: 'Add Daughter'
   }
+}
+
+AddRelative.prototype.getStoreData = function() {
+  return this.store_data
 }
 
 function getDatumRelsData(datum, store_data, addRelLabels) {

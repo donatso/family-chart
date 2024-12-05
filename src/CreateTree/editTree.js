@@ -92,7 +92,7 @@ EditTree.prototype.cardEditForm = function(datum) {
   this.openForm()
 
   function postSubmit(props) {
-    if (datum?._new_rel_data) this.addRelativeInstance.onSubmit(datum)
+    if (this.addRelativeInstance.is_active) this.addRelativeInstance.onChange(datum)
     else if (!props?.delete) this.openFormWithId(datum.id);
 
     if (!this.is_fixed) this.closeForm()
@@ -247,7 +247,7 @@ EditTree.prototype.setAddRelLabels = function(add_rel_labels) {
 }
 
 EditTree.prototype.getStoreData = function() {
-  if (this.addRelativeInstance.is_active) return this.addRelativeInstance.store_data
+  if (this.addRelativeInstance.is_active) return this.addRelativeInstance.getStoreData()
   else return this.store.getData()
 }
 
