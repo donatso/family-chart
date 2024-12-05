@@ -94,6 +94,11 @@ CardHtml.prototype.setCardDim = function(card_dim) {
   return this
 }
 
+CardHtml.prototype.resetCardDim = function() {
+  this.card_dim = {}
+  return this
+}
+
 CardHtml.prototype.setOnHoverPathToMain = function() {
   this.onCardMouseenter = this.onEnterPathToMain.bind(this)
   this.onCardMouseleave = this.onLeavePathToMain.bind(this)
