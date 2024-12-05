@@ -2,6 +2,12 @@
   --female-color: rgb(196, 138, 146);
   --male-color: rgb(120, 159, 172);
   --background-color: rgb(33, 33, 33);
+
+  font-family: 'Roboto', sans-serif;
+}
+
+.f3 * {
+  box-sizing: border-box;
 }
 
 .f3 .cursor-pointer {
@@ -109,6 +115,8 @@
   border-radius: 4px;
   box-sizing: border-box;
   font-size: 14px;
+  background: var(--background-color);
+  color: currentColor;
 }
 
 .f3-form input[type="text"]:focus,
