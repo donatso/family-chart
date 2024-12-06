@@ -62,7 +62,27 @@ Family Chart is a powerful D3.js-based visualization library for creating beauti
 - **Example-based Learning**: Explore pre-built examples and customize them to match your needs
 - **Create from Scratch**: Build your family tree from the ground up with an intuitive interface
 - **Full Customization**: Complete control over your tree's structure and styling
-- **Interactive Features**: Built-in interactivity for engaging user experience
+- **Interactive Features**: Built-in interactivity
+
+<!-- GETTING STARTED -->
+## Getting Started
+
+[![Create tree][create-tree-screenshot]](https://donatso.github.io/family-chart-doc/create-tree)
+
+1. Visit [doc/create-tree](https://donatso.github.io/family-chart-doc/create-tree/) 
+2. Create your family tree
+3. Copy/paste generated code for Vanila, Vue or React.
+4. Give me some github stars (:
+
+<!-- USAGE EXAMPLES -->
+## Usage
+
+### [Static](https://codepen.io/donatso/pen/ExqJVEQ?editors=1000)
+
+### [React](https://codepen.io/donatso/pen/mdNgeQN?editors=0010)
+
+### [Vue](https://codepen.io/donatso/pen/poMBjZe)
+
 
 ## Examples
 
@@ -79,28 +99,9 @@ Try it with:
 ### 2. Basic Implementation
 A simple example showing how to create a custom family tree from scratch. This demo features Aristotle's family tree with basic styling and interactions.
 
-[![Basic Family Tree Example][product-basic-tree-screenshot]](https://donatso.github.io/family-chart-doc/examples/2-basic-tree-aristotle)
+[![Basic Family Tree Example][product-basic-tree-screenshot]](https://donatso.github.io/family-chart-doc/examples/1-basic-tree)
 
 
-
-<!-- GETTING STARTED -->
-## Getting Started
-
-1. Visit [doc/create-tree](https://donatso.github.io/family-chart-doc/create-tree/) 
-2. Create your family tree
-3. Copy/paste generated code for Vanila, Vue or React.
-4. Give me some github stars (:
-
-
-
-<!-- USAGE EXAMPLES -->
-## Usage
-
-### [Static](https://codepen.io/donatso/pen/ExqJVEQ?editors=1000)
-
-### [React](https://codepen.io/donatso/pen/mdNgeQN?editors=0010)
-
-### [Vue](https://codepen.io/donatso/pen/poMBjZe)
 
 
 
@@ -147,7 +148,8 @@ Project Link: [https://github.com/donatso/family-chart](https://github.com/donat
 [license-url]: https://github.com/donatso/family-chart/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/donat-sorić-342a92161
-[product-screenshot]: https://user-images.githubusercontent.com/26413530/143689335-7cbcd4e8-ff6c-4657-8d9d-ce6f9de3aa1e.png
-[product-basic-tree-screenshot]: https://user-images.githubusercontent.com/26413530/143689330-19d07f09-a127-45d9-b664-68207873caa4.png
-[product-wiki-tree-screenshot]: https://user-images.githubusercontent.com/26413530/143689337-e810d7ad-fefe-4edd-a7e1-0499bfc40abf.png
+[product-screenshot]: https://github.com/user-attachments/assets/a4f8a9c0-c327-45fa-90bc-23d73578a304
+[product-basic-tree-screenshot]: https://github.com/user-attachments/assets/7e231e53-9230-49f9-ae93-8125096237dc
+[product-wiki-tree-screenshot]: https://github.com/user-attachments/assets/4e2dc169-4b43-46f3-b31c-db17f4d489da
+[create-tree-screenshot]: https://github.com/user-attachments/assets/ce5c4b33-48dd-441c-aa2f-f581b57ddcb7
 
