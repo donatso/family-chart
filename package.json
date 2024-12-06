@@ -34,7 +34,8 @@
   "scripts": {
     "build": "node build.js",
     "test": "yarn run cypress open --project tests",
-    "dev": "http-server"
+    "dev": "http-server",
+    "prepublishOnly": "node build.js"
   },
   "sideEffects": false,
   "dependencies": {
