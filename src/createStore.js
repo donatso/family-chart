@@ -33,7 +33,8 @@ export default function createStore(initial_state) {
   function calcTree() {
     return CalculateTree({
       data: state.data, main_id: state.main_id,
-      node_separation: state.node_separation, level_separation: state.level_separation
+      node_separation: state.node_separation, level_separation: state.level_separation,
+      single_parent_empty_card: state.single_parent_empty_card
     })
   }
 

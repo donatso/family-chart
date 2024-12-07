@@ -47,7 +47,7 @@ function cardBody(d, props) {
   const card_dim = props.card_dim;
 
   let g;
-  if (!d.data.to_add || !props.cardEditForm) {
+  if (!d.data.to_add) {
     g = d3.create('svg:g').html(CardBody({d, card_dim, card_display: props.card_display}).template)
     g.on("click", function (e) {
       e.stopPropagation();

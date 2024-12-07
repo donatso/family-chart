@@ -34,6 +34,7 @@ CardHtml.prototype.init = function() {
     mini_tree: this.mini_tree,
     onCardUpdate: this.onCardUpdate,
     card_dim: this.card_dim,
+    empty_card_label: this.store.state.single_parent_empty_card_label,
     onCardMouseenter: this.onCardMouseenter ? this.onCardMouseenter.bind(this) : null,
     onCardMouseleave: this.onCardMouseleave ? this.onCardMouseleave.bind(this) : null
   })

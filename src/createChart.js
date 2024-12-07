@@ -11,6 +11,7 @@ function CreateChart(cont, data) {
   this.getCard = null
   this.node_separation = 250
   this.level_separation = 150
+  this.single_parent_empty_card = true
   this.transition_time = 2000
 
   this.is_card_html = false
@@ -35,7 +36,8 @@ CreateChart.prototype.init = function(cont, data) {
   this.store = f3.createStore({
     data,
     node_separation: this.node_separation,
-    level_separation: this.level_separation
+    level_separation: this.level_separation,
+    single_parent_empty_card: this.single_parent_empty_card
   })
 
   this.setCard(f3.CardSvg) // set default card
@@ -66,6 +68,7 @@ CreateChart.prototype.setCardYSpacing = function(card_y_spacing) {
     console.error('card_y_spacing must be a number')
     return this
   }
+  this.level_separation = card_y_spacing
   this.store.state.level_separation = card_y_spacing
 
   return this
@@ -76,10 +79,22 @@ CreateChart.prototype.setCardXSpacing = function(card_x_spacing) {
     console.error('card_x_spacing must be a number')
     return this
   }
+  this.node_separation = card_x_spacing
   this.store.state.node_separation = card_x_spacing
 
   return this
 }
+
+CreateChart.prototype.setSingleParentEmptyCard = function(single_parent_empty_card, {label='Unknown'} = {}) {
+  this.single_parent_empty_card = single_parent_empty_card
+  this.store.state.single_parent_empty_card = single_parent_empty_card
+  this.store.state.single_parent_empty_card_label = label
+  if (this.editTreeInstance && this.editTreeInstance.addRelativeInstance.is_active) this.editTreeInstance.addRelativeInstance.onCancel()
+  f3.handlers.removeToAddFromData(this.store.getData() || [])
+
+  return this
+}
+
 
 CreateChart.prototype.setCard = function(Card) {
   this.is_card_html = Card.is_html
@@ -105,7 +120,7 @@ CreateChart.prototype.setTransitionTime = function(transition_time) {
 }
 
 CreateChart.prototype.editTree = function() {
-  return editTree(this.cont, this.store)
+  return this.editTreeInstance = editTree(this.cont, this.store)
 }
 
 CreateChart.prototype.updateMain = function(d) {

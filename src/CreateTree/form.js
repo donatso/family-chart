@@ -97,3 +97,8 @@ export function cleanupDataJson(data_json) {
   data_no_to_add.forEach(d => delete d.hide_rels)
   return JSON.stringify(data_no_to_add, null, 2)
 }
+
+export function removeToAddFromData(data) {
+  data.forEach(d => d.to_add ? removeToAdd(d, data) : d)
+  return data
+}

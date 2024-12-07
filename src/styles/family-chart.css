@@ -384,8 +384,11 @@
   border: 1px solid;
 }
 
+.f3 div.card-to-add .card-inner .card-label {
+  margin: 0 auto;
+}
 
-.f3 div.card-to-add .person-icon svg {
+.f3 div.card-to-add .person-icon {
   display: none;
 }
 

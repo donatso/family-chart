@@ -31,7 +31,7 @@ AddRelative.prototype.activate = function(datum) {
   this.datum = datum
   datum = JSON.parse(JSON.stringify(this.datum))
 
-  const datum_rels = getDatumRelsData(datum, this.store_data, this.addRelLabels)
+  const datum_rels = getDatumRelsData(datum, this.getStoreData(), this.addRelLabels)
   store.updateData(datum_rels)
   store.updateTree({})
 
@@ -41,7 +41,7 @@ AddRelative.prototype.activate = function(datum) {
   function onChange(updated_datum) {
     if (updated_datum?._new_rel_data) {
       const new_rel_datum = updated_datum
-      handleNewRel({datum: this.datum, new_rel_datum, data_stash: this.store_data})
+      handleNewRel({datum: this.datum, new_rel_datum, data_stash: this.getStoreData()})
       this.onSubmitCallback(this.datum, new_rel_datum)
     } else if (updated_datum.id === this.datum.id) {
       this.datum.data = updated_datum.data  // if in meanwhile the user changed the data for main datum, we need to keep it
@@ -54,7 +54,7 @@ AddRelative.prototype.activate = function(datum) {
     if (!this.is_active) return
     this.is_active = false
 
-    store.updateData(this.store_data)
+    store.updateData(this.getStoreData())
     this.cancelCallback(this.datum)
 
     this.store_data = null
@@ -114,6 +114,30 @@ function getDatumRelsData(datum, store_data, addRelLabels) {
   father.rels.children = [datum.id]
 
   if (!datum.rels.spouses) datum.rels.spouses = []
+
+  if (datum.rels.children) {
+    let new_spouse;
+    datum.rels.children.forEach(child_id => {
+      const child = datum_rels.find(d => d.id === child_id)
+      if (!child.rels.mother) {
+        if (!new_spouse) new_spouse = createNewPerson({data: {gender: "F"}, rels: {spouses: [datum.id], children: []}})
+        new_spouse._new_rel_data = {rel_type: "spouse", label: addRelLabels.spouse}
+        new_spouse.rels.children.push(child.id)
+        datum.rels.spouses.push(new_spouse.id)
+        child.rels.mother = new_spouse.id
+        datum_rels.push(new_spouse)
+      }
+      if (!child.rels.father) {
+        if (!new_spouse) new_spouse = createNewPerson({data: {gender: "M"}, rels: {spouses: [datum.id], children: []}})
+        new_spouse._new_rel_data = {rel_type: "spouse", label: addRelLabels.spouse}
+        new_spouse.rels.children.push(child.id)
+        datum.rels.spouses.push(new_spouse.id)
+        child.rels.father = new_spouse.id
+        datum_rels.push(new_spouse)
+      }
+    })
+  }
+
   const new_spouse = createNewPerson({data: {gender: "F"}, rels: {spouses: [datum.id]}})
   new_spouse._new_rel_data = {rel_type: "spouse", label: addRelLabels.spouse}
   datum.rels.spouses.push(new_spouse.id)

@@ -51,7 +51,7 @@ export function CardHtml(props) {
 
   function textDisplay(d) {
     if (d.data._new_rel_data) return newRelDataDisplay(d)
-    if (d.data.to_add) return `<div>ADD</div>`
+    if (d.data.to_add) return `<div>${props.empty_card_label || 'ADD'}</div>`
     return (`
       ${props.card_display.map(display => `<div>${display(d.data)}</div>`).join('')}
     `)

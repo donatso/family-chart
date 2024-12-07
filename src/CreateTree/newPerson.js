@@ -74,40 +74,27 @@ export function handleRelsOfNewDatum({datum, data_stash, rel_type, rel_datum}) {
 
 export function handleNewRel({datum, new_rel_datum, data_stash}) {
   const rel_type = new_rel_datum._new_rel_data.rel_type
+  delete new_rel_datum._new_rel_data
+  new_rel_datum = JSON.parse(JSON.stringify(new_rel_datum))  // to keep same datum state in current add relative tree
 
   if (rel_type === "son" || rel_type === "daughter") {
     let mother = data_stash.find(d => d.id === new_rel_datum.rels.mother)
     let father = data_stash.find(d => d.id === new_rel_datum.rels.father)
-    if (!mother) {
-      mother = createNewPerson({data: {gender: "F"}, rels: {children: [], spouses: [datum.id]}})
-      mother.to_add = true
-      mother.id = new_rel_datum.rels.mother
-      if (!datum.rels.spouses) datum.rels.spouses = []
-      datum.rels.spouses.push(mother.id)
-      data_stash.push(mother)
-    }
 
-    if (!father) {
-      father = createNewPerson({data: {gender: "F"}, rels: {children: [], spouses: [datum.id]}})
-      father.to_add = true
-      father.id = new_rel_datum.rels.father
-      if (!datum.rels.spouses) datum.rels.spouses = []
-      datum.rels.spouses.push(father.id)
-      data_stash.push(father)
+    new_rel_datum.rels = {}
+    if (father) {
+      if (!father.rels.children) father.rels.children = []
+      father.rels.children.push(new_rel_datum.id)
+      new_rel_datum.rels.father = father.id
     }
-
-    if (!father.rels.children) father.rels.children = []
-    father.rels.children.push(new_rel_datum.id)
-    if (!mother.rels.children) mother.rels.children = []
-    mother.rels.children.push(new_rel_datum.id)
-    
-    new_rel_datum.rels = {
-      mother: mother.id,
-      father: father.id
+    if (mother) {
+      if (!mother.rels.children) mother.rels.children = []
+      mother.rels.children.push(new_rel_datum.id)
+      new_rel_datum.rels.mother = mother.id
     }
   }
 
-  if (rel_type === "spouse") {
+  else if (rel_type === "spouse") {
     if (!datum.rels.spouses) datum.rels.spouses = []
     if (!datum.rels.spouses.includes(new_rel_datum.id)) datum.rels.spouses.push(new_rel_datum.id)
 
@@ -132,7 +119,7 @@ export function handleNewRel({datum, new_rel_datum, data_stash}) {
     }
   }
 
-  if (rel_type === "father") {
+  else if (rel_type === "father") {
     datum.rels.father = new_rel_datum.id
     new_rel_datum.rels = {
       children: [datum.id],
@@ -145,7 +132,7 @@ export function handleNewRel({datum, new_rel_datum, data_stash}) {
     }
   }
 
-  if (rel_type === "mother") {
+  else if (rel_type === "mother") {
     datum.rels.mother = new_rel_datum.id
     new_rel_datum.rels = {
       children: [datum.id],
@@ -158,7 +145,6 @@ export function handleNewRel({datum, new_rel_datum, data_stash}) {
     }
   }
 
-  delete new_rel_datum._new_rel_data
   data_stash.push(new_rel_datum)
 }
 

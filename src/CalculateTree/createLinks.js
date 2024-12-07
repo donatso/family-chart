@@ -8,8 +8,9 @@ export function createLinks({d, tree, is_vertical}) {
   return links;
 
   function handleAncestrySide({d}) {
-    if (!d.parents || d.parents.length !== 2) return
-    const p1 = d.parents[0], p2 = d.parents[1]
+    if (!d.parents) return
+    const p1 = d.parents[0]
+    const p2 = d.parents[1] || p1
 
     const p = {x: getMid(p1, p2, 'x'), y: getMid(p1, p2, 'y')}
 
@@ -21,11 +22,11 @@ export function createLinks({d, tree, is_vertical}) {
         return Link(_d, _p)
       },
       curve: true, 
-      id: linkId(d, d.parents[0], d.parents[1]), 
+      id: linkId(d, p1, p2), 
       depth: d.depth+1, 
       is_ancestry: true,
       source: d,
-      target: [d.parents[0], d.parents[1]]
+      target: [p1, p2]
     })
   }
 
@@ -34,8 +35,8 @@ export function createLinks({d, tree, is_vertical}) {
     if (!d.children || d.children.length === 0) return
 
     d.children.forEach((child, i) => {
-      const other_parent = otherParent(child, d, tree),
-        sx = other_parent.sx
+      const other_parent = otherParent(child, d, tree) || d
+      const sx = other_parent.hasOwnProperty('sx') ? other_parent.sx : d.x
 
       links.push({
         d: Link(child, {x: sx, y: d.y}),
@@ -126,12 +127,19 @@ export function pathToMain(cards, links, datum, main_datum) {
     while (parent !== main_datum.data && itteration1 < 100) {
       itteration1++  // to prevent infinite loop
       const spouse_link = links_data.find(d => d.spouse === true && (d.source === parent || d.target === parent))
-      if (!spouse_link) break
-      const child_link = links_data.find(d => Array.isArray(d.target) && d.target.includes(spouse_link.source) && d.target.includes(spouse_link.target))
-      if (!child_link) break
-      links_to_main.push(spouse_link)
-      links_to_main.push(child_link)
-      parent = child_link.source
+      if (spouse_link) {
+        const child_link = links_data.find(d => Array.isArray(d.target) && d.target.includes(spouse_link.source) && d.target.includes(spouse_link.target))
+        if (!child_link) break
+        links_to_main.push(spouse_link)
+        links_to_main.push(child_link)
+        parent = child_link.source
+      } else {
+        // single parent
+        const child_link = links_data.find(d => Array.isArray(d.target) && d.target.includes(parent))
+        if (!child_link) break
+        links_to_main.push(child_link)
+        parent = child_link.source
+      }
     }
     links.each(function(d) {
       if (links_to_main.includes(d)) {
@@ -160,7 +168,7 @@ export function pathToMain(cards, links, datum, main_datum) {
 
     let child = datum
     let itteration1 = 0
-    while (parent !== main_datum.data && itteration1 < 100) {
+    while (child !== main_datum.data && itteration1 < 100) {
       itteration1++  // to prevent infinite loop
       const child_link = links_data.find(d => d.target === child && Array.isArray(d.source))
       if (child_link) {
@@ -168,6 +176,7 @@ export function pathToMain(cards, links, datum, main_datum) {
         links_to_main.push(child_link)
         links_to_main.push(spouse_link)
         if (spouse_link) child = spouse_link.source
+        else child = child_link.source[0]
       } else {
         const spouse_link = links_data.find(d => d.target === child && !Array.isArray(d.source))  // spouse link
         if (!spouse_link) break
@@ -196,7 +205,7 @@ export function pathToMain(cards, links, datum, main_datum) {
   }
 
   function getCardsToMain(first_parent, links_to_main) {
-    const all_cards = links_to_main.reduce((acc, d) => {
+    const all_cards = links_to_main.filter(d => d).reduce((acc, d) => {
       if (Array.isArray(d.target)) acc.push(...d.target)
       else acc.push(d.target)
       if (Array.isArray(d.source)) acc.push(...d.source)
