@@ -14,11 +14,11 @@ export function treeFit({svg, svg_dim, tree_dim, with_transition, transition_tim
 }
 
 export function calculateTreeFit(svg_dim, tree_dim) {
-  let k = Math.min(svg_dim.width / tree_dim.width, svg_dim.height / tree_dim.height),
-    x = tree_dim.x_off + (svg_dim.width - tree_dim.width*k)/k/2,
-    y = tree_dim.y_off + (svg_dim.height - tree_dim.height*k)/k/2
+  let k = Math.min(svg_dim.width / tree_dim.width, svg_dim.height / tree_dim.height)
+  if (k > 1) k = 1
+  const x = tree_dim.x_off + (svg_dim.width - tree_dim.width*k)/k/2
+  const y = tree_dim.y_off + (svg_dim.height - tree_dim.height*k)/k/2
 
-  if (k>1) {x*=k;y*=k;k=1;}
   return {k,x,y}
 }
 

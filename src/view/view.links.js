@@ -5,7 +5,7 @@ import {createPath} from "./elements/Link.js"
 import {calculateDelay} from "./view.js"
 
 export default function updateLinks(svg, tree, props={}) {
-  const links_data = tree.data.reduce((acc, d) => acc.concat(createLinks({d, tree:tree.data})), []),
+  const links_data = tree.data.reduce((acc, d) => acc.concat(createLinks({d, tree:tree.data, is_horizontal: tree.is_horizontal})), []),
     link = d3.select(svg).select(".links_view").selectAll("path.link").data(links_data, d => d.id),
     link_exit = link.exit(),
     link_enter = link.enter().append("path").attr("class", "link"),

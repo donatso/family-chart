@@ -11,6 +11,7 @@ function CreateChart(cont, data) {
   this.getCard = null
   this.node_separation = 250
   this.level_separation = 150
+  this.is_horizontal = false
   this.single_parent_empty_card = true
   this.transition_time = 2000
 
@@ -37,7 +38,8 @@ CreateChart.prototype.init = function(cont, data) {
     data,
     node_separation: this.node_separation,
     level_separation: this.level_separation,
-    single_parent_empty_card: this.single_parent_empty_card
+    single_parent_empty_card: this.single_parent_empty_card,
+    is_horizontal: this.is_horizontal
   })
 
   this.setCard(f3.CardSvg) // set default card
@@ -81,6 +83,20 @@ CreateChart.prototype.setCardXSpacing = function(card_x_spacing) {
   }
   this.node_separation = card_x_spacing
   this.store.state.node_separation = card_x_spacing
+
+  return this
+}
+
+CreateChart.prototype.setOrientationVertical = function() {
+  this.is_horizontal = false
+  this.store.state.is_horizontal = false
+
+  return this
+}
+
+CreateChart.prototype.setOrientationHorizontal = function() {
+  this.is_horizontal = true
+  this.store.state.is_horizontal = true
 
   return this
 }

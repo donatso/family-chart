@@ -3,9 +3,9 @@ import {sortChildrenWithSpouses} from "./CalculateTree.handlers.js"
 import {createNewPerson} from "../CreateTree/newPerson.js"
 import {isAllRelativeDisplayed} from "../handlers/general.js"
 
-export default function CalculateTree({data, main_id=null, node_separation=250, level_separation=150, single_parent_empty_card=true}) {
+export default function CalculateTree({data, main_id=null, node_separation=250, level_separation=150, single_parent_empty_card=true, is_horizontal=false}) {
   if (!data || !data.length) return {data: [], data_stash: [], dim: {width: 0, height: 0}, main_id: null}
-  const is_vertical = true;
+  if (is_horizontal) [node_separation, level_separation] = [level_separation, node_separation]
   const data_stash = single_parent_empty_card ? createRelsToAdd(data) : data
   sortChildrenWithSpouses(data_stash)
   const main = (main_id !== null && data_stash.find(d => d.id === main_id)) || data_stash[0]
@@ -17,12 +17,13 @@ export default function CalculateTree({data, main_id=null, node_separation=250, 
   const tree = mergeSides(tree_parents, tree_children)
   setupChildrenAndParents({tree})
   setupSpouses({tree, node_separation})
-  nodePositioning({tree, is_vertical})
+  setupProgenyParentsPos({tree})
+  nodePositioning({tree})
   tree.forEach(d => d.all_rels_displayed = isAllRelativeDisplayed(d, tree))
 
-  const dim = calculateTreeDim(tree, node_separation, level_separation, is_vertical)
+  const dim = calculateTreeDim(tree, node_separation, level_separation)
 
-  return {data: tree, data_stash, dim, main_id: main.id}
+  return {data: tree, data_stash, dim, main_id: main.id, is_horizontal}
 
   function calculateTreePositions(datum, rt, is_ancestry) {
     const hierarchyGetter = rt === "children" ? hierarchyGetterChildren : hierarchyGetterParents,
@@ -74,10 +75,10 @@ export default function CalculateTree({data, main_id=null, node_separation=250, 
 
     return [...children, ...parents.slice(1)];
   }
-  function nodePositioning({tree, is_vertical}) {
+  function nodePositioning({tree}) {
     tree.forEach(d => {
       d.y *= (d.is_ancestry ? -1 : 1)
-      if (!is_vertical) {
+      if (is_horizontal) {
         const d_x = d.x; d.x = d.y; d.y = d_x
       }
     })
@@ -95,17 +96,12 @@ export default function CalculateTree({data, main_id=null, node_separation=250, 
           spouse.x = d.x-(node_separation*(i+1))*side;
           spouse.y = d.y
           spouse.sx = i > 0 ? spouse.x : spouse.x + (node_separation/2)*side
+          spouse.sy = i > 0 ? spouse.y : spouse.y + (node_separation/2)*side
           spouse.depth = d.depth;
           spouse.spouse = d;
           if (!d.spouses) d.spouses = []
           d.spouses.push(spouse)
           tree.push(spouse)
-
-          tree.forEach(d0 => (
-            (d0.data.rels.father === d.data.id && d0.data.rels.mother === spouse.data.id) ||
-            (d0.data.rels.mother === d.data.id && d0.data.rels.father === spouse.data.id)
-            ) ? d0.psx = spouse.sx : null
-          )
         })
       }
       if (d.parents && d.parents.length === 2) {
@@ -116,6 +112,36 @@ export default function CalculateTree({data, main_id=null, node_separation=250, 
 
         p2.x = x(p1, p2); p1.x = x(p2, p1)
       }
+    }
+  }
+
+  function setupProgenyParentsPos({tree}) {
+    tree.forEach(d => {
+      if (d.is_ancestry) return
+      if (d.depth === 0) return
+      if (d.added) return
+      const m = findDatum(d.data.rels.mother)
+      const f = findDatum(d.data.rels.father)
+      if (m && f) {
+        if (!m.added && !f.added) console.error('no added spouse', m, f)
+        const added_spouse = m.added ? m : f
+        setupParentPos(d, added_spouse)
+      } else if (m || f) {
+        const parent = m || f
+        parent.sx = parent.x
+        parent.sy = parent.y
+        setupParentPos(d, parent)
+      }
+
+      function setupParentPos(d, p) {
+        d.psx = !is_horizontal ? p.sx : p.y
+        d.psy = !is_horizontal ? p.y : p.sx
+      }
+    })
+
+    function findDatum(id) {
+      if (!id) return null
+      return tree.find(d => d.data.id === id)
     }
   }
 
@@ -136,10 +162,10 @@ export default function CalculateTree({data, main_id=null, node_separation=250, 
     })
   }
 
-  function calculateTreeDim(tree, node_separation, level_separation, is_vertical) {
-    if (!is_vertical) [node_separation, level_separation] = [level_separation, node_separation]
-    const w_extent = d3.extent(tree, d => d.x),
-      h_extent = d3.extent(tree, d => d.y)
+  function calculateTreeDim(tree, node_separation, level_separation) {
+    if (is_horizontal) [node_separation, level_separation] = [level_separation, node_separation]
+    const w_extent = d3.extent(tree, d => d.x)
+    const h_extent = d3.extent(tree, d => d.y)
     return {
       width: w_extent[1] - w_extent[0]+node_separation, height: h_extent[1] - h_extent[0]+level_separation, x_off: -w_extent[0]+node_separation/2, y_off: -h_extent[0]+level_separation/2
     }

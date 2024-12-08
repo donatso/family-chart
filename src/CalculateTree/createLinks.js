@@ -1,4 +1,4 @@
-export function createLinks({d, tree, is_vertical}) {
+export function createLinks({d, tree, is_horizontal=false}) {
   const links = [];
 
   if (d.data.rels.spouses && d.data.rels.spouses.length > 0) handleSpouse({d})
@@ -36,11 +36,12 @@ export function createLinks({d, tree, is_vertical}) {
 
     d.children.forEach((child, i) => {
       const other_parent = otherParent(child, d, tree) || d
-      const sx = other_parent.hasOwnProperty('sx') ? other_parent.sx : d.x
+      const sx = other_parent.sx
 
+      const parent_pos = !is_horizontal ? {x: sx, y: d.y} : {x: d.x, y: sx}
       links.push({
-        d: Link(child, {x: sx, y: d.y}),
-        _d: () => Link({x: sx, y: d.y}, {x: _or(child, 'x'), y: _or(child, 'y')}),
+        d: Link(child, parent_pos),
+        _d: () => Link(parent_pos, {x: _or(parent_pos, 'x'), y: _or(parent_pos, 'y')}),
         curve: true,
         id: linkId(child, d, other_parent),
         depth: d.depth+1,
@@ -84,6 +85,10 @@ export function createLinks({d, tree, is_vertical}) {
   }
 
   function Link(d, p) {
+    return is_horizontal ? LinkHorizontal(d, p) : LinkVertical(d, p)
+  }
+
+  function LinkVertical(d, p) {
     const hy = (d.y + (p.y - d.y) / 2)
     return [
       [d.x, d.y],
@@ -91,6 +96,18 @@ export function createLinks({d, tree, is_vertical}) {
       [d.x, hy],
       [p.x, hy],
       [p.x, hy],
+      [p.x, p.y],
+    ]
+  }
+
+  function LinkHorizontal(d, p) {
+    const hx = (d.x + (p.x - d.x) / 2)
+    return [
+      [d.x, d.y],
+      [hx, d.y],
+      [hx, d.y],
+      [hx, p.y],
+      [hx, p.y],
       [p.x, p.y],
     ]
   }
