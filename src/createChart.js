@@ -46,15 +46,15 @@ CreateChart.prototype.init = function(cont, data) {
 
   this.store.setOnUpdate(props => {
     if (this.beforeUpdate) this.beforeUpdate(props)
-    props = Object.assign({}, props || {}, {transition_time: this.transition_time})
+    props = Object.assign({transition_time: this.transition_time}, props || {})
     if (this.is_card_html) props = Object.assign({}, props || {}, {cardHtml: getHtmlSvg()})
     f3.view(this.store.getTree(), this.svg, this.getCard(), props || {})
     if (this.afterUpdate) this.afterUpdate(props)
   })
 }
 
-CreateChart.prototype.updateTree = function({initial=false} = {}) {
-  this.store.updateTree({initial})
+CreateChart.prototype.updateTree = function(props = {initial: false}) {
+  this.store.updateTree(props)
 
   return this
 }
