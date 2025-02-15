@@ -45,6 +45,6 @@
     "@rollup/plugin-terser": "^0.4.4",
     "cypress": "^14.0.2",
     "http-server": "^14.1.1",
-    "rollup": "2"
+    "rollup": "3"
   }
 }
