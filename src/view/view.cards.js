@@ -1,6 +1,6 @@
 import d3 from "../d3.js"
 import {calculateEnterAndExitPositions} from "../CalculateTree/CalculateTree.handlers.js"
-import {calculateDelay} from "./view.js"
+import {calculateDelay} from "./view.utils.js"
 
 export default function updateCards(svg, tree, Card, props={}) {
   const card = d3.select(svg).select(".cards_view").selectAll("g.card_cont").data(tree.data, d => d.data.id),
