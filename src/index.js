@@ -9,7 +9,7 @@ import * as icons from './view/elements/Card.icons.js'
 import createChart from './createChart.js'
 
 import CardSvg from './Cards/CardSvg.js'
-import CardHtml from './Cards/CardHtml.js'
+import CardHtml from './Cards/CardHtml.ts'
 
 export default {
   CalculateTree,
