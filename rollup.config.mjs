@@ -1,5 +1,8 @@
 import terser from "@rollup/plugin-terser";
+import typescript from '@rollup/plugin-typescript';
 import pkg from './package.json' with { type: 'json' };
+
+
 
 
 const config = {
@@ -37,6 +40,7 @@ export default [
       file: `dist/${pkg.name}.min.js`
     },
     plugins: [
+      typescript(),
       ...config.plugins,
       terser({
         output: {

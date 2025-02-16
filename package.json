@@ -1,7 +1,7 @@
 {
   "name": "family-chart",
   "version": "0.2.1",
-  "type":"module",
+  "type": "module",
   "description": "family tree creator and viewer",
   "keywords": [
     "datafull",
@@ -40,14 +40,16 @@
   },
   "sideEffects": false,
   "dependencies": {
-    "d3": "6"
+    "@types/d3": "^6.7.8",
+    "d3": "6",
+    "tslib": "^2.8.1"
   },
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.2",
     "cypress": "^14.0.2",
     "http-server": "^14.1.1",
     "rollup": "^4.34.7",
     "typescript": "^5.7.3"
   }
-  
 }
