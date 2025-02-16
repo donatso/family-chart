@@ -1,6 +1,7 @@
 {
   "name": "family-chart",
   "version": "0.2.1",
+  "type":"module",
   "description": "family tree creator and viewer",
   "keywords": [
     "datafull",
@@ -45,6 +46,8 @@
     "@rollup/plugin-terser": "^0.4.4",
     "cypress": "^14.0.2",
     "http-server": "^14.1.1",
-    "rollup": "^4.34.7"
+    "rollup": "^4.34.7",
+    "typescript": "^5.7.3"
   }
+  
 }
