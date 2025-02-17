@@ -3,7 +3,7 @@ import * as elements from '../elements.js'
 import {pathToMain} from "../CalculateTree/createLinks.js"
 import * as d3 from 'd3';
 
-export class CardHtml {
+export default class CardHtml {
     is_html = true
     cont: HTMLElement
     svg: SVGElement | undefined 

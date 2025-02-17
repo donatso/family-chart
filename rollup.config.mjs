@@ -6,7 +6,7 @@ import pkg from './package.json' with { type: 'json' };
 
 
 const config = {
-  input: "src/index.js",
+  input: "./src/index.ts",
   external: Object.keys(pkg.dependencies || {}),
   output: [
     // UMD build
