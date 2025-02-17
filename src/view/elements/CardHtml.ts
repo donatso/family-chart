@@ -1,7 +1,7 @@
-import d3 from "../../d3.js"
+import d3 from 'd3';
 import {personSvgIcon, miniTreeSvgIcon, plusSvgIcon} from "./Card.icons.js"
 
-export function CardHtml(props) {
+export default function CardHtml(props) {
   const cardInner = props.style === 'default' ? cardInnerDefault 
   : props.style === 'imageCircleRect' ? cardInnerImageCircleRect
   : props.style === 'imageCircle' ? cardInnerImageCircle 
@@ -93,7 +93,7 @@ export function CardHtml(props) {
   }
 
   function getClassList(d) {
-    const class_list = []
+    const class_list: string[] = []
     if (d.data.data.gender === 'M') class_list.push('card-male')
     else if (d.data.data.gender === 'F') class_list.push('card-female')
     else class_list.push('card-genderless')
