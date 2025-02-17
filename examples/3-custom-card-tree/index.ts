@@ -1,9 +1,10 @@
-import f3 from "../../src/index.js"
+import d3 from "d3";
+import f3 from "../../src/index"
 
 fetch("./data.json").then(r => r.json()).then(data => {
   const svg = f3.createSvg(document.querySelector("#FamilyChart"))
 
-  let tree_data = null;
+  let tree_data: ReturnType<(typeof f3)['CalculateTree']> |null = null;
   let main_id = null;
 
   update()
@@ -55,7 +56,7 @@ function Card(onClick) {
 }
 
 function updateSvgHeading(svg, main_datum) {
-  let svg_heading = d3.select(svg).select('.svg-heading')
-  if (!svg_heading.node()) svg_heading = d3.select(svg).append('text').attr('class', 'svg-heading').attr('transform', `translate(${[10, 22]})`).style('fill', '#fff')
+  let svg_heading_temp= d3.select(svg).select('.svg-heading')
+  const svg_heading = svg_heading_temp.node() ? svg_heading_temp :d3.select(svg).append('text').attr('class', 'svg-heading').attr('transform', `translate(${[10, 22]})`).style('fill', '#fff')
   svg_heading.text(`${main_datum.data['first name']} ${main_datum.data['last name']}`)
 }

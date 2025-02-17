@@ -1,4 +1,5 @@
-import f3 from '../../src/index.js'
+import * as d3 from 'd3';
+import f3 from '../../src/index'
 
 fetch("./data.json").then(r => r.json()).then(data => {
   let tree, main_id;
@@ -7,7 +8,7 @@ fetch("./data.json").then(r => r.json()).then(data => {
 
   updateTree({initial: true})
 
-  function updateTree(props) {
+  function updateTree(props?) {
     tree = f3.CalculateTree({ data, main_id })
     f3.view(tree, svg, Card(tree, svg, onCardClick), props || {})
   }

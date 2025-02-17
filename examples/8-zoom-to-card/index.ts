@@ -1,4 +1,4 @@
-import f3 from '../../src/index.js'
+import f3 from '../../src/index'
 
 fetch("./data-staljin.json").then(r => r.json()).then(data => {
   const store = f3.createStore({
@@ -23,6 +23,8 @@ fetch("./data-staljin.json").then(r => r.json()).then(data => {
     const tree = store.getTree();
     const datum = tree.data[Math.floor(tree.data.length*Math.random())]  // random card
     console.log(datum.data.data)
-    f3.handlers.cardToMiddle({datum, svg, svg_dim: svg.getBoundingClientRect(),  transition_time: 2000})
+    if(svg){
+      f3.handlers.cardToMiddle({datum, svg, svg_dim: svg.getBoundingClientRect(),  transition_time: 2000})
+    }
   }, 4000)
 })

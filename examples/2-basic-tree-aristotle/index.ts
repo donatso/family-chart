@@ -1,4 +1,4 @@
-import f3 from '../../src/index.js'
+import f3 from '../../src/index'
 
 fetch("./data-aristotle.json").then(r => r.json()).then(data => {
   const store = f3.createStore({
@@ -19,4 +19,3 @@ fetch("./data-aristotle.json").then(r => r.json()).then(data => {
   store.setOnUpdate(props => f3.view(store.getTree(), svg, Card, props || {}))
   store.updateTree({initial: true})
 })
-

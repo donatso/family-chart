@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 
-function positionTree({t, svg, transition_time=2000}) {
+function positionTree({t, svg,with_transition, transition_time=2000}: {t: any,svg:any,with_transition?:any,transition_time?: number}) {
   const el_listener = svg.__zoomObj ? svg : svg.parentNode  // if we need listener for svg and html, we will use parent node
   const zoom = el_listener.__zoomObj
 
@@ -22,7 +22,7 @@ export function calculateTreeFit(svg_dim, tree_dim) {
   return {k,x,y}
 }
 
-export function cardToMiddle({datum, svg, svg_dim, scale, transition_time}) {
+export function cardToMiddle({datum, svg, svg_dim, scale, transition_time}: {datum: any, svg: any, svg_dim: any,scale?: any, transition_time:any }) {
   const k = scale || 1, x = svg_dim.width/2-datum.x*k, y = svg_dim.height/2-datum.y,
     t = {k, x: x/k, y: y/k}
   positionTree({t, svg, with_transition: true, transition_time})
