@@ -1,11 +1,23 @@
-import d3 from "../d3.js"
+import * as d3 from 'd3';
 import f3 from "../index.js"
-import addRelative from "./addRelative.js"
-import {deletePerson, moveToAddToAdded} from "./form.js"
+import addRelative from "./addRelative.ts"
+import {deletePerson} from "./form.js"
 
-export default function(...args) { return new EditTree(...args) }
+export default function(cont,store) { return new EditTree(cont,store) }
 
-function EditTree(cont, store) {
+class EditTree {
+  cont: any
+  store: any
+  fields: {type: string, label: string, id: string}[]
+  form_cont: any
+  is_fixed: any
+  history:any
+  no_edit:any
+  onChange:any
+  editFirst:any
+  addRelativeInstance:any
+  card_display:any
+  constructor(cont, store){
   this.cont = cont
   this.store = store
 
@@ -30,32 +42,29 @@ function EditTree(cont, store) {
   this.init()
 
   return this
-}
-
-EditTree.prototype.init = function() {
-  this.form_cont = d3.select(this.cont).append('div').classed('f3-form-cont', true).node()
-  this.addRelativeInstance = this.setupAddRelative()
-  this.createHistory()
-}
-
-EditTree.prototype.open = function(datum) {
-  if (datum.data.data) datum = datum.data
-  if (this.addRelativeInstance.is_active && !datum._new_rel_data) {
-    this.addRelativeInstance.onCancel()
-    datum = this.store.getDatum(datum.id)
   }
-
-  this.cardEditForm(datum)
+  init() {
+    this.form_cont = d3.select(this.cont).append('div').classed('f3-form-cont', true).node()
+    this.addRelativeInstance = this.setupAddRelative()
+    this.createHistory()
+  }
+  open(datum) {
+    if (datum.data.data) datum = datum.data
+    if (this.addRelativeInstance.is_active && !datum._new_rel_data) {
+      this.addRelativeInstance.onCancel()
+      datum = this.store.getDatum(datum.id)
+    }
+  
+    this.cardEditForm(datum)
 }
-
-EditTree.prototype.openWithoutRelCancel = function(datum) {
+openWithoutRelCancel(datum) {
   if (datum.data.data) datum = datum.data
 
   this.cardEditForm(datum)
 }
 
-EditTree.prototype.cardEditForm = function(datum) {
-  const props = {}
+cardEditForm(datum) {
+  const props: any = {}
   const is_new_rel = datum?._new_rel_data
   if (is_new_rel) {
     props.onCancel = () => this.addRelativeInstance.onCancel()
@@ -102,31 +111,29 @@ EditTree.prototype.cardEditForm = function(datum) {
     this.updateHistory()
   }
 }
-
-EditTree.prototype.openForm = function() {
+openForm() {
   d3.select(this.form_cont).classed('opened', true)
 }
-
-EditTree.prototype.closeForm = function() {
+closeForm() {
   d3.select(this.form_cont).classed('opened', false).html('')
   this.store.updateTree({})
 }
 
-EditTree.prototype.fixed = function() {
+fixed() {
   this.is_fixed = true
   d3.select(this.form_cont).style('position', 'relative')
 
   return this
 }
 
-EditTree.prototype.absolute = function() {
+absolute() {
   this.is_fixed = false
   d3.select(this.form_cont).style('position', 'absolute')
 
   return this
 }
 
-EditTree.prototype.setCardClickOpen = function(card) {
+setCardClickOpen(card) {
   card.setOnCardClick((e, d) => {
     if (this.addRelativeInstance.is_active) {
       this.open(d)
@@ -140,7 +147,7 @@ EditTree.prototype.setCardClickOpen = function(card) {
   return this
 }
 
-EditTree.prototype.openFormWithId = function(d_id) {
+openFormWithId(d_id) {
   if (d_id) {
     const d = this.store.getDatum(d_id)
     this.openWithoutRelCancel({data: d})
@@ -149,8 +156,7 @@ EditTree.prototype.openFormWithId = function(d_id) {
     this.openWithoutRelCancel({data: d})
   }
 }
-
-EditTree.prototype.createHistory = function() {
+createHistory() {
   this.history = f3.handlers.createHistory(this.store, this.getStoreData.bind(this), historyUpdateTree.bind(this))
   this.history.controls = f3.handlers.createHistoryControls(this.cont, this.history)
   this.history.changed()
@@ -166,20 +172,18 @@ EditTree.prototype.createHistory = function() {
   }
 }
 
-EditTree.prototype.setNoEdit = function() {
+setNoEdit() {
   this.no_edit = true
 
   return this
 }
-
-EditTree.prototype.setEdit = function() {
+setEdit() {
   this.no_edit = false
 
   return this
 }
-
-EditTree.prototype.setFields = function(fields) {
-  const new_fields = []
+setFields(fields) {
+  const new_fields: any[] = []
   if (!Array.isArray(fields)) {
     console.error('fields must be an array')
     return this
@@ -201,22 +205,20 @@ EditTree.prototype.setFields = function(fields) {
 
   return this
 }
-
-EditTree.prototype.setOnChange = function(fn) {
+setOnChange(fn) {
   this.onChange = fn
 
   return this
 }
-
-EditTree.prototype.addRelative = function(datum) {
+addRelative(datum) {
   if (!datum) datum = this.store.getMainDatum()
   this.addRelativeInstance.activate(datum)
 
   return this
 
-}
 
-EditTree.prototype.setupAddRelative = function() {
+}
+setupAddRelative() {
   return addRelative(this.store, cancelCallback.bind(this), onSubmitCallback.bind(this))
 
   function onSubmitCallback(datum, new_rel_datum) {
@@ -231,32 +233,33 @@ EditTree.prototype.setupAddRelative = function() {
   }
 }
 
-EditTree.prototype.setEditFirst = function(editFirst) {
+
+setEditFirst(editFirst) {
   this.editFirst = editFirst
 
   return this
 }
 
-EditTree.prototype.isAddingRelative = function() {
+isAddingRelative() {
   return this.addRelativeInstance.is_active
 }
 
-EditTree.prototype.setAddRelLabels = function(add_rel_labels) {
+setAddRelLabels(add_rel_labels) {
   this.addRelativeInstance.setAddRelLabels(add_rel_labels)
   return this
 }
 
-EditTree.prototype.getStoreData = function() {
+getStoreData() {
   if (this.addRelativeInstance.is_active) return this.addRelativeInstance.getStoreData()
   else return this.store.getData()
 }
 
-EditTree.prototype.getDataJson = function(fn) {
+getDataJson(fn) {
   const data = this.getStoreData()
   return f3.handlers.cleanupDataJson(JSON.stringify(data))
 }
 
-EditTree.prototype.updateHistory = function() {
+updateHistory() {
   if (this.history) {
     this.history.changed()
     this.history.controls.updateButtons()
@@ -267,7 +270,7 @@ EditTree.prototype.updateHistory = function() {
 
 
 
-EditTree.prototype.destroy = function() {
+destroy() {
   this.history.controls.destroy()
   this.history = null
   d3.select(this.cont).select('.f3-form-cont').remove()
@@ -275,4 +278,5 @@ EditTree.prototype.destroy = function() {
   this.store.updateTree({})
 
   return this
+}
 }

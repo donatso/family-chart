@@ -1,7 +1,7 @@
 import {processCardDisplay} from "./utils.js"
-import * as elements from '../elements.js'
 import {pathToMain} from "../CalculateTree/createLinks.js"
 import * as d3 from 'd3';
+import CardHtmlElementFunction from "../view/elements/CardHtml.js";
 
 export default class CardHtml {
     is_html = true
@@ -35,7 +35,7 @@ export default class CardHtml {
     init(){
       this.svg = this.cont.querySelector('svg.main_svg') as SVGElement
 
-  this.getCard = () => elements.CardHtml({
+  this.getCard = () => CardHtmlElementFunction({
     store: this.store,
     card_display: this.card_display,
     onCardClick: this.onCardClick,

@@ -1,4 +1,4 @@
-import d3 from "../d3.js"
+import * as d3 from 'd3';
 import {sortChildrenWithSpouses} from "./CalculateTree.handlers.js"
 import {createNewPerson} from "../CreateTree/newPerson.js"
 import {isAllRelativeDisplayed} from "../handlers/general.js"

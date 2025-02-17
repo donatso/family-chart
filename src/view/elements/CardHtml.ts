@@ -1,7 +1,7 @@
-import d3 from 'd3';
+import * as d3 from 'd3';
 import {personSvgIcon, miniTreeSvgIcon, plusSvgIcon} from "./Card.icons.js"
 
-export default function CardHtml(props) {
+export default function CardHtmlElementFunction(props) {
   const cardInner = props.style === 'default' ? cardInnerDefault 
   : props.style === 'imageCircleRect' ? cardInnerImageCircleRect
   : props.style === 'imageCircle' ? cardInnerImageCircle 
@@ -58,7 +58,7 @@ export default function CardHtml(props) {
   }
 
   function newRelDataDisplay(d) {
-    const attr_list = []
+    const attr_list: string[] = []
     attr_list.push(`data-rel-type="${d.data._new_rel_data.rel_type}"`)
     if (['son', 'daughter'].includes(d.data._new_rel_data.rel_type)) attr_list.push(`data-other-parent-id="${d.data._new_rel_data.other_parent_id}"`)
     return `<div ${attr_list.join(' ')}>${d.data._new_rel_data.label}</div>`

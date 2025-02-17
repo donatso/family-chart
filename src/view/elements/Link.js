@@ -1,4 +1,4 @@
-import d3 from "../../d3.js";
+import * as d3 from 'd3';
 
 export default function Link({d, entering, exiting}) {
   const path = createPath(d, entering, exiting);

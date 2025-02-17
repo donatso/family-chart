@@ -6,18 +6,28 @@
       "target": "es2022",
       "allowJs": true,
       "resolveJsonModule": true,
-      "moduleDetection": "force",
-      "isolatedModules": true,
       "verbatimModuleSyntax": true,
+
+      /* Bundler mode */
+      "moduleResolution": "bundler",
+      "allowImportingTsExtensions": true,
+      "isolatedModules": true,
+      "moduleDetection": "force",
+      "noEmit": true,
   
       /* Strictness */
       "strict": true,
+      "noUnusedLocals": true,
+      "noUnusedParameters": false, // false while moving to ts
+      "noFallthroughCasesInSwitch": true,
+      "noUncheckedSideEffectImports": true,
       "noUncheckedIndexedAccess": true,
-      "noImplicitAny": false,
+      "noImplicitAny": false, // false while moving to ts
+      "noImplicitThis": false, // false while moving to ts
       "noImplicitOverride": true,
   
       /* If transpiling with TypeScript: */
-      "module": "NodeNext",
+      "module": "ESNext",
       "outDir": "dist",
       "rootDir": "src",
   

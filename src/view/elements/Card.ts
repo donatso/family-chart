@@ -1,7 +1,8 @@
-import d3 from "../../d3.js"
-import {appendTemplate, CardBodyOutline} from "./Card.templates.js"
-import cardElements, {appendElement} from "./Card.elements.js"
+
+import {appendTemplate, CardBodyOutline} from "./Card.templates.ts"
+import cardElements, {appendElement} from "./Card.elements.ts"
 import setupCardSvgDefs from "./Card.defs.js"
+import * as d3 from 'd3';
 
 
 export function Card(props) {

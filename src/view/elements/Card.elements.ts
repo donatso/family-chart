@@ -1,5 +1,4 @@
-import d3 from "../../d3.js"
-import {isAllRelativeDisplayed} from "../../handlers/general.js"
+import * as d3 from 'd3';
 import {cardChangeMain, cardEdit, cardShowHideRels} from "../../handlers/cardMethods.js"
 import {
   CardBody,
@@ -9,7 +8,7 @@ import {
   MiniTree,
   PencilIcon,
   PlusIcon
-} from "./Card.templates.js"
+} from "./Card.templates.ts"
 
 const CardElements = {
   miniTree,
@@ -87,7 +86,7 @@ function cardAddIcon(d, props) {
 }
 
 
-export function appendElement(el_maybe, parent, is_first) {
+export function appendElement(el_maybe, parent, is_first?) {
   if (!el_maybe) return
   if (is_first) parent.insertBefore(el_maybe, parent.firstChild)
   else parent.appendChild(el_maybe)

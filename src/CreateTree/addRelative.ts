@@ -1,27 +1,39 @@
 import { handleNewRel, createNewPerson } from "./newPerson.js"
 
-export default (...args) => { return new AddRelative(...args) }
+export default (store, cancelCallback,onSubmitCallback) => { return new AddRelativeC(store, cancelCallback,onSubmitCallback) }
 
-function AddRelative(store, cancelCallback, onSubmitCallback) {
-  this.store = store
+class AddRelativeC {
+  store:any
+  cancelCallback:any
+  onSubmitCallback:any
+  datum:any
+  onChange:any
+  onCancel:any
+  is_active:any
+  store_data:any
+  addRelLabels:any
+  constructor(store, cancelCallback, onSubmitCallback){
+    this.store = store
 
-  this.cancelCallback = cancelCallback
-  this.onSubmitCallback = onSubmitCallback
+    this.cancelCallback = cancelCallback
+    this.onSubmitCallback = onSubmitCallback
+  
+    this.datum = null
+  
+    this.onChange = null
+    this.onCancel = null
+  
+    this.is_active = false
+    this.store_data = null
+  
+    this.addRelLabels = this.addRelLabelsDefault()
+  
+    return this
+  }
 
-  this.datum = null
 
-  this.onChange = null
-  this.onCancel = null
 
-  this.is_active = false
-  this.store_data = null
-
-  this.addRelLabels = this.addRelLabelsDefault()
-
-  return this
-}
-
-AddRelative.prototype.activate = function(datum) {
+activate(datum) {
   if (this.is_active) this.onCancel()
   this.is_active = true
 
@@ -65,7 +77,7 @@ AddRelative.prototype.activate = function(datum) {
 
 }
 
-AddRelative.prototype.setAddRelLabels = function(add_rel_labels) {
+setAddRelLabels(add_rel_labels) {
   if (typeof add_rel_labels !== 'object') {
     console.error('add_rel_labels must be an object')
     return
@@ -76,7 +88,7 @@ AddRelative.prototype.setAddRelLabels = function(add_rel_labels) {
   return this
 }
 
-AddRelative.prototype.addRelLabelsDefault = function() {
+addRelLabelsDefault() {
   return {
     father: 'Add Father',
     mother: 'Add Mother',
@@ -86,8 +98,9 @@ AddRelative.prototype.addRelLabelsDefault = function() {
   }
 }
 
-AddRelative.prototype.getStoreData = function() {
+getStoreData() {
   return this.store_data
+}
 }
 
 function getDatumRelsData(datum, store_data, addRelLabels) {

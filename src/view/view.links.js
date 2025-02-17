@@ -1,4 +1,4 @@
-import d3 from "../d3.js"
+import * as d3 from 'd3';
 
 import {createLinks} from "../CalculateTree/createLinks.js"
 import {createPath} from "./elements/Link.js"

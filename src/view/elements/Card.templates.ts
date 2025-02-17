@@ -43,7 +43,7 @@ export function CardBodyOutline({d,card_dim, is_new}) {
   }
 }
 
-export function PencilIcon({d,card_dim,x,y}) {
+export function PencilIcon({d,card_dim,x,y}: {d?: unknown, card_dim: {w: number, h:number},x?: number, y?: number}) {
   return ({template: (`
     <g transform="translate(${x || card_dim.w-20},${y || card_dim.h-20})scale(.6)" style="cursor: pointer" class="card_edit pencil_icon">
       <circle fill="rgba(0,0,0,0)" r="17" cx="8.5" cy="8.5" />
@@ -87,7 +87,7 @@ export function MiniTree({d,card_dim}) {
   `)})
 }
 
-export function PlusIcon({d,card_dim,x,y}) {
+export function PlusIcon({d,card_dim,x,y}: {d?: unknown, card_dim: {w: number, h:number},x?: number, y?: number}) {
   return ({template: (`
     <g class="card_add_relative">
       <g transform="translate(${x || card_dim.w/2},${y || card_dim.h})scale(.13)">

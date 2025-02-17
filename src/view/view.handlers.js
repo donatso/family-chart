@@ -1,4 +1,4 @@
-import d3 from "../d3.js"
+import * as d3 from 'd3';
 
 function positionTree({t, svg, transition_time=2000}) {
   const el_listener = svg.__zoomObj ? svg : svg.parentNode  // if we need listener for svg and html, we will use parent node

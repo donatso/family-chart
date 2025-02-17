@@ -1,4 +1,4 @@
-import d3 from "../d3.js"
+import * as d3 from 'd3';
 
 export function manualZoom({amount, svg, transition_time=500}) {
   const zoom = svg.__zoomObj

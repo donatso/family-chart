@@ -14,42 +14,35 @@
   "author": {
     "name": "donatso"
   },
-  "main": "dist/family-chart.js",
-  "unpkg": "dist/family-chart.min.js",
-  "module": "dist/family-chart.esm.js",
+  "files": ["dist"],
+  "main": "./dist/family-chart.umd.cjs",
+  "module": "./dist/family-chart.js",
   "exports": {
     ".": {
-      "import": "./dist/family-chart.esm.js",
-      "require": "./dist/family-chart.js"
+      "import": "./dist/family-chart.js",
+      "require": "./dist/family-chart.umd.cjs"
     },
-    "./styles/*": "./dist/styles/*"
+    "./style.css": "./dist/family-chart.css"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/donatso/family-chart.git"
   },
-  "files": [
-    "dist/**/*.js",
-    "dist/styles/**"
-  ],
   "scripts": {
-    "build": "node build.js",
+    "build": "tsc && vite build",
     "test": "cypress open --project tests",
-    "dev": "http-server",
-    "prepublishOnly": "node build.js"
+    "dev": "vite",
+    "preview": "vite preview",
+    "prepublishOnly": "npm run build"
   },
   "sideEffects": false,
   "dependencies": {
     "@types/d3": "^6.7.8",
-    "d3": "6",
-    "tslib": "^2.8.1"
+    "d3": "6"
   },
   "devDependencies": {
-    "@rollup/plugin-terser": "^0.4.4",
-    "@rollup/plugin-typescript": "^12.1.2",
     "cypress": "^14.0.2",
-    "http-server": "^14.1.1",
-    "rollup": "^4.34.7",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+     "vite": "^6.1.0"
   }
 }

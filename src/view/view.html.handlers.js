@@ -1,4 +1,4 @@
-import d3 from "../d3.js"
+import * as d3 from 'd3';
 
 export function assignUniqueIdToTreeData(div, tree_data) {
   const card = d3.select(div).selectAll("div.card_cont_2fake").data(tree_data, d => d.data.id)  // how this doesn't break if there is multiple cards with the same id?

@@ -1,4 +1,4 @@
-import d3 from "./d3.js"
+import * as d3 from 'd3';
 import f3 from "./index.js"
 import editTree from "./CreateTree/editTree.js"
 

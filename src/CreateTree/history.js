@@ -1,4 +1,4 @@
-import d3 from "../d3.js"
+import * as d3 from 'd3';
 import {cleanupDataJson} from "./form.js"
 import * as icons from "../view/elements/Card.icons.js"
 

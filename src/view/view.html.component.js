@@ -1,4 +1,4 @@
-import d3 from "../d3.js"
+import * as d3 from 'd3';
 import {calculateEnterAndExitPositions} from "../CalculateTree/CalculateTree.handlers.js"
 import {calculateDelay} from "./view.utils.js"
 import {getCardsViewFake} from "./view.html.handlers.js"

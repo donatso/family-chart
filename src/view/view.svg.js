@@ -1,4 +1,4 @@
-import d3 from "../d3.js"
+import * as d3 from 'd3';
 
 export default function createSvg(cont, props={}) {
   const svg_dim = cont.getBoundingClientRect();
