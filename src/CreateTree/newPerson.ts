@@ -148,11 +148,11 @@ export function handleNewRel({datum, new_rel_datum, data_stash}) {
   data_stash.push(new_rel_datum)
 }
 
-export function createNewPerson({data, rels}) {
-  return {id: generateUUID(), data: data || {}, rels: rels || {}}
+export function createNewPerson({data, rels,to_add}: {data?: any,rels?: any,to_add?:boolean}) {
+  return {id: generateUUID(), data: data || {}, rels: rels || {}, to_add}
 }
 
-export function createNewPersonWithGenderFromRel({data, rel_type, rel_datum}) {
+export function createNewPersonWithGenderFromRel({data, rel_type, rel_datum}: {data?: unknown,rel_type: unknown,rel_datum:unknown}) {
   const gender = getGenderFromRelative(rel_datum, rel_type)
   data = Object.assign(data || {}, {gender})
   return createNewPerson({data})
@@ -166,7 +166,7 @@ export function addNewPerson({data_stash, datum}) {
   data_stash.push(datum)
 }
 
-export function createTreeDataWithMainNode({data, version}) {
+export function createTreeDataWithMainNode({data, version}: {data?: any, version?:any}) {
   return {data: [createNewPerson({data})], version}
 }
 

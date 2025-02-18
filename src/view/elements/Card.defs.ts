@@ -15,7 +15,7 @@ export default function setupCardSvgDefs(svg, card_dim) {
       </defs>
     `))
 
-  function curvedRectPath(dim, curve, no_curve_corners) {
+  function curvedRectPath(dim, curve, no_curve_corners?: string[]) {
     const {w,h} = dim,
       c = curve,
       ncc = no_curve_corners || [],

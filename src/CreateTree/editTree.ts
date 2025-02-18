@@ -1,7 +1,9 @@
 import * as d3 from 'd3';
-import f3 from "../index.js"
 import addRelative from "./addRelative.ts"
-import {deletePerson} from "./form.js"
+import {cleanupDataJson, createForm, deletePerson} from "./form.js"
+import { createHistory, createHistoryControls } from './history.ts';
+import { formInfoSetup } from './formInfoSetup.ts';
+
 
 export default function(cont,store) { return new EditTree(cont,store) }
 
@@ -80,7 +82,7 @@ cardEditForm(datum) {
     }
   }
 
-  const form_creator = f3.handlers.createForm({
+  const form_creator = createForm({
     store: this.store, 
     datum, 
     postSubmit: postSubmit.bind(this),
@@ -93,7 +95,7 @@ cardEditForm(datum) {
   })
 
   form_creator.no_edit = this.no_edit
-  const form_cont = f3.handlers.formInfoSetup(form_creator, this.closeForm.bind(this))
+  const form_cont = formInfoSetup(form_creator, this.closeForm.bind(this))
 
   this.form_cont.innerHTML = ''
   this.form_cont.appendChild(form_cont)
@@ -157,8 +159,8 @@ openFormWithId(d_id) {
   }
 }
 createHistory() {
-  this.history = f3.handlers.createHistory(this.store, this.getStoreData.bind(this), historyUpdateTree.bind(this))
-  this.history.controls = f3.handlers.createHistoryControls(this.cont, this.history)
+  this.history = createHistory(this.store, this.getStoreData.bind(this), historyUpdateTree.bind(this))
+  this.history.controls = createHistoryControls(this.cont, this.history)
   this.history.changed()
   this.history.controls.updateButtons()
 
@@ -256,7 +258,7 @@ getStoreData() {
 
 getDataJson(fn) {
   const data = this.getStoreData()
-  return f3.handlers.cleanupDataJson(JSON.stringify(data))
+  return cleanupDataJson(JSON.stringify(data))
 }
 
 updateHistory() {

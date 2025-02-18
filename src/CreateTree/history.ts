@@ -3,7 +3,7 @@ import {cleanupDataJson} from "./form.js"
 import * as icons from "../view/elements/Card.icons.js"
 
 export function createHistory(store, getStoreData, onUpdate) {
-  let history = []
+  let history: unknown[] = []
   let history_index = -1
   
   return {
@@ -49,15 +49,16 @@ export function createHistory(store, getStoreData, onUpdate) {
   }
 }
 
-export function createHistoryControls(cont, history, onUpdate=()=>{}) {
+export function createHistoryControls(cont, history: ReturnType<typeof createHistory>, onUpdate=()=>{}) {
+  let _history: ReturnType<typeof createHistory> | null  = history
   const history_controls = d3.select(cont).append("div").attr("class", "f3-history-controls")
   const back_btn = history_controls.append("button").attr("class", "f3-back-button").on("click", () => {
-    history.back()
+    _history?.back()
     updateButtons()
     onUpdate()
   })
   const forward_btn = history_controls.append("button").attr("class", "f3-forward-button").on("click", () => {
-    history.forward()
+    _history?.forward()
     updateButtons()
     onUpdate()
   })
@@ -73,13 +74,20 @@ export function createHistoryControls(cont, history, onUpdate=()=>{}) {
   }
 
   function updateButtons() {
-    back_btn.classed("disabled", !history.canBack())
-    forward_btn.classed("disabled", !history.canForward())
-    history_controls.style("display", !history.canBack() && !history.canForward() ? "none" : null)
+    back_btn.classed("disabled", !_history?.canBack())
+    forward_btn.classed("disabled", !_history?.canForward())
+    const v = !_history?.canBack() && !_history?.canForward() ? "none" : null
+    if(v === null){
+      history_controls.style("display", null)
+    }
+    else {
+      history_controls.style("display", v)
+    }
+    
   }
 
   function destroy() {
-    history = null
+    _history = null
     d3.select(cont).select('.f3-history-controls').remove()
   }
 }

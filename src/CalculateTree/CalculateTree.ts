@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import {sortChildrenWithSpouses} from "./CalculateTree.handlers.js"
+import {sortChildrenWithSpouses} from "./CalculateTree.handlers.ts"
 import {createNewPerson} from "../CreateTree/newPerson.js"
 import {isAllRelativeDisplayed} from "../handlers/general.js"
 
@@ -91,10 +91,7 @@ export default function CalculateTree({data, main_id=null, node_separation=250, 
         const side = d.data.data.gender === "M" ? -1 : 1;  // female on right
         d.x += d.data.rels.spouses.length/2*node_separation*side;
         d.data.rels.spouses.forEach((sp_id, i) => {
-          const spouse = {data: data_stash.find(d0 => d0.id === sp_id), added: true}
-
-          spouse.x = d.x-(node_separation*(i+1))*side;
-          spouse.y = d.y
+          const spouse:  {data:unknown,added: boolean,x:number,y:number,sx?: number,sy?:number, depth?: number,spouse?: unknown } = {data: data_stash.find(d0 => d0.id === sp_id), added: true, x: d.x-(node_separation*(i+1))*side, y: d.y}
           spouse.sx = i > 0 ? spouse.x : spouse.x + (node_separation/2)*side
           spouse.sy = i > 0 ? spouse.y : spouse.y + (node_separation/2)*side
           spouse.depth = d.depth;
@@ -164,15 +161,15 @@ export default function CalculateTree({data, main_id=null, node_separation=250, 
 
   function calculateTreeDim(tree, node_separation, level_separation) {
     if (is_horizontal) [node_separation, level_separation] = [level_separation, node_separation]
-    const w_extent = d3.extent(tree, d => d.x)
-    const h_extent = d3.extent(tree, d => d.y)
+    const w_extent = d3.extent(tree, (d: {x: number}) => d.x) as  [number,number]
+    const h_extent= d3.extent(tree, (d: {y: number}) => d.y) as  [number,number]
     return {
       width: w_extent[1] - w_extent[0]+node_separation, height: h_extent[1] - h_extent[0]+level_separation, x_off: -w_extent[0]+node_separation/2, y_off: -h_extent[0]+level_separation/2
     }
   }
 
   function createRelsToAdd(data) {
-    const to_add_spouses = [];
+    const to_add_spouses : unknown[] = [];
     for (let i = 0; i < data.length; i++) {
       const d = data[i];
       if (d.rels.children && d.rels.children.length > 0) {
@@ -199,9 +196,9 @@ export default function CalculateTree({data, main_id=null, node_separation=250, 
     function createToAddSpouse(d) {
       const spouse = createNewPerson({
         data: {gender: d.data.gender === "M" ? "F" : "M"},
-        rels: {spouses: [d.id], children: []}
+        rels: {spouses: [d.id], children: []},
+        to_add: true
       });
-      spouse.to_add = true;
       to_add_spouses.push(spouse);
       return spouse
     }

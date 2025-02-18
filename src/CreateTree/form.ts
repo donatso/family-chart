@@ -1,8 +1,21 @@
 import {checkIfRelativesConnectedWithoutPerson} from "./checkIfRelativesConnectedWithoutPerson.js"
-import {createTreeDataWithMainNode} from "./newPerson.js"
+import {createTreeDataWithMainNode} from "./newPerson.ts"
 
 export function createForm({datum, store, fields, postSubmit, addRelative, deletePerson, onCancel, editFirst}) {
-  const form_creator = {
+  const form_creator: {fields: any[], 
+    onSubmit: (e:any) => 
+      void,onDelete?: () => void, 
+    addRelative?: () => void,
+    addRelativeCancel?: () => void,
+    addRelativeActive?:() =>void, 
+    editable?:boolean, 
+    title?:string, 
+    new_rel?:boolean,
+   onCancel?: () => void,
+   can_delete?:boolean
+   no_edit?: unknown
+   gender_field?: {id: string,type:string,label:string, initial_value:any, options: {value: string,label:string}[]}
+  } = {
     fields: [],
     onSubmit: submitFormChanges,
   }

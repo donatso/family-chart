@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import {calculateEnterAndExitPositions} from "../CalculateTree/CalculateTree.handlers.js"
+import {calculateEnterAndExitPositions} from "../CalculateTree/CalculateTree.handlers.ts"
 import {calculateDelay} from "./view.utils.ts"
 
 export default function updateCards(svg, tree, Card, props: {initial?: boolean,transition_time?: number,}={}) {

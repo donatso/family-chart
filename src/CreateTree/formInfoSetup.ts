@@ -17,20 +17,20 @@ export function formInfoSetup(form_creator, closeCallback) {
 
   function setupEventListeners() {
     const form = formContainer.querySelector('form');
-    form.addEventListener('submit', form_creator.onSubmit);
+    form?.addEventListener('submit', form_creator.onSubmit);
 
-    const cancel_btn = form.querySelector('.f3-cancel-btn');
-    cancel_btn.addEventListener('click', onCancel)
+    const cancel_btn: HTMLButtonElement | null | undefined = form?.querySelector('.f3-cancel-btn');
+    cancel_btn?.addEventListener('click', onCancel)
 
-    const edit_btn = form.querySelector('.f3-edit-btn');
+    const edit_btn = form?.querySelector('.f3-edit-btn');
     if (edit_btn) edit_btn.addEventListener('click', onEdit)
 
-    const delete_btn = form.querySelector('.f3-delete-btn');
+    const delete_btn = form?.querySelector('.f3-delete-btn');
     if (delete_btn && form_creator.onDelete) {
       delete_btn.addEventListener('click', form_creator.onDelete);
     }
 
-    const add_relative_btn = form.querySelector('.f3-add-relative-btn');
+    const add_relative_btn = form?.querySelector('.f3-add-relative-btn');
     if (add_relative_btn && form_creator.addRelative) {
       add_relative_btn.addEventListener('click', () => {
         if (form_creator.addRelativeActive) form_creator.addRelativeCancel()
@@ -40,11 +40,14 @@ export function formInfoSetup(form_creator, closeCallback) {
       });
     }
 
-    const close_btn = form.querySelector('.f3-close-btn');
-    close_btn.addEventListener('click', closeCallback)
+    const close_btn = form?.querySelector('.f3-close-btn');
+    close_btn?.addEventListener('click', closeCallback)
 
     if (form_creator.other_parent_field) {
-      cancel_btn.style.display = 'none'
+      if(cancel_btn?.style){
+        cancel_btn.style.display = 'none'
+      }
+     
     }
 
     function onCancel() {
