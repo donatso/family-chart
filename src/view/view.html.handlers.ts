@@ -1,10 +1,10 @@
 import * as d3 from 'd3';
 
 export function assignUniqueIdToTreeData(div, tree_data) {
-  const card = d3.select(div).selectAll("div.card_cont_2fake").data(tree_data, d => d.data.id)  // how this doesn't break if there is multiple cards with the same id?
+  const card = d3.select(div).selectAll("div.card_cont_2fake").data(tree_data, (d: any) => d.data.id)  // how this doesn't break if there is multiple cards with the same id?
   const card_exit = card.exit()
   const card_enter = card.enter().append("div").attr("class", "card_cont_2fake").style('display', 'none').attr("data-id", () => Math.random())
-  const card_update = card_enter.merge(card)
+  const card_update = card_enter.merge(card as any)
 
   card_exit.each(cardExit)
   card_enter.each(cardEnter)
@@ -42,7 +42,7 @@ export function onZoomSetup(getSvgView, getHtmlView) {
 }
 
 export function setupReactiveTreeData(getHtmlSvg) {
-  let tree_data = []
+  let tree_data: any[] = []
 
   return function getReactiveTreeData(new_tree_data) {
     const tree_data_exit = getTreeDataExit(new_tree_data, tree_data)

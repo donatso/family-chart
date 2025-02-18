@@ -1,11 +1,23 @@
-import * as d3 from 'd3';
 import f3 from "./index.js"
 import editTree from "./CreateTree/editTree.js"
 
-export default function(...args) { return new CreateChart(...args) }
-
-function CreateChart(cont, data) {
-  this.cont = null
+export default function(cont,data) { return new CreateChart(cont,data) }
+class CreateChart{
+  cont: any
+  store:any
+  svg: any
+  getCard:any
+  node_separation:any
+  level_separation:any
+  is_horizontal:any
+  single_parent_empty_card:any
+  transition_time:any
+  is_card_html:any
+  beforeUpdate:any
+  afterUpdate:any
+  editTreeInstance:any
+  constructor(cont, data){
+    this.cont = null
   this.store = null
   this.svg = null
   this.getCard = null
@@ -23,9 +35,11 @@ function CreateChart(cont, data) {
   this.init(cont, data)
 
   return this
-}
+  }
 
-CreateChart.prototype.init = function(cont, data) {
+
+
+init(cont, data) {
   this.cont = cont = setCont(cont)
   const getSvgView = () => cont.querySelector('svg .view')
   const getHtmlSvg = () => cont.querySelector('#htmlSvg')
@@ -53,19 +67,19 @@ CreateChart.prototype.init = function(cont, data) {
   })
 }
 
-CreateChart.prototype.updateTree = function(props = {initial: false}) {
+updateTree(props = {initial: false}) {
   this.store.updateTree(props)
 
   return this
 }
 
-CreateChart.prototype.updateData = function(data) {
+updateData(data) {
   this.store.updateData(data)
 
   return this
 }
 
-CreateChart.prototype.setCardYSpacing = function(card_y_spacing) {
+setCardYSpacing(card_y_spacing) {
   if (typeof card_y_spacing !== 'number') {
     console.error('card_y_spacing must be a number')
     return this
@@ -76,7 +90,7 @@ CreateChart.prototype.setCardYSpacing = function(card_y_spacing) {
   return this
 }
 
-CreateChart.prototype.setCardXSpacing = function(card_x_spacing) {
+setCardXSpacing(card_x_spacing) {
   if (typeof card_x_spacing !== 'number') {
     console.error('card_x_spacing must be a number')
     return this
@@ -87,21 +101,21 @@ CreateChart.prototype.setCardXSpacing = function(card_x_spacing) {
   return this
 }
 
-CreateChart.prototype.setOrientationVertical = function() {
+setOrientationVertical() {
   this.is_horizontal = false
   this.store.state.is_horizontal = false
 
   return this
 }
 
-CreateChart.prototype.setOrientationHorizontal = function() {
+setOrientationHorizontal() {
   this.is_horizontal = true
   this.store.state.is_horizontal = true
 
   return this
 }
 
-CreateChart.prototype.setSingleParentEmptyCard = function(single_parent_empty_card, {label='Unknown'} = {}) {
+setSingleParentEmptyCard(single_parent_empty_card, {label='Unknown'} = {}) {
   this.single_parent_empty_card = single_parent_empty_card
   this.store.state.single_parent_empty_card = single_parent_empty_card
   this.store.state.single_parent_empty_card_label = label
@@ -112,7 +126,7 @@ CreateChart.prototype.setSingleParentEmptyCard = function(single_parent_empty_ca
 }
 
 
-CreateChart.prototype.setCard = function(Card) {
+setCard(Card) {
   this.is_card_html = Card.is_html
 
   if (this.is_card_html) {
@@ -129,50 +143,48 @@ CreateChart.prototype.setCard = function(Card) {
   return card
 }
 
-CreateChart.prototype.setTransitionTime = function(transition_time) {
+setTransitionTime(transition_time) {
   this.transition_time = transition_time
 
   return this
 }
 
-CreateChart.prototype.editTree = function() {
+editTree() {
   return this.editTreeInstance = editTree(this.cont, this.store)
 }
 
-CreateChart.prototype.updateMain = function(d) {
+updateMain(d) {
   this.store.updateMainId(d.data.id)
   this.store.updateTree({})
 
   return this
 }
 
-CreateChart.prototype.updateMainId = function(id) {
+updateMainId(id) {
   this.store.updateMainId(id)
 
   return this
 }
 
-CreateChart.prototype.getMainDatum = function() {
+getMainDatum() {
   return this.store.getMainDatum()
 }
 
-CreateChart.prototype.getDataJson = function(fn) {
+getDataJson(fn) {
   const data = this.store.getData()
   return f3.handlers.cleanupDataJson(JSON.stringify(data))
 }
 
-CreateChart.prototype.updateData = function(data) {
-  this.store.updateData(data)
-}
 
-CreateChart.prototype.setBeforeUpdate = function(fn) {
+setBeforeUpdate = function(fn) {
   this.beforeUpdate = fn
   return this
 }
 
-CreateChart.prototype.setAfterUpdate = function(fn) {
+setAfterUpdate = function(fn) {
   this.afterUpdate = fn
   return this
+}
 }
 
 function setCont(cont) {

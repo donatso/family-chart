@@ -1,5 +1,5 @@
 import {processCardDisplay} from "./utils.js"
-import {pathToMain} from "../CalculateTree/createLinks.js"
+import {pathToMain} from "../CalculateTree/createLinks.ts"
 import * as d3 from 'd3';
 import CardHtmlElementFunction from "../view/elements/CardHtml.js";
 

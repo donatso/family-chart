@@ -22,8 +22,11 @@ export default function createSvg(cont, props={}) {
   const f3Canvas = getOrCreateF3Canvas(cont)
 
   const temp_div = d3.create('div').node()
-  temp_div.innerHTML = svg_html
-  const svg = temp_div.querySelector('svg')
+  if(temp_div){
+    temp_div.innerHTML = svg_html
+  }
+  
+  const svg = temp_div?.querySelector('svg')
   f3Canvas.appendChild(svg)
 
   cont.appendChild(f3Canvas)
@@ -41,7 +44,7 @@ export default function createSvg(cont, props={}) {
   }
 }
 
-function setupZoom(el, props={}) {
+function setupZoom(el, props: {onZoom?:any,zoom_polite?:any}={}) {
   if (el.__zoom) return
   const view = el.querySelector('.view'),
     zoom = d3.zoom().on("zoom", (props.onZoom || zoomed))

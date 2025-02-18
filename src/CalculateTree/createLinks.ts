@@ -1,5 +1,5 @@
 export function createLinks({d, tree, is_horizontal=false}) {
-  const links = [];
+  const links: {d:any,_d:any,curve:boolean,id: any,depth: number,spouse?:boolean,is_ancestry:boolean,source:any,target: any[]}[] = [];
 
   if (d.data.rels.spouses && d.data.rels.spouses.length > 0) handleSpouse({d})
   handleAncestrySide({d})
@@ -61,7 +61,7 @@ export function createLinks({d, tree, is_horizontal=false}) {
         d: [[d.x, d.y], [spouse.x, spouse.y]],
         _d: () => [
           d.is_ancestry ? [_or(d, 'x')-.0001, _or(d, 'y')] : [d.x, d.y], // add -.0001 to line to have some length if d.x === spouse.x
-          d.is_ancestry ? [_or(spouse, 'x', true), _or(spouse, 'y')] : [d.x-.0001, d.y]
+          d.is_ancestry ? [_or(spouse, 'x'), _or(spouse, 'y')] : [d.x-.0001, d.y]
         ],
         curve: false, 
         id: linkId(d, spouse), 
@@ -75,7 +75,7 @@ export function createLinks({d, tree, is_horizontal=false}) {
   }
 
   ///
-  function getMid(d1, d2, side, is_) {
+  function getMid(d1, d2, side, is_?) {
     if (is_) return _or(d1, side) - (_or(d1, side) - _or(d2, side))/2
     else return d1[side] - (d1[side] - d2[side])/2
   }
@@ -132,12 +132,12 @@ export function createLinks({d, tree, is_horizontal=false}) {
 
 export function pathToMain(cards, links, datum, main_datum) {
   const is_ancestry = datum.is_ancestry
-  const links_data = links.data()
-  let links_node_to_main = []
-  let cards_node_to_main = []
+  const links_data: any[] = links.data()
+  let links_node_to_main: any[] = []
+  let cards_node_to_main: any[] = []
 
   if (is_ancestry) {
-    const links_to_main = []
+    const links_to_main: any[] = []
 
     let parent = datum
     let itteration1 = 0
@@ -181,7 +181,7 @@ export function pathToMain(cards, links, datum, main_datum) {
       }
     })
   } else {
-    let links_to_main = []
+    let links_to_main: any[] = []
 
     let child = datum
     let itteration1 = 0

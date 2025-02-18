@@ -1,14 +1,14 @@
 import * as d3 from 'd3';
 
 export default function Link({d, entering, exiting}) {
-  const path = createPath(d, entering, exiting);
+  const path = createPath(d, entering);
 
   return {template: (`
     <path d="${path}" fill="none" stroke="#fff" />
   `)}
 }
 
-export function createPath(d, is_) {
+export function createPath(d, is_?) {
   const line = d3.line().curve(d3.curveMonotoneY),
     lineCurve = d3.line().curve(d3.curveBasis),
     path_data = is_ ? d._d() : d.d
