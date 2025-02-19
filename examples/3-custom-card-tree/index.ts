@@ -1,4 +1,4 @@
-import d3 from "d3";
+import * as d3 from 'd3'
 import f3 from "../../src/index"
 
 fetch("./data.json").then(r => r.json()).then(data => {

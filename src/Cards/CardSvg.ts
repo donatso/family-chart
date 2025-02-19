@@ -1,12 +1,27 @@
 import * as d3 from 'd3';
 import f3 from "../index.js"
 import {updateCardSvgDefs} from "../view/elements/Card.defs.js"
-import {processCardDisplay} from "./utils.js"
+import {processCardDisplay, type FamilyMemberFormatter} from "./utils.js"
 
 CardSvgWrapper.is_html = false
-export default function CardSvgWrapper(...args) { return new CardSvg(...args) }
+export default function CardSvgWrapper(cont:Element,store) { return new CardSvg(cont,store) }
 
-function CardSvg(cont, store) {
+class CardSvg{
+  cont: Element
+  store: any
+  svg: unknown |null
+  getCard: unknown | null
+  card_dim: Record<'w' | 'h' | 'text_x' | 'text_y' | 'img_w' | 'img_h' | 'img_x'| 'img_y',number>
+  card_display: FamilyMemberFormatter[]
+  mini_tree:boolean
+  link_break:boolean
+  onCardClick: unknown
+  onCardUpdate: unknown | null
+  onCardUpdates: {id:string}[] | null
+  
+
+
+  constructor(cont:Element,store: unknown){
   this.cont = cont
   this.store = store
   this.svg = null
@@ -22,9 +37,10 @@ function CardSvg(cont, store) {
   this.init()
 
   return this
-}
+  }
 
-CardSvg.prototype.init = function() {
+
+init() {
   this.svg = this.cont.querySelector('svg.main_svg')
 
   this.getCard = () => f3.elements.Card({
@@ -40,13 +56,14 @@ CardSvg.prototype.init = function() {
   })
 }
 
-CardSvg.prototype.setCardDisplay = function(card_display) {
+
+setCardDisplay(card_display) {
   this.card_display = processCardDisplay(card_display)
 
   return this
 }
 
-CardSvg.prototype.setCardDim = function(card_dim) {
+setCardDim(card_dim) {
   if (typeof card_dim !== 'object') {
     console.error('card_dim must be an object')
     return this
@@ -67,23 +84,23 @@ CardSvg.prototype.setCardDim = function(card_dim) {
   return this
 }
 
-CardSvg.prototype.setMiniTree = function(mini_tree) {
+setMiniTree(mini_tree) {
   this.mini_tree = mini_tree
 
   return this
 }
 
-CardSvg.prototype.setLinkBreak = function(link_break) {
+setLinkBreak(link_break) {
   this.link_break = link_break
 
   return this
 }
 
-CardSvg.prototype.setCardTextSvg = function(cardTextSvg) {
+setCardTextSvg(cardTextSvg) {
   function onCardUpdate(d) {
     const card_node = d3.select(this)
     const card_text = card_node.select('.card-text text')
-    const card_text_g = card_text.node().parentNode
+    const card_text_g = (card_text.node() as Element)?.parentElement!
     card_text_g.innerHTML = cardTextSvg(d.data)
   }
   onCardUpdate.id = 'setCardTextSvg'
@@ -94,13 +111,14 @@ CardSvg.prototype.setCardTextSvg = function(cardTextSvg) {
   return this
 }
 
-CardSvg.prototype.onCardClickDefault = function(e, d) {
+onCardClickDefault(e, d) {
   this.store.updateMainId(d.data.id)
   this.store.updateTree({})
 }
 
-CardSvg.prototype.setOnCardClick = function(onCardClick) {
+setOnCardClick(onCardClick) {
   this.onCardClick = onCardClick
 
   return this
+}
 }

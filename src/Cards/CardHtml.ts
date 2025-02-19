@@ -1,4 +1,4 @@
-import {processCardDisplay} from "./utils.js"
+import {processCardDisplay, type CardDisplayArg} from "./utils.js"
 import {pathToMain} from "../CalculateTree/createLinks.ts"
 import * as d3 from 'd3';
 import CardHtmlElementFunction from "../view/elements/CardHtml.js";
@@ -52,7 +52,7 @@ export default class CardHtml {
       this.store.updateMainId(d.data.id)
       this.store.updateTree({})
     }
-    setCardDisplay(card_display: unknown){
+    setCardDisplay(card_display: CardDisplayArg ){
       this.card_display = processCardDisplay(card_display)
       return this
     }

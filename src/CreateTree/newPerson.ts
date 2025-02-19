@@ -148,8 +148,8 @@ export function handleNewRel({datum, new_rel_datum, data_stash}) {
   data_stash.push(new_rel_datum)
 }
 
-export function createNewPerson({data, rels,to_add}: {data?: any,rels?: any,to_add?:boolean}) {
-  return {id: generateUUID(), data: data || {}, rels: rels || {}, to_add}
+export function createNewPerson({data, rels,to_add,_new_rel_data}: {data?: any,rels?: any,to_add?:boolean,_new_rel_data?: {rel_type:'spouse' | 'mother' | 'father', label: string} | {rel_type:'daughter' |'son', label: string, other_parent_id:unknown}}) {
+  return {id: generateUUID(), data: data || {}, rels: rels || {}, to_add, _new_rel_data}
 }
 
 export function createNewPersonWithGenderFromRel({data, rel_type, rel_datum}: {data?: unknown,rel_type: unknown,rel_datum:unknown}) {

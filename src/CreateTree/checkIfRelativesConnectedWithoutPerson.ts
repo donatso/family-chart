@@ -1,7 +1,7 @@
 export function checkIfRelativesConnectedWithoutPerson(datum, data_stash) {
   const r = datum.rels,
     r_ids = [r.father, r.mother, ...(r.spouses || []), ...(r.children || [])].filter(r_id => !!r_id),
-    rels_not_to_main = [];
+    rels_not_to_main: unknown[] = [];
 
   for (let i = 0; i < r_ids.length; i++) {
     const line = findPersonLineToMain(data_stash.find(d => d.id === r_ids[i]), [datum])
