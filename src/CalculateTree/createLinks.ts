@@ -1,5 +1,7 @@
-export function createLinks({d, tree, is_horizontal=false}) {
-  const links: {d:any,_d:any,curve:boolean,id: any,depth: number,spouse?:boolean,is_ancestry:boolean,source:any,target: any[]}[] = [];
+import type { TreePerson } from "../types";
+
+export function createLinks({d, tree, is_horizontal=false}: {d: {data: TreePerson},tree: unknown,is_horizontal?:boolean}) {
+  const links: {d:unknown,_d:unknown,curve:boolean,id: string,depth: number,spouse?:boolean,is_ancestry:boolean,source:unknown,target: unknown[]}[] = [];
 
   if (d.data.rels.spouses && d.data.rels.spouses.length > 0) handleSpouse({d})
   handleAncestrySide({d})

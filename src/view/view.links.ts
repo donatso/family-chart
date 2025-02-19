@@ -4,7 +4,7 @@ import {createLinks} from "../CalculateTree/createLinks.ts"
 import {createPath} from "./elements/Link"
 import {calculateDelay} from "./view.utils"
 
-export default function updateLinks(svg, tree, props: {initial?: any, transition_time?:any}={}) {
+export default function updateLinks(svg, tree, props: {initial?: unknown, transition_time?:number}={}) {
   type Link = ReturnType<typeof createLinks>[number]
   const links_data_dct = tree.data.reduce((acc, d) => {
     createLinks({d, tree:tree.data, is_horizontal: tree.is_horizontal}).forEach(l => acc[l.id] = l)
@@ -33,7 +33,7 @@ export default function updateLinks(svg, tree, props: {initial?: any, transition
     const path = d3.select(this);
     const delay = props.initial ? calculateDelay(tree, d, props.transition_time) : 0
     const createdPath = createPath(d)
-    const linkTransition= path.transition('path').duration(props.transition_time).delay(delay)
+    const linkTransition= path.transition('path').duration(props.transition_time!).delay(delay)
     if(createdPath){
       linkTransition.attr("d", createdPath)
     }
@@ -43,7 +43,7 @@ export default function updateLinks(svg, tree, props: {initial?: any, transition
   function linkExit(d) {
     const path = d3.select(this);
     path.transition('op').duration(800).style("opacity", 0)
-    const linkTransition = path.transition('path').duration(props.transition_time)
+    const linkTransition = path.transition('path').duration(props.transition_time!)
     const createdPath = createPath(d, true)
     if(createdPath){
       linkTransition.attr("d", createdPath)
