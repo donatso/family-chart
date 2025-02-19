@@ -17,7 +17,7 @@
   
       /* Strictness */
       "strict": true,
-      "noUnusedLocals": true,
+      "noUnusedLocals": false,
       "noUnusedParameters": false, // false while moving to ts
       "noFallthroughCasesInSwitch": true,
       "noUncheckedSideEffectImports": true,
