@@ -1,16 +1,15 @@
 import * as d3 from 'd3';
 
-import {createLinks} from "../CalculateTree/createLinks.ts"
+import {createLinks, type TreeLink} from "../CalculateTree/createLinks.ts"
 import {createPath} from "./elements/Link"
 import {calculateDelay} from "./view.utils"
 
 export default function updateLinks(svg, tree, props: {initial?: unknown, transition_time?:number}={}) {
-  type Link = ReturnType<typeof createLinks>[number]
   const links_data_dct = tree.data.reduce((acc, d) => {
     createLinks({d, tree:tree.data, is_horizontal: tree.is_horizontal}).forEach(l => acc[l.id] = l)
     return acc
   }, {})
-  const links_data: Link[] = Object.values(links_data_dct)
+  const links_data: TreeLink[] = Object.values(links_data_dct)
   const link = d3.select(svg).select(".links_view").selectAll("path.link").data(links_data, (d: any) => d.id)
   const link_exit = link.exit()
   const link_enter = link.enter().append("path").attr("class", "link")

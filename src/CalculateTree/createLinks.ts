@@ -1,7 +1,8 @@
 import type { TreePerson } from "../types";
 
+export type TreeLink = {d:unknown,_d:unknown,curve:boolean,id: string,depth: number,spouse?:boolean,is_ancestry:boolean,source:unknown,target: unknown[]}
 class TreeLinks {
-  links: {d:unknown,_d:unknown,curve:boolean,id: string,depth: number,spouse?:boolean,is_ancestry:boolean,source:unknown,target: unknown[]}[]
+  links: TreeLink[]
   tree: unknown
   is_horizontal:boolean
   constructor({d, tree, is_horizontal=false}: {d: {data: TreePerson},tree: unknown,is_horizontal?:boolean}){

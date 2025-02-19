@@ -1,8 +1,8 @@
-import CalculateTree from "./CalculateTree/CalculateTree.js"
+import CalculateTree, { FamilyTree } from "./CalculateTree/CalculateTree.js"
 import type { TreePerson } from "./types.js"
 
 export type TreeStoreState = {
-  tree:{main_id:unknown, data: {id: string, data: {id:string}}[]}
+  tree:FamilyTree
   main_id:string
   node_separation:number
   level_separation:number
