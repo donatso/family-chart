@@ -1,5 +1,6 @@
 import * as d3 from 'd3';
 import f3 from '../../src/index'
+import data from './data.json';
 
 fetch("./data.json").then(r => r.json()).then(data => {
   let tree, main_id;

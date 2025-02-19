@@ -3,7 +3,7 @@ import {sortChildrenWithSpouses} from "./CalculateTree.handlers.ts"
 import {createNewPerson} from "../CreateTree/newPerson.js"
 import {isAllRelativeDisplayed} from "../handlers/general.js"
 
-export default function CalculateTree({data, main_id=null, node_separation=250, level_separation=150, single_parent_empty_card=true, is_horizontal=false}) {
+export default function CalculateTree({data, main_id=null, node_separation=250, level_separation=150, single_parent_empty_card=true, is_horizontal=false}: {data: unknown[],main_id?: null | string, node_separation?: number,level_separation?: number,single_parent_empty_card?: boolean,is_horizontal?:boolean}) {
   if (!data || !data.length) return {data: [], data_stash: [], dim: {width: 0, height: 0}, main_id: null}
   if (is_horizontal) [node_separation, level_separation] = [level_separation, node_separation]
   const data_stash = single_parent_empty_card ? createRelsToAdd(data) : data

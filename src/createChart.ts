@@ -1,10 +1,11 @@
 import f3 from "./index.js"
 import editTree from "./CreateTree/editTree.js"
+import type createStore from "./createStore.js"
 
 export default function(cont,data) { return new CreateChart(cont,data) }
 class CreateChart{
-  cont: any
-  store:any
+  cont: HTMLElement | SVGElement | null
+  store: ReturnType<typeof createStore> | null
   svg: any
   getCard:any
   node_separation:any
@@ -17,7 +18,7 @@ class CreateChart{
   afterUpdate:any
   editTreeInstance:any
   constructor(cont, data){
-    this.cont = null
+  this.cont = null
   this.store = null
   this.svg = null
   this.getCard = null
@@ -62,19 +63,19 @@ init(cont, data) {
     if (this.beforeUpdate) this.beforeUpdate(props)
     props = Object.assign({transition_time: this.transition_time}, props || {})
     if (this.is_card_html) props = Object.assign({}, props || {}, {cardHtml: getHtmlSvg()})
-    f3.view(this.store.getTree(), this.svg, this.getCard(), props || {})
+    f3.view(this.store?.getTree(), this.svg, this.getCard(), props || {})
     if (this.afterUpdate) this.afterUpdate(props)
   })
 }
 
 updateTree(props = {initial: false}) {
-  this.store.updateTree(props)
+  this.store?.updateTree(props)
 
   return this
 }
 
 updateData(data) {
-  this.store.updateData(data)
+  this.store?.updateData(data)
 
   return this
 }
@@ -85,7 +86,9 @@ setCardYSpacing(card_y_spacing) {
     return this
   }
   this.level_separation = card_y_spacing
-  this.store.state.level_separation = card_y_spacing
+  this.store!.state.level_separation = card_y_spacing
+  
+  
 
   return this
 }
@@ -96,31 +99,38 @@ setCardXSpacing(card_x_spacing) {
     return this
   }
   this.node_separation = card_x_spacing
-  this.store.state.node_separation = card_x_spacing
+  this.store!.state.node_separation = card_x_spacing
+
+  
 
   return this
 }
 
 setOrientationVertical() {
   this.is_horizontal = false
-  this.store.state.is_horizontal = false
+  this.store!.state.is_horizontal = false
+
+ 
 
   return this
 }
 
 setOrientationHorizontal() {
   this.is_horizontal = true
-  this.store.state.is_horizontal = true
+  if(this.store){
+    this.store.state.is_horizontal = true
+  }
+ 
 
   return this
 }
 
 setSingleParentEmptyCard(single_parent_empty_card, {label='Unknown'} = {}) {
   this.single_parent_empty_card = single_parent_empty_card
-  this.store.state.single_parent_empty_card = single_parent_empty_card
-  this.store.state.single_parent_empty_card_label = label
+  this.store!.state.single_parent_empty_card = single_parent_empty_card
+  this.store!.state.single_parent_empty_card_label = label
   if (this.editTreeInstance && this.editTreeInstance.addRelativeInstance.is_active) this.editTreeInstance.addRelativeInstance.onCancel()
-  f3.handlers.removeToAddFromData(this.store.getData() || [])
+  f3.handlers.removeToAddFromData(this.store!.getData() || [])
 
   return this
 }
@@ -130,11 +140,11 @@ setCard(Card) {
   this.is_card_html = Card.is_html
 
   if (this.is_card_html) {
-    this.svg.querySelector('.cards_view').innerHTML = ''
-    this.cont.querySelector('#htmlSvg').style.display = 'block'
+    this.svg.querySelector('.cards_view').innerHTML = '';
+    (this.cont?.querySelector('#htmlSvg') as HTMLElement).style.display = 'block'
   } else {
-    this.cont.querySelector('#htmlSvg .cards_view').innerHTML = ''
-    this.cont.querySelector('#htmlSvg').style.display = 'none'
+    (this.cont?.querySelector('#htmlSvg .cards_view')as HTMLElement).innerHTML = '';
+    (this.cont?.querySelector('#htmlSvg') as HTMLElement).style.display = 'none'
   }
 
   const card = Card(this.cont, this.store)
@@ -154,24 +164,24 @@ editTree() {
 }
 
 updateMain(d) {
-  this.store.updateMainId(d.data.id)
-  this.store.updateTree({})
+  this.store!.updateMainId(d.data.id)
+  this.store!.updateTree({})
 
   return this
 }
 
 updateMainId(id) {
-  this.store.updateMainId(id)
+  this.store!.updateMainId(id)
 
   return this
 }
 
 getMainDatum() {
-  return this.store.getMainDatum()
+  return this.store!.getMainDatum()
 }
 
 getDataJson(fn) {
-  const data = this.store.getData()
+  const data = this.store!.getData()
   return f3.handlers.cleanupDataJson(JSON.stringify(data))
 }
 
