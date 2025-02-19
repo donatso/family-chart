@@ -6,17 +6,17 @@ export default function(cont,data) { return new CreateChart(cont,data) }
 class CreateChart{
   cont: HTMLElement | SVGElement | null
   store: ReturnType<typeof createStore> | null
-  svg: any
-  getCard:any
-  node_separation:any
-  level_separation:any
-  is_horizontal:any
-  single_parent_empty_card:any
-  transition_time:any
-  is_card_html:any
-  beforeUpdate:any
-  afterUpdate:any
-  editTreeInstance:any
+  svg: SVGElement | null | undefined
+  getCard:(() => unknown) | null
+  node_separation:unknown
+  level_separation:unknown
+  is_horizontal:unknown
+  single_parent_empty_card:unknown
+  transition_time:unknown
+  is_card_html:unknown
+  beforeUpdate: ((props: unknown) => void) | null
+  afterUpdate:  ((props: unknown) => void) | null
+  editTreeInstance: {addRelativeInstance: {is_active: boolean, onCancel: () => void}} | undefined
   constructor(cont, data){
   this.cont = null
   this.store = null
@@ -63,7 +63,7 @@ init(cont, data) {
     if (this.beforeUpdate) this.beforeUpdate(props)
     props = Object.assign({transition_time: this.transition_time}, props || {})
     if (this.is_card_html) props = Object.assign({}, props || {}, {cardHtml: getHtmlSvg()})
-    f3.view(this.store?.getTree(), this.svg, this.getCard(), props || {})
+    f3.view(this.store?.getTree(), this.svg, this.getCard?.(), props || {})
     if (this.afterUpdate) this.afterUpdate(props)
   })
 }
@@ -140,7 +140,7 @@ setCard(Card) {
   this.is_card_html = Card.is_html
 
   if (this.is_card_html) {
-    this.svg.querySelector('.cards_view').innerHTML = '';
+    (this.svg?.querySelector('.cards_view') as HTMLElement).innerHTML = '';
     (this.cont?.querySelector('#htmlSvg') as HTMLElement).style.display = 'block'
   } else {
     (this.cont?.querySelector('#htmlSvg .cards_view')as HTMLElement).innerHTML = '';

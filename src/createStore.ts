@@ -15,7 +15,7 @@ export type TreeStoreState = {
 }
 class TreeStore {
   state: TreeStoreState
-  onUpdate: any
+  onUpdate: ((props: unknown) => void) | undefined
   methods: {}
   setOnUpdate(f) {
     this.onUpdate = f
