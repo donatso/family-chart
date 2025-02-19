@@ -1,30 +1,33 @@
 import type { TreePerson } from "../types";
 
-export function createLinks({d, tree, is_horizontal=false}: {d: {data: TreePerson},tree: unknown,is_horizontal?:boolean}) {
-  const links: {d:unknown,_d:unknown,curve:boolean,id: string,depth: number,spouse?:boolean,is_ancestry:boolean,source:unknown,target: unknown[]}[] = [];
-
-  if (d.data.rels.spouses && d.data.rels.spouses.length > 0) handleSpouse({d})
-  handleAncestrySide({d})
-  handleProgenySide({d})
-
-  return links;
-
-  function handleAncestrySide({d}) {
+class TreeLinks {
+  links: {d:unknown,_d:unknown,curve:boolean,id: string,depth: number,spouse?:boolean,is_ancestry:boolean,source:unknown,target: unknown[]}[]
+  tree: unknown
+  is_horizontal:boolean
+  constructor({d, tree, is_horizontal=false}: {d: {data: TreePerson},tree: unknown,is_horizontal?:boolean}){
+    this.links = []
+    this.tree = tree
+    this.is_horizontal=is_horizontal
+    if (d.data.rels.spouses && d.data.rels.spouses.length > 0) this.handleSpouse({d})
+      this.handleAncestrySide({d})
+      this.handleProgenySide({d})
+  }
+  handleAncestrySide({d}) {
     if (!d.parents) return
     const p1 = d.parents[0]
     const p2 = d.parents[1] || p1
 
-    const p = {x: getMid(p1, p2, 'x'), y: getMid(p1, p2, 'y')}
+    const p = {x: this.getMid(p1, p2, 'x'), y: this.getMid(p1, p2, 'y')}
 
-    links.push({
-      d: Link(d, p),
+    this.links.push({
+      d: this.Link(d, p),
       _d: () => {
         const _d = {x: d.x, y: d.y},
           _p = {x: d.x, y: d.y}
-        return Link(_d, _p)
+        return this.Link(_d, _p)
       },
       curve: true, 
-      id: linkId(d, p1, p2), 
+      id: this.linkId(d, p1, p2), 
       depth: d.depth+1, 
       is_ancestry: true,
       source: d,
@@ -32,20 +35,19 @@ export function createLinks({d, tree, is_horizontal=false}: {d: {data: TreePerso
     })
   }
 
-
-  function handleProgenySide({d}) {
+  handleProgenySide({d}) {
     if (!d.children || d.children.length === 0) return
 
     d.children.forEach((child, i) => {
-      const other_parent = otherParent(child, d, tree) || d
+      const other_parent = this.otherParent(child, d, this.tree) || d
       const sx = other_parent.sx
 
-      const parent_pos = !is_horizontal ? {x: sx, y: d.y} : {x: d.x, y: sx}
-      links.push({
-        d: Link(child, parent_pos),
-        _d: () => Link(parent_pos, {x: _or(parent_pos, 'x'), y: _or(parent_pos, 'y')}),
+      const parent_pos = !this.is_horizontal ? {x: sx, y: d.y} : {x: d.x, y: sx}
+      this.links.push({
+        d: this.Link(child, parent_pos),
+        _d: () => this.Link(parent_pos, {x:this._or(parent_pos, 'x'), y: this._or(parent_pos, 'y')}),
         curve: true,
-        id: linkId(child, d, other_parent),
+        id: this.linkId(child, d, other_parent),
         depth: d.depth+1,
         is_ancestry: false,
         source: [d, other_parent],
@@ -54,19 +56,18 @@ export function createLinks({d, tree, is_horizontal=false}: {d: {data: TreePerso
     })
   }
 
-
-  function handleSpouse({d}) {
+  handleSpouse({d}) {
     d.data.rels.spouses.forEach(sp_id => {
-      const spouse = getRel(d, tree, d0 => d0.data.id === sp_id)
+      const spouse = this.getRel(d, this.tree, d0 => d0.data.id === sp_id)
       if (!spouse || d.spouse) return
-      links.push({
+      this.links.push({
         d: [[d.x, d.y], [spouse.x, spouse.y]],
         _d: () => [
-          d.is_ancestry ? [_or(d, 'x')-.0001, _or(d, 'y')] : [d.x, d.y], // add -.0001 to line to have some length if d.x === spouse.x
-          d.is_ancestry ? [_or(spouse, 'x'), _or(spouse, 'y')] : [d.x-.0001, d.y]
+          d.is_ancestry ? [this._or(d, 'x')-.0001, this._or(d, 'y')] : [d.x, d.y], // add -.0001 to line to have some length if d.x === spouse.x
+          d.is_ancestry ? [this._or(spouse, 'x'), this._or(spouse, 'y')] : [d.x-.0001, d.y]
         ],
         curve: false, 
-        id: linkId(d, spouse), 
+        id: this.linkId(d, spouse), 
         depth: d.depth, 
         spouse: true, 
         is_ancestry: spouse.is_ancestry, 
@@ -75,22 +76,21 @@ export function createLinks({d, tree, is_horizontal=false}: {d: {data: TreePerso
       })
     })
   }
-
   ///
-  function getMid(d1, d2, side, is_?) {
-    if (is_) return _or(d1, side) - (_or(d1, side) - _or(d2, side))/2
+  getMid(d1, d2, side, is_?) {
+    if (is_) return this._or(d1, side) - (this._or(d1, side) - this._or(d2, side))/2
     else return d1[side] - (d1[side] - d2[side])/2
   }
 
-  function _or(d, k) {
+  _or(d, k) {
    return d.hasOwnProperty('_'+k) ? d['_'+k] : d[k]
   }
 
-  function Link(d, p) {
-    return is_horizontal ? LinkHorizontal(d, p) : LinkVertical(d, p)
+  Link(d, p) {
+    return this.is_horizontal ? this.LinkHorizontal(d, p) : this.LinkVertical(d, p)
   }
 
-  function LinkVertical(d, p) {
+  LinkVertical(d, p) {
     const hy = (d.y + (p.y - d.y) / 2)
     return [
       [d.x, d.y],
@@ -102,7 +102,7 @@ export function createLinks({d, tree, is_horizontal=false}: {d: {data: TreePerso
     ]
   }
 
-  function LinkHorizontal(d, p) {
+  LinkHorizontal(d, p) {
     const hx = (d.x + (p.x - d.x) / 2)
     return [
       [d.x, d.y],
@@ -114,22 +114,25 @@ export function createLinks({d, tree, is_horizontal=false}: {d: {data: TreePerso
     ]
   }
 
-  function linkId(...args) {
+  linkId(...args) {
     return args.map(d => d.data.id).sort().join(", ")  // make unique id
   }
 
-  function otherParent(child, p1, data) {
+  otherParent(child, p1, data) {
     const condition = d0 => (d0.data.id !== p1.data.id) && ((d0.data.id === child.data.rels.mother) || (d0.data.id === child.data.rels.father))
-    return getRel(p1, data, condition)
+    return this.getRel(p1, data, condition)
   }
 
   // if there is overlapping of personas in different branches of same family tree, return the closest one
-  function getRel(d, data, condition) {
+  getRel(d, data, condition) {
     const rels = data.filter(condition)
     const dist_xy = (a, b) => Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2))
     if (rels.length > 1) return rels.sort((d0, d1) => dist_xy(d0, d) - dist_xy(d1, d))[0]
     else return rels[0]
   }
+}
+export function createLinks({d, tree, is_horizontal=false}: {d: {data: TreePerson},tree: unknown,is_horizontal?:boolean}) {
+  return new TreeLinks({d,tree,is_horizontal}).links
 }
 
 export function pathToMain(cards, links, datum, main_datum) {
