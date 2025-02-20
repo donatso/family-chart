@@ -129,7 +129,7 @@ export function historyForwardSvgIcon() { return svgWrapper(historyForwardIcon()
 export function personSvgIcon() { return svgWrapper(personIcon(), '0 0 512 512') }
 export function miniTreeSvgIcon() { return svgWrapper(miniTreeIcon(), '0 0 72 25') }
 
-function svgWrapper(icon, viewBox='0 0 24 24') {
+function svgWrapper(icon: string, viewBox='0 0 24 24') {
   const match = icon.match(/data-icon="([^"]+)"/);
   const dataIcon = match ? `data-icon="${match[1]}"` : '';
   
