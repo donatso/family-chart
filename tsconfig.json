@@ -22,7 +22,7 @@
       "noFallthroughCasesInSwitch": true,
       "noUncheckedSideEffectImports": true,
       "noUncheckedIndexedAccess": true,
-      "noImplicitAny": false, // false while moving to ts
+      "noImplicitAny": true, // false while moving to ts
       "noImplicitThis": false, // false while moving to ts
       "noImplicitOverride": true,
   
