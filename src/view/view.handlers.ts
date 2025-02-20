@@ -8,7 +8,7 @@ function positionTree({t, svg,with_transition, transition_time=2000}: {t: {k: nu
     .call(zoom!.transform, d3.zoomIdentity.scale(t.k).translate(t.x, t.y))
 }
 
-export function treeFit({svg, svg_dim, tree_dim, with_transition, transition_time}: {svg_dim:unknown, tree_dim: unknown,t: unknown,svg:SVGElement,with_transition?:any,transition_time?: number}) {
+export function treeFit({svg, svg_dim, tree_dim, with_transition, transition_time}: {svg_dim:unknown, tree_dim: unknown,t: unknown,svg:SVGElement,with_transition?:boolean,transition_time?: number}) {
   const t = calculateTreeFit(svg_dim, tree_dim);
   positionTree({t, svg, with_transition, transition_time})
 }

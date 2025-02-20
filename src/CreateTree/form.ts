@@ -1,13 +1,16 @@
+import type { TreeStore } from "../createStore.ts"
+import type { TreePerson } from "../types.ts"
+import type { AddRelative } from "./addRelative.ts"
 import {checkIfRelativesConnectedWithoutPerson} from "./checkIfRelativesConnectedWithoutPerson.js"
 import {createTreeDataWithMainNode} from "./newPerson.ts"
 
-export function createForm({datum, store, fields, postSubmit, addRelative, deletePerson, onCancel, editFirst}) {
+export function createForm({datum, store, fields, postSubmit, addRelative, deletePerson, onCancel, editFirst} : {datum: TreePerson & {_new_rel_data?: {label:string}},store: TreeStore,fields: {id:string, type:string, label:string}[],postSubmit: (args?: {delete: boolean}) => void,addRelative: AddRelative | null,deletePerson?: () => void, onCancel?: () => void,editFirst: unknown}) {
   const form_creator: {fields: unknown[], 
     onSubmit: (e:unknown) => 
       void,onDelete?: () => void, 
     addRelative?: () => void,
     addRelativeCancel?: () => void,
-    addRelativeActive?:() =>void, 
+    addRelativeActive?:unknown, 
     editable?:boolean, 
     title?:string, 
     new_rel?:boolean,
@@ -21,9 +24,9 @@ export function createForm({datum, store, fields, postSubmit, addRelative, delet
   }
   if (!datum._new_rel_data) {
     form_creator.onDelete = deletePersonWithPostSubmit
-    form_creator.addRelative = () => addRelative.activate(datum),
-    form_creator.addRelativeCancel = () => addRelative.onCancel()
-    form_creator.addRelativeActive = addRelative.is_active
+    form_creator.addRelative = () => addRelative?.activate(datum),
+    form_creator.addRelativeCancel = () => addRelative?.onCancel?.()
+    form_creator.addRelativeActive = addRelative?.is_active
 
     form_creator.editable = false
   }
@@ -66,7 +69,7 @@ export function createForm({datum, store, fields, postSubmit, addRelative, delet
   }
 
   function deletePersonWithPostSubmit() {
-    deletePerson()
+    deletePerson?.()
     postSubmit({delete: true})
   }
 }

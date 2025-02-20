@@ -1,5 +1,5 @@
 import {processCardDisplay, type CardDisplayArg} from "./utils.js"
-import {pathToMain} from "../CalculateTree/createLinks.ts"
+import {pathToMain, type TreeLink} from "../CalculateTree/createLinks.ts"
 import * as d3 from 'd3';
 import CardHtmlElementFunction from "../view/elements/CardHtml.js";
 
@@ -113,7 +113,7 @@ export default class CardHtml {
       this.to_transition = datum.data.id
       const main_datum = this.store.getTreeMainDatum()
       const cards = d3.select(this.cont).select('div.cards_view').selectAll('.card_cont')
-      const links = d3.select(this.cont).select('svg.main_svg .links_view').selectAll('.link')
+      const links = d3.select(this.cont).select('svg.main_svg .links_view').selectAll('.link') as d3.Selection<d3.BaseType,TreeLink,d3.BaseType,unknown>
       const [cards_node_to_main, links_node_to_main] = pathToMain(cards, links, datum, main_datum)
       cards_node_to_main?.forEach(d => {
         const delay = Math.abs(datum.depth - d.card.depth) * 200

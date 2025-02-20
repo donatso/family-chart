@@ -44,7 +44,7 @@ export default function createSvg(cont: HTMLElement, props={}) {
   }
 }
 
-function setupZoom(el: HTMLElement & Partial<{__zoom: unknown,__zoomObj:unknown}>, props: {onZoom?:any,zoom_polite?:any}={}) {
+function setupZoom(el: HTMLElement & Partial<{__zoom: unknown,__zoomObj:unknown}>, props: {onZoom?:(e: unknown) => void,zoom_polite?:unknown}={}) {
   if (el.__zoom) return
   const view = el.querySelector('.view'),
   zoom = d3.zoom().on("zoom", (props.onZoom || zoomed))
@@ -54,7 +54,7 @@ function setupZoom(el: HTMLElement & Partial<{__zoom: unknown,__zoomObj:unknown}
 
   if (props.zoom_polite) zoom.filter(zoomFilter)
 
-  function zoomed(e) {
+  function zoomed(e: {transform: number | string | boolean}) {
     d3.select(view).attr("transform", e.transform);
   }
 

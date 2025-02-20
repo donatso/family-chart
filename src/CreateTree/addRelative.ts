@@ -4,7 +4,7 @@ import { handleNewRel, createNewPerson } from "./newPerson.js"
 
 export default (store: TreeStore, cancelCallback: (datum: {id:string}) => void,onSubmitCallback:(datum: {id:string}) => void) => { return new AddRelative(store, cancelCallback,onSubmitCallback) }
 
-class AddRelative{
+export class AddRelative{
   store:TreeStore
   cancelCallback:(datum: {id:string}) => void
   onSubmitCallback:(datum: {id:string}) => void

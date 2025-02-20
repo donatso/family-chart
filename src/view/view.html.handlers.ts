@@ -42,7 +42,7 @@ export function onZoomSetup(getSvgView, getHtmlView) {
 }
 
 export function setupReactiveTreeData(getHtmlSvg) {
-  let tree_data: any[] = []
+  let tree_data: unknown[] = []
 
   return function getReactiveTreeData(new_tree_data) {
     const tree_data_exit = getTreeDataExit(new_tree_data, tree_data)

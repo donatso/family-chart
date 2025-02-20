@@ -1,5 +1,5 @@
 import f3 from "./index.js"
-import editTree from "./CreateTree/editTree.js"
+import editTree, { EditTree } from "./CreateTree/editTree.js"
 import type createStore from "./createStore.js"
 
 export default function(cont,data) { return new CreateChart(cont,data) }
@@ -16,7 +16,7 @@ class CreateChart{
   is_card_html:unknown
   beforeUpdate: ((props: unknown) => void) | null
   afterUpdate:  ((props: unknown) => void) | null
-  editTreeInstance: {addRelativeInstance: {is_active: boolean, onCancel: () => void}} | undefined
+  editTreeInstance: EditTree | undefined
   constructor(cont, data){
   this.cont = null
   this.store = null
@@ -129,7 +129,7 @@ setSingleParentEmptyCard(single_parent_empty_card, {label='Unknown'} = {}) {
   this.single_parent_empty_card = single_parent_empty_card
   this.store!.state.single_parent_empty_card = single_parent_empty_card
   this.store!.state.single_parent_empty_card_label = label
-  if (this.editTreeInstance && this.editTreeInstance.addRelativeInstance.is_active) this.editTreeInstance.addRelativeInstance.onCancel()
+  if (this.editTreeInstance && this.editTreeInstance.addRelativeInstance?.is_active) this.editTreeInstance.addRelativeInstance?.onCancel?.()
   f3.handlers.removeToAddFromData(this.store!.getData() || [])
 
   return this

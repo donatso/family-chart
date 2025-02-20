@@ -1,6 +1,7 @@
+import type { BaseType, Selection } from "d3";
 import type { TreePerson } from "../types";
 
-export type TreeLink = {d:unknown,_d:unknown,curve:boolean,id: string,depth: number,spouse?:boolean,is_ancestry:boolean,source:unknown,target: unknown[]}
+export type TreeLink = {d:unknown,_d:unknown,curve:boolean,id: string,depth: number,spouse?:boolean,is_ancestry:boolean,source:unknown[],target: unknown[]}
 class TreeLinks {
   links: TreeLink[]
   tree: unknown
@@ -136,14 +137,14 @@ export function createLinks({d, tree, is_horizontal=false}: {d: {data: TreePerso
   return new TreeLinks({d,tree,is_horizontal}).links
 }
 
-export function pathToMain(cards, links, datum, main_datum) {
+export function pathToMain(cards: Selection<BaseType,unknown,BaseType,unknown>, links:d3.Selection<BaseType,TreeLink,BaseType,unknown>, datum, main_datum) {
   const is_ancestry = datum.is_ancestry
-  const links_data: any[] = links.data()
-  let links_node_to_main: any[] = []
-  let cards_node_to_main: any[] = []
+  const links_data = links.data()
+  let links_node_to_main: {link:TreeLink,node: unknown}[] = []
+  let cards_node_to_main: {card: unknown,node: unknown}[] = []
 
   if (is_ancestry) {
-    const links_to_main: any[] = []
+    const links_to_main: TreeLink[] = []
 
     let parent = datum
     let itteration1 = 0
@@ -187,7 +188,7 @@ export function pathToMain(cards, links, datum, main_datum) {
       }
     })
   } else {
-    let links_to_main: any[] = []
+    let links_to_main: TreeLink[] = []
 
     let child = datum
     let itteration1 = 0
@@ -197,7 +198,10 @@ export function pathToMain(cards, links, datum, main_datum) {
       if (child_link) {
         const spouse_link = links_data.find(d => d.spouse === true && sameArray([d.source, d.target], child_link.source))
         links_to_main.push(child_link)
-        links_to_main.push(spouse_link)
+        if(spouse_link){
+          links_to_main.push(spouse_link)
+        }
+      
         if (spouse_link) child = spouse_link.source
         else child = child_link.source[0]
       } else {

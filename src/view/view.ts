@@ -5,7 +5,7 @@ import updateCards from "./view.cards.js"
 import updateCardsHtml from "./view.html.cards.ts"
 import updateCardsComponent from "./view.html.component.ts"
 
-export default function(tree, svg, Card, props: {tree_position?:string,cardComponent?: any, cardHtml?: any, initial?: boolean, transition_time?: number, scale?:any}={}) {
+export default function(tree, svg, Card, props: {tree_position?:string,cardComponent?: unknown, cardHtml?: unknown, initial?: boolean, transition_time?: number, scale?:number}={}) {
 
   props.initial = props.hasOwnProperty('initial') ? props.initial : !d3.select(svg.parentNode).select('.card_cont').node()
   props.transition_time = props.hasOwnProperty('transition_time') ? props.transition_time : 2000;

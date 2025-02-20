@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import addRelative from "./addRelative.ts"
+import addRelative, { AddRelative } from "./addRelative.ts"
 import {cleanupDataJson, createForm, deletePerson} from "./form.js"
 import { createHistory, createHistoryControls } from './history.ts';
 import { formInfoSetup } from './formInfoSetup.ts';
@@ -8,18 +8,18 @@ import type { TreeStore } from '../createStore.ts';
 
 export default function(cont,store) { return new EditTree(cont,store) }
 
-class EditTree {
-  cont: any
+export class EditTree {
+  cont: HTMLElement
   store: TreeStore
   fields: {type: string, label: string, id: string}[]
-  form_cont: any
-  is_fixed: any
-  history:any
-  no_edit:any
-  onChange:any
-  editFirst:any
-  addRelativeInstance:any
-  card_display:any
+  form_cont: HTMLElement | null
+  is_fixed: unknown
+  history:(ReturnType<typeof createHistory> & {controls?: ReturnType<typeof createHistoryControls>}) | null
+  no_edit:unknown
+  onChange:(() => void) | null
+  editFirst:unknown
+  addRelativeInstance: AddRelative | undefined
+  card_display:unknown
   constructor(cont, store){
   this.cont = cont
   this.store = store
@@ -53,8 +53,8 @@ class EditTree {
   }
   open(datum) {
     if (datum.data.data) datum = datum.data
-    if (this.addRelativeInstance.is_active && !datum._new_rel_data) {
-      this.addRelativeInstance.onCancel()
+    if (this.addRelativeInstance?.is_active && !datum._new_rel_data) {
+      this.addRelativeInstance?.onCancel?.()
       datum = this.store.getDatum(datum.id)
     }
   
@@ -67,10 +67,10 @@ openWithoutRelCancel(datum) {
 }
 
 cardEditForm(datum) {
-  const props: any = {}
+  const props: Partial<{onCancel: () => void,addRelative: AddRelative, deletePerson }> = {}
   const is_new_rel = datum?._new_rel_data
   if (is_new_rel) {
-    props.onCancel = () => this.addRelativeInstance.onCancel()
+    props.onCancel = () => this.addRelativeInstance?.onCancel?.()
   } else {
     props.addRelative = this.addRelativeInstance
     props.deletePerson = () => {
@@ -88,7 +88,6 @@ cardEditForm(datum) {
     datum, 
     postSubmit: postSubmit.bind(this),
     fields: this.fields, 
-    card_display: this.card_display, 
     addRelative: null,
     onCancel: () => {},
     editFirst: this.editFirst,
@@ -97,9 +96,11 @@ cardEditForm(datum) {
 
   form_creator.no_edit = this.no_edit
   const form_cont = formInfoSetup(form_creator, this.closeForm.bind(this))
-
-  this.form_cont.innerHTML = ''
-  this.form_cont.appendChild(form_cont)
+  if(this.form_cont){
+    this.form_cont.innerHTML = ''
+    this.form_cont.appendChild(form_cont)
+  }
+ 
 
   this.openForm()
 
@@ -138,7 +139,7 @@ absolute() {
 
 setCardClickOpen(card) {
   card.setOnCardClick((e, d) => {
-    if (this.addRelativeInstance.is_active) {
+    if (this.addRelativeInstance?.is_active) {
       this.open(d)
       return
     }
@@ -186,7 +187,7 @@ setEdit() {
   return this
 }
 setFields(fields) {
-  const new_fields: any[] = []
+  const new_fields: {type: string, label: string, id: string}[] = []
   if (!Array.isArray(fields)) {
     console.error('fields must be an array')
     return this
@@ -215,7 +216,7 @@ setOnChange(fn) {
 }
 addRelative(datum) {
   if (!datum) datum = this.store.getMainDatum()
-  this.addRelativeInstance.activate(datum)
+  this.addRelativeInstance?.activate(datum)
 
   return this
 
@@ -244,16 +245,16 @@ setEditFirst(editFirst) {
 }
 
 isAddingRelative() {
-  return this.addRelativeInstance.is_active
+  return this.addRelativeInstance?.is_active
 }
 
 setAddRelLabels(add_rel_labels) {
-  this.addRelativeInstance.setAddRelLabels(add_rel_labels)
+  this.addRelativeInstance?.setAddRelLabels(add_rel_labels)
   return this
 }
 
 getStoreData() {
-  if (this.addRelativeInstance.is_active) return this.addRelativeInstance.getStoreData()
+  if (this.addRelativeInstance?.is_active) return this.addRelativeInstance.getStoreData()
   else return this.store.getData()
 }
 
@@ -265,7 +266,7 @@ getDataJson(fn) {
 updateHistory() {
   if (this.history) {
     this.history.changed()
-    this.history.controls.updateButtons()
+    this.history.controls?.updateButtons()
   }
 
   if (this.onChange) this.onChange()
@@ -274,10 +275,10 @@ updateHistory() {
 
 
 destroy() {
-  this.history.controls.destroy()
+  this.history?.controls?.destroy()
   this.history = null
   d3.select(this.cont).select('.f3-form-cont').remove()
-  if (this.addRelativeInstance.onCancel) this.addRelativeInstance.onCancel()
+  if (this.addRelativeInstance?.onCancel) this.addRelativeInstance.onCancel()
   this.store.updateTree({})
 
   return this
