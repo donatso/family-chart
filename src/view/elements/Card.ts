@@ -1,15 +1,17 @@
 
 import {appendTemplate, CardBodyOutline} from "./Card.templates.ts"
 import cardElements, {appendElement} from "./Card.elements.ts"
-import setupCardSvgDefs from "./Card.defs.js"
+import setupCardSvgDefs, { type CardDim } from "./Card.defs.js"
 import * as d3 from 'd3';
+import type { TreePerson } from "../../types.ts";
 
-
-export function Card(props) {
-  props = setupProps(props);
+type CardProps = {img: boolean,mini_tree: boolean,link_break:boolean,card_dim: CardDim}
+type CardFNProps = Partial<CardProps>  & {svg: SVGElement ,cardEditForm?:unknown, onCardUpdates?:({id?: string, fn: ((d: unknown) => void)}[]) | null, onCardUpdate?: ((d: unknown) => void) | null}
+export function Card<TProps extends CardFNProps>(initProps: TProps ) {
+  const props = setupProps(initProps);
   setupCardSvgDefs(props.svg, props.card_dim)
 
-  return function (d) {
+  return function (d: {data: TreePerson}) {
     const gender_class = d.data.data.gender === 'M' ? 'card-male' : d.data.data.gender === 'F' ? 'card-female' : 'card-genderless'
     const card_dim = props.card_dim
 
@@ -31,21 +33,20 @@ export function Card(props) {
       appendElement(cardElements.cardAdd(d, props), this.querySelector('.card-inner'))
     }
 
-    if (props.onCardUpdates) props.onCardUpdates.map(fn => fn.call(this, d))
+    if (props.onCardUpdates) props.onCardUpdates.map(({fn}) => fn.call(this, d))
     if (props.onCardUpdate) props.onCardUpdate.call(this, d)
   }
 
-  function setupProps(props) {
-    const default_props = {
+  function setupProps<T extends Partial<CardProps>>(props: T): (T & CardProps) {
+    const default_props: CardProps = {
       img: true,
       mini_tree: true,
       link_break: false,
       card_dim: {w:220,h:70,text_x:75,text_y:15,img_w:60,img_h:60,img_x:5,img_y:5}
     }
-    if (!props) props = {}
     for (const k in default_props) {
       if (typeof props[k] === 'undefined') props[k] = default_props[k]
     }
-    return props
+    return props as T & CardProps
   }
 }

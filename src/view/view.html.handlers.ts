@@ -28,7 +28,7 @@ export function setupHtmlSvg(getHtmlSvg) {
   d3.select(getHtmlSvg()).append("div").attr("class", "cards_view_fake").style('display', 'none')  // important for handling data
 }
 
-export function getCardsViewFake(getHtmlSvg) {
+export function getCardsViewFake(getHtmlSvg: () => d3.BaseType) {
   return d3.select(getHtmlSvg()).select("div.cards_view_fake").node()
 }
 

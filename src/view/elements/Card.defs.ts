@@ -1,4 +1,5 @@
-export default function setupCardSvgDefs(svg, card_dim) {
+export type CardDim = {w:number, h: number, text_x: number,text_y: number, img_w: number, img_h:number, img_x:number, img_y:number}
+export default function setupCardSvgDefs(svg: SVGElement, card_dim: CardDim) {
   if (svg.querySelector("defs#f3CardDef")) return
   svg.insertAdjacentHTML('afterbegin', (`
       <defs id="f3CardDef">

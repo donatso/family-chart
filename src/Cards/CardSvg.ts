@@ -10,15 +10,15 @@ export default function CardSvgWrapper(cont:Element,store) { return new CardSvg(
 class CardSvg{
   cont: Element
   store: TreeStore
-  svg: unknown |null
+  svg: SVGElement |null
   getCard: unknown | null
   card_dim: Record<'w' | 'h' | 'text_x' | 'text_y' | 'img_w' | 'img_h' | 'img_x'| 'img_y',number>
   card_display: FamilyMemberFormatter[]
   mini_tree:boolean
   link_break:boolean
   onCardClick: unknown
-  onCardUpdate: unknown | null
-  onCardUpdates: {id:string}[] | null
+  onCardUpdate: ((d: unknown) => void) | null
+  onCardUpdates: ({fn: ((d: unknown) => void), id?:string })[] | null
   
 
 
@@ -34,7 +34,6 @@ class CardSvg{
   this.onCardClick = this.onCardClickDefault
   this.onCardUpdate = null
   this.onCardUpdates = null
-
   this.init()
 
   return this
@@ -46,7 +45,7 @@ init() {
 
   this.getCard = () => f3.elements.Card({
     store: this.store,
-    svg: this.svg,
+    svg: this.svg!,
     card_dim: this.card_dim,
     card_display: this.card_display,
     mini_tree: this.mini_tree,
@@ -104,10 +103,9 @@ setCardTextSvg(cardTextSvg) {
     const card_text_g = (card_text.node() as Element)?.parentElement!
     card_text_g.innerHTML = cardTextSvg(d.data)
   }
-  onCardUpdate.id = 'setCardTextSvg'
   if (!this.onCardUpdates) this.onCardUpdates = []
   this.onCardUpdates = this.onCardUpdates.filter(fn => fn.id !== 'setCardTextSvg')
-  this.onCardUpdates.push(onCardUpdate)
+  this.onCardUpdates.push({fn: onCardUpdate,id: 'setCardTextSvg'})
 
   return this
 }
