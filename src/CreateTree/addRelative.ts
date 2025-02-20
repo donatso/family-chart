@@ -1,18 +1,20 @@
+import type { TreeStore } from "../createStore.js"
+import type { TreePerson } from "../types.js"
 import { handleNewRel, createNewPerson } from "./newPerson.js"
 
-export default (store, cancelCallback,onSubmitCallback) => { return new AddRelativeC(store, cancelCallback,onSubmitCallback) }
+export default (store: TreeStore, cancelCallback: (datum: {id:string}) => void,onSubmitCallback:(datum: {id:string}) => void) => { return new AddRelative(store, cancelCallback,onSubmitCallback) }
 
-class AddRelativeC {
-  store:any
-  cancelCallback:any
-  onSubmitCallback:any
-  datum:any
-  onChange:any
-  onCancel:any
-  is_active:any
-  store_data:any
-  addRelLabels:any
-  constructor(store, cancelCallback, onSubmitCallback){
+class AddRelative{
+  store:TreeStore
+  cancelCallback:(datum: {id:string}) => void
+  onSubmitCallback:(datum: {id:string}) => void
+  datum:unknown
+  onChange:unknown
+  onCancel:(() => void) | null
+  is_active:unknown
+  store_data:unknown
+  addRelLabels:Record<string,unknown>
+  constructor(store: TreeStore, cancelCallback: (datum: {id:string}) => void, onSubmitCallback: (datum: {id:string}) => void){
     this.store = store
 
     this.cancelCallback = cancelCallback
@@ -34,7 +36,7 @@ class AddRelativeC {
 
 
 activate(datum) {
-  if (this.is_active) this.onCancel()
+  if (this.is_active) this.onCancel?.()
   this.is_active = true
 
   const store = this.store

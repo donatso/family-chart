@@ -1,14 +1,14 @@
 import * as d3 from 'd3';
+import type { Zoomable } from '../types';
 
-function positionTree({t, svg,with_transition, transition_time=2000}: {t: any,svg:any,with_transition?:any,transition_time?: number}) {
-  const el_listener = svg.__zoomObj ? svg : svg.parentNode  // if we need listener for svg and html, we will use parent node
+function positionTree({t, svg,with_transition, transition_time=2000}: {t: {k: number,x: number,y: number},svg:Zoomable<SVGElement>,with_transition?:unknown,transition_time?: number}) {
+  const el_listener: Zoomable<Element> = svg.__zoomObj ? svg : svg.parentElement!  // if we need listener for svg and html, we will use parent node
   const zoom = el_listener.__zoomObj
-
   d3.select(el_listener).transition().duration(transition_time || 0).delay(transition_time ? 100 : 0)  // delay 100 because of weird error of undefined something in d3 zoom
-    .call(zoom.transform, d3.zoomIdentity.scale(t.k).translate(t.x, t.y))
+    .call(zoom!.transform, d3.zoomIdentity.scale(t.k).translate(t.x, t.y))
 }
 
-export function treeFit({svg, svg_dim, tree_dim, with_transition, transition_time}: {svg_dim:any, tree_dim: any,t: any,svg:any,with_transition?:any,transition_time?: number}) {
+export function treeFit({svg, svg_dim, tree_dim, with_transition, transition_time}: {svg_dim:unknown, tree_dim: unknown,t: unknown,svg:SVGElement,with_transition?:any,transition_time?: number}) {
   const t = calculateTreeFit(svg_dim, tree_dim);
   positionTree({t, svg, with_transition, transition_time})
 }
@@ -22,7 +22,7 @@ export function calculateTreeFit(svg_dim, tree_dim) {
   return {k,x,y}
 }
 
-export function cardToMiddle({datum, svg, svg_dim, scale, transition_time}: {datum: any, svg: any, svg_dim: any,scale?: any, transition_time:any }) {
+export function cardToMiddle({datum, svg, svg_dim, scale, transition_time}: {datum: {x: number,y: number}, svg: Zoomable<SVGElement>, svg_dim: {width: number, height: number},scale?: number, transition_time?:number }) {
   const k = scale || 1, x = svg_dim.width/2-datum.x*k, y = svg_dim.height/2-datum.y,
     t = {k, x: x/k, y: y/k}
   positionTree({t, svg, with_transition: true, transition_time})

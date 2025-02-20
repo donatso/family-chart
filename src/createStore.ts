@@ -13,7 +13,7 @@ export type TreeStoreState = {
   data:TreePerson[]
 
 }
-class TreeStore {
+export class TreeStore {
   state: TreeStoreState
   onUpdate: ((props: unknown) => void) | undefined
   methods: {}

@@ -1,3 +1,4 @@
+import type { TreePerson } from "../types.js";
 import {removeToAdd} from "./form.js";
 
 export function handleRelsOfNewDatum({datum, data_stash, rel_type, rel_datum}) {
@@ -148,14 +149,14 @@ export function handleNewRel({datum, new_rel_datum, data_stash}) {
   data_stash.push(new_rel_datum)
 }
 
-export function createNewPerson({data, rels,to_add,_new_rel_data}: {data?: any,rels?: any,to_add?:boolean,_new_rel_data?: {rel_type:'spouse' | 'mother' | 'father', label: string} | {rel_type:'daughter' |'son', label: string, other_parent_id:unknown}}) {
+export function createNewPerson({data, rels,to_add,_new_rel_data}: {data?: Partial<TreePerson['data']>,rels?: TreePerson['rels'],to_add?:boolean,_new_rel_data?: {rel_type:'spouse' | 'mother' | 'father', label: string} | {rel_type:'daughter' |'son', label: string, other_parent_id:unknown}}) {
   return {id: generateUUID(), data: data || {}, rels: rels || {}, to_add, _new_rel_data}
 }
 
-export function createNewPersonWithGenderFromRel({data, rel_type, rel_datum}: {data?: unknown,rel_type: unknown,rel_datum:unknown}) {
+export function createNewPersonWithGenderFromRel({data, rel_type, rel_datum}: {data?: TreePerson['data'],rel_type: unknown,rel_datum:unknown}) {
   const gender = getGenderFromRelative(rel_datum, rel_type)
-  data = Object.assign(data || {}, {gender})
-  return createNewPerson({data})
+  const withGender = Object.assign(data || {}, {gender}) 
+  return createNewPerson({data: withGender})
 
   function getGenderFromRelative(rel_datum, rel_type) {
     return (["daughter", "mother"].includes(rel_type) || rel_type === "spouse" && rel_datum.data.gender === "M") ? "F" : "M"
@@ -166,7 +167,7 @@ export function addNewPerson({data_stash, datum}) {
   data_stash.push(datum)
 }
 
-export function createTreeDataWithMainNode({data, version}: {data?: any, version?:any}) {
+export function createTreeDataWithMainNode({data, version}: {data?: Partial<TreePerson['data']>, version?:unknown}) {
   return {data: [createNewPerson({data})], version}
 }
 

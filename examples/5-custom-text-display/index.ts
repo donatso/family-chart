@@ -5,7 +5,7 @@ import data from './data.json';
 fetch("./data.json").then(r => r.json()).then(data => {
   let tree, main_id;
 
-  const svg = f3.createSvg(document.querySelector("#FamilyChart"))
+  const svg = f3.createSvg(document.querySelector("#FamilyChart")!)
 
   updateTree({initial: true})
 

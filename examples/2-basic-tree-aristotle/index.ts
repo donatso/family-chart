@@ -6,7 +6,7 @@ fetch("./data-aristotle.json").then(r => r.json()).then(data => {
       node_separation: 250,
       level_separation: 150
     }),
-    svg = f3.createSvg(document.querySelector("#FamilyChart")),
+    svg = f3.createSvg(document.querySelector("#FamilyChart")!),
     Card = f3.elements.Card({
       store,
       svg,

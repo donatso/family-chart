@@ -2,7 +2,7 @@ import * as d3 from 'd3'
 import f3 from "../../src/index"
 
 fetch("./data.json").then(r => r.json()).then(data => {
-  const svg = f3.createSvg(document.querySelector("#FamilyChart"))
+  const svg = f3.createSvg(document.querySelector("#FamilyChart")!)
 
   let tree_data: ReturnType<(typeof f3)['CalculateTree']> |null = null;
   let main_id = null;

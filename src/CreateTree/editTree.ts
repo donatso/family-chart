@@ -3,13 +3,14 @@ import addRelative from "./addRelative.ts"
 import {cleanupDataJson, createForm, deletePerson} from "./form.js"
 import { createHistory, createHistoryControls } from './history.ts';
 import { formInfoSetup } from './formInfoSetup.ts';
+import type { TreeStore } from '../createStore.ts';
 
 
 export default function(cont,store) { return new EditTree(cont,store) }
 
 class EditTree {
   cont: any
-  store: any
+  store: TreeStore
   fields: {type: string, label: string, id: string}[]
   form_cont: any
   is_fixed: any
@@ -76,7 +77,7 @@ cardEditForm(datum) {
       const data = this.store.getData()
       deletePerson(datum, data)
       this.store.updateData(data)
-      this.openFormWithId(this.store.getLastAvailableMainDatum().id)
+      this.openFormWithId(this.store.getLastAvailableMainDatum()?.id)
 
       this.store.updateTree({})
     }
@@ -149,7 +150,7 @@ setCardClickOpen(card) {
   return this
 }
 
-openFormWithId(d_id) {
+openFormWithId(d_id:string | undefined) {
   if (d_id) {
     const d = this.store.getDatum(d_id)
     this.openWithoutRelCancel({data: d})
@@ -223,12 +224,12 @@ addRelative(datum) {
 setupAddRelative() {
   return addRelative(this.store, cancelCallback.bind(this), onSubmitCallback.bind(this))
 
-  function onSubmitCallback(datum, new_rel_datum) {
+  function onSubmitCallback(datum: {id:string}, new_rel_datum?) {
     this.store.updateMainId(datum.id)
     this.openFormWithId(datum.id)
   }
 
-  function cancelCallback(datum) {
+  function cancelCallback(datum: {id:string}) {
     this.store.updateMainId(datum.id)
     this.store.updateTree({})
     this.openFormWithId(datum.id)

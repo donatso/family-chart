@@ -2,13 +2,14 @@ import * as d3 from 'd3';
 import f3 from "../index.js"
 import {updateCardSvgDefs} from "../view/elements/Card.defs.js"
 import {processCardDisplay, type FamilyMemberFormatter} from "./utils.js"
+import type { TreeStore } from '../createStore.js';
 
 CardSvgWrapper.is_html = false
 export default function CardSvgWrapper(cont:Element,store) { return new CardSvg(cont,store) }
 
 class CardSvg{
   cont: Element
-  store: any
+  store: TreeStore
   svg: unknown |null
   getCard: unknown | null
   card_dim: Record<'w' | 'h' | 'text_x' | 'text_y' | 'img_w' | 'img_h' | 'img_x'| 'img_y',number>
@@ -21,7 +22,7 @@ class CardSvg{
   
 
 
-  constructor(cont:Element,store: unknown){
+  constructor(cont:Element,store: TreeStore){
   this.cont = cont
   this.store = store
   this.svg = null
