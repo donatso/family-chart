@@ -11,9 +11,9 @@ export type TreePerson = {
         avatar:string
         gender: 'M'|'F' | string
     }
+    main?:boolean
+    to_add?:boolean
 }
-const a: TreePerson = {} as TreePerson
-a.data["first name"]
 
 export type FamilyTreeNode = HierarchyNode<TreePerson>  & {parents?: FamilyTreeNode[],is_ancestry?:boolean,x?: number, y?: number,all_rels_displayed?:boolean}
 
