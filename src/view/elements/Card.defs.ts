@@ -1,4 +1,4 @@
-export type CardDim = {w:number, h: number, text_x: number,text_y: number, img_w: number, img_h:number, img_x:number, img_y:number}
+export type CardDim = {w:number, h: number, text_x: number,text_y: number, img_w: number, img_h:number, img_x:number, img_y:number, height_auto?: unknown}
 export default function setupCardSvgDefs(svg: SVGElement, card_dim: CardDim) {
   if (svg.querySelector("defs#f3CardDef")) return
   svg.insertAdjacentHTML('afterbegin', (`
@@ -16,11 +16,11 @@ export default function setupCardSvgDefs(svg: SVGElement, card_dim: CardDim) {
       </defs>
     `))
 
-  function curvedRectPath(dim, curve, no_curve_corners?: string[]) {
+  function curvedRectPath(dim: {w:number, h:number}, curve: number, no_curve_corners?: string[]) {
     const {w,h} = dim,
       c = curve,
       ncc = no_curve_corners || [],
-      ncc_check = (corner) => ncc.includes(corner),
+      ncc_check = (corner:string) => ncc.includes(corner),
       lx = ncc_check('lx') ? `M0,0` : `M0,${c} Q 0,0 5,0`,
       rx = ncc_check('rx') ? `H${w}` : `H${w-c} Q ${w},0 ${w},5`,
       ry = ncc_check('ry') ? `V${h}` : `V${h-c} Q ${w},${h} ${w-c},${h}`,
@@ -30,9 +30,9 @@ export default function setupCardSvgDefs(svg: SVGElement, card_dim: CardDim) {
   }
 }
 
-export function updateCardSvgDefs(svg, card_dim) {
+export function updateCardSvgDefs(svg: SVGElement, card_dim: CardDim) {
   if (svg.querySelector("defs#f3CardDef")) {
-    svg.querySelector("defs#f3CardDef").remove()
+    svg.querySelector("defs#f3CardDef")?.remove()
   }
   setupCardSvgDefs(svg, card_dim)
 }

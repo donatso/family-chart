@@ -58,7 +58,7 @@ function setupZoom(el: HTMLElement & Partial<{__zoom: unknown,__zoomObj:unknown}
     d3.select(view).attr("transform", e.transform);
   }
 
-  function zoomFilter(e) {
+  function zoomFilter(e: TouchEvent) {
     if (e.type === "wheel" && !e.ctrlKey) return false
     else if (e.touches && e.touches.length < 2) return false
     else return true

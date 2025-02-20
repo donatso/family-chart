@@ -8,12 +8,12 @@ function positionTree({t, svg,with_transition, transition_time=2000}: {t: {k: nu
     .call(zoom!.transform, d3.zoomIdentity.scale(t.k).translate(t.x, t.y))
 }
 
-export function treeFit({svg, svg_dim, tree_dim, with_transition, transition_time}: {svg_dim:unknown, tree_dim: unknown,t: unknown,svg:SVGElement,with_transition?:boolean,transition_time?: number}) {
+export function treeFit({svg, svg_dim, tree_dim, with_transition, transition_time}: {svg_dim:{width: number, height:number}, tree_dim:  {width:number,height:number,x_off: number, y_off:number},t: unknown,svg:SVGElement,with_transition?:boolean,transition_time?: number}) {
   const t = calculateTreeFit(svg_dim, tree_dim);
   positionTree({t, svg, with_transition, transition_time})
 }
 
-export function calculateTreeFit(svg_dim, tree_dim) {
+export function calculateTreeFit(svg_dim: {width: number,height:number}, tree_dim: {width:number,height:number,x_off: number, y_off:number}) {
   let k = Math.min(svg_dim.width / tree_dim.width, svg_dim.height / tree_dim.height)
   if (k > 1) k = 1
   const x = tree_dim.x_off + (svg_dim.width - tree_dim.width*k)/k/2

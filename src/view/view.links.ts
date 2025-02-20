@@ -3,15 +3,16 @@ import * as d3 from 'd3';
 import {createLinks, type TreeLink} from "../CalculateTree/createLinks.ts"
 import {createPath} from "./elements/Link"
 import {calculateDelay} from "./view.utils"
+import type { FamilyTree } from '../CalculateTree/CalculateTree.ts';
 
-export default function updateLinks(svg, tree, props: {initial?: unknown, transition_time?:number}={}) {
-  const links_data_dct = tree.data.reduce((acc, d) => {
+export default function updateLinks(svg: SVGElement, tree: FamilyTree, props: {initial?: unknown, transition_time?:number}={}) {
+  const links_data_dct = tree.data.reduce((acc: Record<string, TreeLink>, d) => {
     createLinks({d, tree:tree.data, is_horizontal: tree.is_horizontal}).forEach(l => acc[l.id] = l)
     return acc
   }, {})
   const links_data: TreeLink[] = Object.values(links_data_dct)
-  const link = d3.select(svg).select(".links_view").selectAll("path.link").data(links_data, (d: any) => d.id)
-  const link_exit = link.exit()
+  const link = d3.select(svg).select(".links_view").selectAll("path.link").data<TreeLink>(links_data, (d: any) => d.id)
+  const link_exit = link.exit<TreeLink>()
   const link_enter = link.enter().append("path").attr("class", "link")
   const link_update = link_enter.merge(link as any)
 
@@ -19,7 +20,7 @@ export default function updateLinks(svg, tree, props: {initial?: unknown, transi
   link_enter.each(linkEnter)
   link_update.each(linkUpdate)
 
-  function linkEnter(d) {
+  function linkEnter(d: TreeLink) {
     const selectedLink= d3.select(this).attr("fill", "none").attr("stroke", "#fff").attr("stroke-width", 1).style("opacity", 0)
     const path = createPath(d, true)
     if(path){
@@ -28,9 +29,9 @@ export default function updateLinks(svg, tree, props: {initial?: unknown, transi
    
   }
 
-  function linkUpdate(d) {
+  function linkUpdate(d: TreeLink) {
     const path = d3.select(this);
-    const delay = props.initial ? calculateDelay(tree, d, props.transition_time) : 0
+    const delay = props.initial ? calculateDelay(tree, d , props.transition_time ?? 0) : 0
     const createdPath = createPath(d)
     const linkTransition= path.transition('path').duration(props.transition_time!).delay(delay)
     if(createdPath){
@@ -39,7 +40,7 @@ export default function updateLinks(svg, tree, props: {initial?: unknown, transi
     linkTransition.style("opacity", 1)
   }
 
-  function linkExit(d) {
+  function linkExit(d:TreeLink) {
     const path = d3.select(this);
     path.transition('op').duration(800).style("opacity", 0)
     const linkTransition = path.transition('path').duration(props.transition_time!)

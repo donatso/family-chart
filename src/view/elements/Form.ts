@@ -1,4 +1,7 @@
-export function Form({datum, rel_datum, store, rel_type, card_edit, postSubmit, card_display, edit: {el, open, close}}) {
+import type { TreeStore } from "../../createStore";
+import type { TreePerson } from "../../types";
+
+export function Form({datum, rel_datum, store, rel_type, card_edit, postSubmit, card_display, edit: {el, open, close}}: {datum: TreePerson, rel_datum:TreePerson,store: TreeStore, rel_type:string,card_edit:Record<'type' | 'key' | 'placeholder',string>[], postSubmit: (args?:{delete: boolean}) => void, card_display:[(datum: TreePerson) => void],edit: {el: HTMLElement,open:()=> void,close:() => void}}) {
   setupFromHtml();
   open();
 
@@ -24,8 +27,8 @@ export function Form({datum, rel_datum, store, rel_type, card_edit, postSubmit, 
         </form>
       </div>
     `)
-    el.querySelector("form").addEventListener('submit', submitFormChanges)
-    el.querySelector(".delete").addEventListener('click', deletePerson)
+    el.querySelector("form")?.addEventListener('submit', submitFormChanges)
+    el.querySelector(".delete")?.addEventListener('click', deletePerson)
   }
 
   function otherParentSelect() {
@@ -36,9 +39,9 @@ export function Form({datum, rel_datum, store, rel_type, card_edit, postSubmit, 
         <select name="other_parent" style="display: block">
           ${(!rel_datum.rels.spouses || rel_datum.rels.spouses.length === 0) 
               ? '' 
-              : rel_datum.rels.spouses.map((sp_id, i) => {
-                  const spouse = data_stash.find(d => d.id === sp_id)
-                  return (`<option value="${sp_id}" ${i === 0 ? 'selected' : ''}>${card_display[0](spouse)}</option>`)
+              : rel_datum.rels.spouses.map((sp_id: string, i: number) => {
+                  const spouse = data_stash.find((d: {id: string}) => d.id === sp_id)
+                  return (`<option value="${sp_id}" ${i === 0 ? 'selected' : ''}>${card_display[0](spouse!)}</option>`)
                 }).join("\n")}
           <option value="${'_new'}">NEW</option>
         </select>
@@ -46,10 +49,10 @@ export function Form({datum, rel_datum, store, rel_type, card_edit, postSubmit, 
     `)
   }
 
-  function submitFormChanges(e) {
+  function submitFormChanges(e: SubmitEvent) {
     e.preventDefault()
-    const form_data = new FormData(e.target)
-    form_data.forEach((v, k) => datum.data[k] = v)
+    const form_data = new FormData(e.target as HTMLFormElement)
+    form_data.forEach((v, k) => datum.data[k] = v as string)
 
     close()
     postSubmit()
@@ -60,7 +63,7 @@ export function Form({datum, rel_datum, store, rel_type, card_edit, postSubmit, 
     postSubmit({delete: true})
   }
 
-  function getEditFields(card_edit) {
+  function getEditFields(card_edit: {type:string,key:string,placeholder:string}[]) {
     return card_edit.map(d => (
       d.type === 'text'
         ? `<input type="text" name="${d.key}" placeholder="${d.placeholder}" value="${datum.data[d.key] || ''}">`

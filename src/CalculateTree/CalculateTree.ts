@@ -11,18 +11,18 @@ export default function CalculateTree(args: {data: unknown[],main_id?: null | st
 export class FamilyTree {
   data: FamilyTreeNode[]
   data_stash: {id:string}[]
-  dim: unknown
+  dim:  {width:number,height:number,x_off: number, y_off:number}
   main_id: unknown
-  is_horizontal:unknown
+  is_horizontal:boolean | undefined
   node_separation:number
   level_separation:number
-  constructor({data, main_id=null, node_separation=250, level_separation=150, single_parent_empty_card=true, is_horizontal=false}: {data: unknown[],main_id?: null | string, node_separation?: number,level_separation?: number,single_parent_empty_card?: boolean,is_horizontal?:boolean}){
+  constructor({data, main_id=null, node_separation=250, level_separation=150, single_parent_empty_card=true, is_horizontal=false}: {data: FamilyTreeNode[],main_id?: null | string, node_separation?: number,level_separation?: number,single_parent_empty_card?: boolean,is_horizontal?:boolean}){
     this.node_separation=node_separation
     this.level_separation=level_separation
     if(!data || !data.length){
       this.data = []
       this.data_stash=[]
-      this.dim ={width: 0, height: 0}
+      this.dim ={width: 0, height: 0, x_off:0,y_off:0}
       this.main_id = null
       return this
     }
@@ -111,14 +111,14 @@ export class FamilyTree {
     })
   }
 
-   setupSpouses({tree, node_separation}) {
+   setupSpouses({tree, node_separation}: {tree: FamilyTreeNode[],node_separation: number}) {
     for (let i = tree.length; i--;) {
-      const d = tree[i]
+      const d = tree[i]!
       if (!d.is_ancestry && d.data.rels.spouses && d.data.rels.spouses.length > 0){
         const side = d.data.data.gender === "M" ? -1 : 1;  // female on right
         d.x += d.data.rels.spouses.length/2*node_separation*side;
-        d.data.rels.spouses.forEach((sp_id, i) => {
-          const spouse:  {data:unknown,added: boolean,x:number,y:number,sx?: number,sy?:number, depth?: number,spouse?: unknown } = {data: this.data_stash.find(d0 => d0.id === sp_id), added: true, x: d.x-(node_separation*(i+1))*side, y: d.y}
+        d.data.rels.spouses.forEach((sp_id:string, i: number) => {
+          const spouse: FamilyTreeNode = {data: this.data_stash.find(d0 => d0.id === sp_id)!, added: true, x: d.x-(node_separation*(i+1))*side, y: d.y}
           spouse.sx = i > 0 ? spouse.x : spouse.x + (node_separation/2)*side
           spouse.sy = i > 0 ? spouse.y : spouse.y + (node_separation/2)*side
           spouse.depth = d.depth;
@@ -186,41 +186,41 @@ export class FamilyTree {
     })
   }
 
-  calculateTreeDim(tree, node_separation, level_separation) {
+  calculateTreeDim(tree: d3.HierarchyNode<unknown> & {x: number, y: number}, node_separation: number, level_separation: number) {
     if (this.is_horizontal) [node_separation, level_separation] = [level_separation, node_separation]
-    const w_extent = d3.extent(tree, (d: {x: number}) => d.x) as  [number,number]
-    const h_extent= d3.extent(tree, (d: {y: number}) => d.y) as  [number,number]
+    const w_extent = d3.extent(tree, (d) => d.x) as  [number,number]
+    const h_extent= d3.extent(tree, (d) => d.y) as  [number,number]
     return {
       width: w_extent[1] - w_extent[0]+node_separation, height: h_extent[1] - h_extent[0]+level_separation, x_off: -w_extent[0]+node_separation/2, y_off: -h_extent[0]+level_separation/2
     }
   }
 
-  createRelsToAdd(data) {
-    const to_add_spouses : unknown[] = [];
+  createRelsToAdd(data: {id: string,data: {gender: string},rels:{children: unknown[], spouses: unknown[], father: unknown,mother: unknown}}[]) {
+    const to_add_spouses : (ReturnType<typeof createNewPerson>)[] = [];
     for (let i = 0; i < data.length; i++) {
-      const d = data[i];
+      const d = data[i]!;
       if (d.rels.children && d.rels.children.length > 0) {
         if (!d.rels.spouses) d.rels.spouses = []
         const is_father = d.data.gender === "M"
-        let spouse
+        let spouse: ReturnType<typeof createNewPerson>
 
         d.rels.children.forEach(d0 => {
-          const child = data.find(d1 => d1.id === d0)
+          const child = data.find(d1 => d1.id === d0)!
           if (child.rels[is_father ? 'father' : 'mother'] !== d.id) return
           if (child.rels[!is_father ? 'father' : 'mother']) return
           if (!spouse) {
             spouse = createToAddSpouse(d)
             d.rels.spouses.push(spouse.id)
           }
-          spouse.rels.children.push(child.id)
+          spouse.rels.children?.push(child.id)
           child.rels[!is_father ? 'father' : 'mother'] = spouse.id
         })
       }
     }
-    to_add_spouses.forEach(d => data.push(d))
+    to_add_spouses.forEach(d => data.push(d as typeof data[number]))
     return data
 
-    function createToAddSpouse(d) {
+    function createToAddSpouse(d: {id: string,data: {gender: string}}) {
       const spouse = createNewPerson({
         data: {gender: d.data.gender === "M" ? "F" : "M"},
         rels: {spouses: [d.id], children: []},

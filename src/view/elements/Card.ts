@@ -21,7 +21,7 @@ export function Card<TProps extends CardFNProps>(initProps: TProps ) {
     this.innerHTML = ''
     this.appendChild(card.node())
 
-    appendTemplate(CardBodyOutline({d,card_dim,is_new:d.data.to_add}).template, card.node(), true)
+    appendTemplate(CardBodyOutline({d,card_dim,is_new:d.data.to_add}).template, card.node()!, true)
     appendElement(cardElements.cardBody(d, props), this.querySelector('.card-inner'))
 
     if (props.img) appendElement(cardElements.cardImage(d, props), this.querySelector('.card'))

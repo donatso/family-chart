@@ -6,7 +6,7 @@ export function handleRelsOfNewDatum({datum, data_stash, rel_type, rel_datum}) {
   else if (rel_type === "father" || rel_type === "mother") addParent(datum)
   else if (rel_type === "spouse") addSpouse(datum)
 
-  function addChild(datum) {
+  function addChild(datum: unknown) {
     if (datum.data.other_parent) {
       addChildToSpouseAndParentToChild(datum.data.other_parent)
       delete datum.data.other_parent
