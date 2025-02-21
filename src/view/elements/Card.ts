@@ -21,6 +21,7 @@ export function Card<TProps extends CardFNProps>(initProps: TProps ) {
     card.append('g').attr('class', 'card-inner').attr('clip-path', 'url(#card_clip)')
 
     this.innerHTML = ''
+    const element = card.node()
     this.appendChild(card.node())
 
     appendTemplate(CardBodyOutline({d,card_dim,is_new:d.data.to_add}).template, card.node()!, true)
@@ -37,6 +38,7 @@ export function Card<TProps extends CardFNProps>(initProps: TProps ) {
 
     if (props.onCardUpdates) props.onCardUpdates.map(({fn}) => fn.call(this, d))
     if (props.onCardUpdate) props.onCardUpdate.call(this, d)
+    return element
   }
 
   function setupProps<T extends Partial<CardProps>>(props: T): (T & CardProps) {

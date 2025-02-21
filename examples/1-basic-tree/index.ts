@@ -13,9 +13,11 @@ fetch("./data.json").then(r => r.json()).then(data => {
       card_dim: {w:220,h:70,text_x:75,text_y:15,img_w:60,img_h:60,img_x:5,img_y:5},
       card_display: [d => `${d.data["first name"]} ${d.data["last name"]}`],
       mini_tree: true,
-      link_break: false
+      link_break: false,
+      onCardClick:() => {console.log('Card clicked')},
+      addRelative: () => {console.log("Add relative")}
     })
 
-  store.setOnUpdate(props => f3.view(store.getTree(), svg, Card, props || {}))
-  store.updateTree({initial: true})
+  store.setOnUpdate(props => f3.view(store.getTree()!, svg, Card, props || {}))
+  store.updateTree({initial: true}) 
 })

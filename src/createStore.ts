@@ -6,10 +6,10 @@ export type TreeStoreState = {
   main_id?:string | null
   node_separation:number
   level_separation: number
-  single_parent_empty_card:boolean
+  single_parent_empty_card?:boolean
   single_parent_empty_card_label?: string
   tree_fit_on_change?:unknown
-  is_horizontal:boolean
+  is_horizontal?:boolean
   main_id_history:string[]
   data:TreePerson[]
 
