@@ -11,7 +11,7 @@ export default function CalculateTree(args: {data: TreePerson[],main_id?: null |
 export class FamilyTree {
   data: FamilyTreeNode[]
   data_stash: TreePerson[]
-  dim:  {width:number,height:number,x_off: number, y_off:number}
+  dim:  {width:number,height:number,x_off: number, y_off:number} 
   main_id: string | null
   is_horizontal:boolean | undefined
   node_separation:number
@@ -29,6 +29,7 @@ export class FamilyTree {
     
     if (is_horizontal) [node_separation, level_separation] = [level_separation, node_separation]
     const data_stash = single_parent_empty_card ? this.createRelsToAdd(data) : data
+    this.data_stash= data_stash
     sortChildrenWithSpouses(data_stash)
     const main = (main_id !== null && data_stash.find(d => d.id === main_id))! || data_stash[0]!
     const tree_children = this.calculateTreePositions(main, 'children', false)
@@ -37,15 +38,13 @@ export class FamilyTree {
     data_stash.forEach(d => d.main = d === main)
     this.levelOutEachSide(tree_parents, tree_children)
     const tree = this.mergeSides(tree_parents, tree_children)
+    this.data = tree
     this.setupChildrenAndParents({tree})
     this.setupSpouses({tree, node_separation})
     this.setupProgenyParentsPos({tree})
     this.nodePositioning({tree})
     tree.forEach(d => d.all_rels_displayed = isAllRelativeDisplayed(d, tree))
-  
-    const dim = this.calculateTreeDim(tree, node_separation, level_separation)
-  
-   this.data= tree, 
+   const dim = this.calculateTreeDim(tree, node_separation, level_separation)
    this.data_stash=data_stash, 
    this.dim =dim, 
    this.main_id= main.id 
