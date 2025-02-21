@@ -8,7 +8,7 @@ import type { TreeStore, TreeStoreState } from "../../createStore.ts";
 import type { CardEditForm } from "../../handlers.ts";
 
 type CardProps = {img: boolean,mini_tree: boolean,link_break:boolean,card_dim: CardDim}
-type CardFNProps = Partial<CardProps>  & {svg: SVGElement ,cardEditForm?:CardEditForm, onCardUpdates?:({id?: string, fn: ((d: FamilyTreeNode) => void)}[]) | null, onCardUpdate?: ((d: FamilyTreeNode) => void) | null, store: TreeStore, card_display: CardDisplayFn, onCardClick: (e: MouseEvent,d: FamilyTreeNode) =>void, addRelative: (args: {d: FamilyTreeNode}) => void}
+type CardFNProps = Partial<CardProps>  & {svg: SVGElement ,cardEditForm?:CardEditForm, onCardUpdates?:({id?: string, fn: ((d: FamilyTreeNode) => void)}[]) | null, onCardUpdate?: ((d: FamilyTreeNode) => void) | null, store: TreeStore, card_display: CardDisplayFn, onCardClick?: (e: MouseEvent,d: FamilyTreeNode) =>void, addRelative?: (args: {d: FamilyTreeNode}) => void}
 export function Card<TProps extends CardFNProps>(initProps: TProps ) {
   const props = setupProps(initProps);
   setupCardSvgDefs(props.svg, props.card_dim)
@@ -33,6 +33,8 @@ export function Card<TProps extends CardFNProps>(initProps: TProps ) {
 
     if (props.cardEditForm) {
       appendElement(cardElements.cardEdit(d, props), this.querySelector('.card-inner'))
+    }
+    if(props.addRelative){
       appendElement(cardElements.cardAdd(d, props), this.querySelector('.card-inner'))
     }
 

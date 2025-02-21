@@ -13,6 +13,7 @@ import {
 import type { FamilyTreeNode, FamilyTreeNodePerson, TreePerson } from '../../types.ts';
 import type { CardDim } from './Card.defs.ts';
 import type { TreeStore, TreeStoreState } from '../../createStore.ts';
+import addRelative from '../../CreateTree/addRelative.ts';
 
 const CardElements = {
   miniTree,
@@ -45,7 +46,7 @@ function lineBreak(d: FamilyTreeNode, props: {card_dim: CardDim, store: TreeStor
   return g.node()
 }
 
-function cardBody(d: FamilyTreeNode, props: {store: TreeStore,cardEditForm?: CardEditForm,card_dim: CardDim, card_display: CardDisplayFn, onCardClick: (e: MouseEvent,d: FamilyTreeNode) => unknown}) {
+function cardBody(d: FamilyTreeNode, props: {store: TreeStore,cardEditForm?: CardEditForm,card_dim: CardDim, card_display: CardDisplayFn, onCardClick?: (e: MouseEvent,d: FamilyTreeNode) => unknown}) {
   const unknown_lbl = props.cardEditForm ? 'ADD' : 'UNKNOWN'
   const card_dim = props.card_dim;
 
@@ -80,11 +81,11 @@ function cardEditIcon(d: FamilyTreeNode, props: {card_dim: CardDim, store: TreeS
   return g.node()
 }
 
-function cardAddIcon(d: FamilyTreeNode, props: {card_dim: CardDim, addRelative: (args: {d: FamilyTreeNode}) => void}) {
-  if (d.data.to_add) return
+function cardAddIcon(d: FamilyTreeNode, props: {card_dim: CardDim, addRelative?: ((args: {d: FamilyTreeNode}) => void) | undefined}) {
+  if (d.data.to_add || !props.addRelative) return
   const card_dim = props.card_dim;
   const g = d3.create('svg:g').html(PlusIcon({card_dim, x: card_dim.w-26, y: card_dim.h-20}).template)
-  g.on("click", (e) => {e.stopPropagation();props.addRelative({d})})
+  g.on("click", (e) => {e.stopPropagation();props.addRelative?.({d})})
 
   return g.node()
 }

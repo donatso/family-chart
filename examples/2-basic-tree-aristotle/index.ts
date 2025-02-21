@@ -16,6 +16,6 @@ fetch("./data-aristotle.json").then(r => r.json()).then(data => {
       link_break: false
     })
 
-  store.setOnUpdate(props => f3.view(store.getTree(), svg, Card, props || {}))
+  store.setOnUpdate(props => f3.view(store.getTree()!, svg, Card, props || {}))
   store.updateTree({initial: true})
 })

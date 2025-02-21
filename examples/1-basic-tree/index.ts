@@ -14,8 +14,6 @@ fetch("./data.json").then(r => r.json()).then(data => {
       card_display: [d => `${d.data["first name"]} ${d.data["last name"]}`],
       mini_tree: true,
       link_break: false,
-      onCardClick:() => {console.log('Card clicked')},
-      addRelative: () => {console.log("Add relative")}
     })
 
   store.setOnUpdate(props => f3.view(store.getTree()!, svg, Card, props || {}))
