@@ -4,13 +4,17 @@ import f3 from '../../src/index'
 fetch("./data.json").then(r => r.json()).then(data => {
   let tree, main_id;
 
-  const svg = f3.createSvg(document.querySelector("#FamilyChart"))
-
+  const svg = f3.createSvg(document.querySelector("#FamilyChart")!)
+    const store = f3.createStore({
+          data,
+          node_separation: 250,
+          level_separation: 150
+    })
   updateTree({initial: true})
 
   function updateTree(props?) {
     tree = f3.CalculateTree({ data, main_id })
-    f3.view(tree, svg, Card(tree, svg, onCardClick), props || {})
+    f3.view(tree, svg, Card(tree,store, svg, onCardClick), props || {})
   }
 
   function updateMainId(_main_id) {
@@ -24,10 +28,11 @@ fetch("./data.json").then(r => r.json()).then(data => {
 
 })
 
-function Card(tree, svg, onCardClick) {
+function Card(tree, store,svg, onCardClick) {
   const card_dim = {w:220,h:70,text_x:75,text_y:15,img_w:60,img_h:60,img_x:5,img_y:5}
   return function (d) {
     return f3.elements.Card({
+      store,
       svg,
       card_dim,
       card_display: [d => `${d.data["first name"]} ${d.data["last name"]}`],

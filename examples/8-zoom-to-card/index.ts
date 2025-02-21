@@ -6,7 +6,7 @@ fetch("./data-staljin.json").then(r => r.json()).then(data => {
     node_separation: 250,
     level_separation: 150
   }),
-  svg = f3.createSvg(document.querySelector("#FamilyChart")),
+  svg = f3.createSvg(document.querySelector("#FamilyChart")!),
   Card = f3.elements.Card({
     store,
     svg,
@@ -16,11 +16,11 @@ fetch("./data-staljin.json").then(r => r.json()).then(data => {
     link_break: false
   })
 
-  store.setOnUpdate(props => f3.view(store.getTree(), svg, Card, props || {}))
+  store.setOnUpdate(props => f3.view(store.getTree()!, svg, Card, props || {}))
   store.updateTree({initial: true})
 
   setTimeout(() => {
-    const tree = store.getTree();
+    const tree = store.getTree()!;
     const datum = tree.data[Math.floor(tree.data.length*Math.random())]  // random card
     console.log(datum.data.data)
     if(svg){

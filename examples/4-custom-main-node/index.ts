@@ -1,17 +1,21 @@
 import * as d3 from 'd3';
 import f3 from '../../src/index'
-import { TreePerson } from '../../src/types';
+import type { TreePerson } from '../../src/types';
 
 fetch("./data.json").then(r => r.json()).then(data => {
   let tree, main_id;
-
+  const store = f3.createStore({
+        data,
+        node_separation: 250,
+        level_separation: 150
+  })
   const svg = f3.createSvg(document.querySelector("#FamilyChart")!)
 
   updateTree({initial: true})
 
   function updateTree(props?) {
     tree = f3.CalculateTree({ data, main_id })
-    f3.view(tree, svg, Card(tree, svg, onCardClick), props || {})
+    f3.view(tree, svg, Card(tree,store, svg, onCardClick), props || {})
   }
 
   function updateMainId(_main_id) {
@@ -25,7 +29,7 @@ fetch("./data.json").then(r => r.json()).then(data => {
 
 })
 
-function Card(tree, svg, onCardClick) {
+function Card(tree,store, svg, onCardClick) {
   return function (d: {data: TreePerson}) {
     if (d.data.main) {
       this.innerHTML = ''
@@ -36,6 +40,7 @@ function Card(tree, svg, onCardClick) {
       return
     }else {
       const cardProps = {
+        store,
         svg,
         card_dim: {w:220,h:70,text_x:75,text_y:15,img_w:60,img_h:60,img_x:5,img_y:5},
         card_display: [d => `${d.data['first name']} ${d.data['last name']}`],

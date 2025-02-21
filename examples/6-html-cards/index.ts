@@ -1,10 +1,11 @@
 import * as d3 from "d3";
 import f3 from "../../src/index"
+import type { FamilyTreeNode } from "../../src/types";
 
 fetch("./data.json").then(r => r.json()).then(data => {
   let tree, main_id;
 
-  const svg = f3.createSvg(document.querySelector("#FamilyChart"), {onZoom})
+  const svg = f3.createSvg(document.querySelector("#FamilyChart")!, {onZoom})
 
   const cont = d3.select(document.querySelector('#FamilyChart'))
   cont.style('position', 'relative').style('overflow', 'hidden')
@@ -36,13 +37,14 @@ fetch("./data.json").then(r => r.json()).then(data => {
 
   function Card(tree, svg) {
     const card_dim = {w:220,h:70,text_x:75,text_y:15,img_w:60,img_h:60,img_x:5,img_y:5}
-    return function (d) {
+    return function (d: FamilyTreeNode) {
       this.innerHTML = ''
       const div = d3.select(this).append('div').style('transform', `translate(${-card_dim.w / 2}px, ${-card_dim.h / 2}px)`)
       const div_inner = div.append('div')
         .attr('style', `width: ${card_dim.w}px; height: ${card_dim.h}px; background-color: gray; color: #fff; border-radius: 3px; cursor: pointer`)
         .on('click', e => onCardClick(e, d))
       div_inner.append('div').attr('style', 'padding: 10px 20px;').html(`${d.data.data["first name"]} ${d.data.data["last name"]}`)
+      return div.node()
     }
 
     function onCardClick(e, d) {
