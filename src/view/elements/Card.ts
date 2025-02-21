@@ -1,17 +1,19 @@
 
-import {appendTemplate, CardBodyOutline} from "./Card.templates.ts"
+import {appendTemplate, CardBodyOutline, type CardDisplayFn} from "./Card.templates.ts"
 import cardElements, {appendElement} from "./Card.elements.ts"
 import setupCardSvgDefs, { type CardDim } from "./Card.defs.js"
 import * as d3 from 'd3';
-import type { TreePerson } from "../../types.ts";
+import type { FamilyTreeNode, TreePerson } from "../../types.ts";
+import type { TreeStore } from "../../createStore.ts";
+import type { CardEditForm } from "../../handlers.ts";
 
 type CardProps = {img: boolean,mini_tree: boolean,link_break:boolean,card_dim: CardDim}
-type CardFNProps = Partial<CardProps>  & {svg: SVGElement ,cardEditForm?:unknown, onCardUpdates?:({id?: string, fn: ((d: unknown) => void)}[]) | null, onCardUpdate?: ((d: unknown) => void) | null}
+type CardFNProps = Partial<CardProps>  & {svg: SVGElement ,cardEditForm?:CardEditForm, onCardUpdates?:({id?: string, fn: ((d: unknown) => void)}[]) | null, onCardUpdate?: ((d: unknown) => void) | null, store: TreeStore, card_display: CardDisplayFn, onCardClick: () =>void, addRelative: (args: {d: FamilyTreeNode}) => void}
 export function Card<TProps extends CardFNProps>(initProps: TProps ) {
   const props = setupProps(initProps);
   setupCardSvgDefs(props.svg, props.card_dim)
 
-  return function (d: {data: TreePerson}) {
+  return function (d: FamilyTreeNode) {
     const gender_class = d.data.data.gender === 'M' ? 'card-male' : d.data.data.gender === 'F' ? 'card-female' : 'card-genderless'
     const card_dim = props.card_dim
 
@@ -38,14 +40,15 @@ export function Card<TProps extends CardFNProps>(initProps: TProps ) {
   }
 
   function setupProps<T extends Partial<CardProps>>(props: T): (T & CardProps) {
-    const default_props: CardProps = {
+    const default_props = {
       img: true,
       mini_tree: true,
       link_break: false,
       card_dim: {w:220,h:70,text_x:75,text_y:15,img_w:60,img_h:60,img_x:5,img_y:5}
-    }
-    for (const k in default_props) {
-      if (typeof props[k] === 'undefined') props[k] = default_props[k]
+    } satisfies CardProps
+    for (const _k in default_props) {
+      const k = _k  as keyof typeof default_props // TODO not pretty 
+      if (typeof props[k] === 'undefined') props[k] = default_props[k] as any
     }
     return props as T & CardProps
   }

@@ -18,7 +18,7 @@ export default function updateCards(svg:d3.BaseType , tree: FamilyTree, Card: (d
   card_enter.each(cardEnter)
   card_update.each(cardUpdate)
 
-  function cardEnter(d: {_x:number, _y:number}) {
+  function cardEnter(d: {_x?:number, _y?:number}) {
     d3.select(this)
       .attr("transform", `translate(${d._x}, ${d._y})`)
       .style("opacity", 0)
@@ -34,7 +34,7 @@ export default function updateCards(svg:d3.BaseType , tree: FamilyTree, Card: (d
     d3.select(this).transition().duration(props.transition_time!).delay(delay).attr("transform", `translate(${d.x}, ${d.y})`).style("opacity", 1)
   }
 
-  function cardExit(d: {_x: number, _y:number}) {
+  function cardExit(d: {_x?: number, _y?:number}) {
     const g = d3.select(this)
     g.transition().duration(props.transition_time!).style("opacity", 0).attr("transform", `translate(${d._x}, ${d._y})`)
       .on("end", () => g.remove())

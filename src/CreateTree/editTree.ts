@@ -4,9 +4,10 @@ import {cleanupDataJson, createForm, deletePerson} from "./form.js"
 import { createHistory, createHistoryControls } from './history.ts';
 import { formInfoSetup } from './formInfoSetup.ts';
 import type { TreeStore } from '../createStore.ts';
+import type { FamilyTreeNode, TreePerson } from '../types.ts';
 
 
-export default function(cont,store) { return new EditTree(cont,store) }
+export default function(cont:HTMLElement,store: TreeStore) { return new EditTree(cont,store) }
 
 export class EditTree {
   cont: HTMLElement
@@ -20,7 +21,7 @@ export class EditTree {
   editFirst:unknown
   addRelativeInstance: AddRelative | undefined
   card_display:unknown
-  constructor(cont, store){
+  constructor(cont: HTMLElement, store:TreeStore){
   this.cont = cont
   this.store = store
 
@@ -51,23 +52,27 @@ export class EditTree {
     this.addRelativeInstance = this.setupAddRelative()
     this.createHistory()
   }
-  open(datum) {
-    if (datum.data.data) datum = datum.data
-    if (this.addRelativeInstance?.is_active && !datum._new_rel_data) {
+  open(datum: FamilyTreeNode) {
+    if (this.addRelativeInstance?.is_active && !datum.data._new_rel_data) {
       this.addRelativeInstance?.onCancel?.()
-      datum = this.store.getDatum(datum.id)
+      const foundDatum = this.store.getDatum(datum.id!)
+      if(foundDatum){
+        this.cardEditForm(foundDatum)
+      }
+    }
+    else {
+      this.cardEditForm(datum.data)
     }
   
-    this.cardEditForm(datum)
+   
 }
-openWithoutRelCancel(datum) {
-  if (datum.data.data) datum = datum.data
+openWithoutRelCancel({data}: {data: TreePerson}) {
 
-  this.cardEditForm(datum)
+  this.cardEditForm(data)
 }
 
-cardEditForm(datum) {
-  const props: Partial<{onCancel: () => void,addRelative: AddRelative, deletePerson }> = {}
+cardEditForm(datum: TreePerson) {
+  const props: Partial<{onCancel: () => void,addRelative: AddRelative, deletePerson: () => void }> = {}
   const is_new_rel = datum?._new_rel_data
   if (is_new_rel) {
     props.onCancel = () => this.addRelativeInstance?.onCancel?.()
@@ -104,7 +109,7 @@ cardEditForm(datum) {
 
   this.openForm()
 
-  function postSubmit(props) {
+  function postSubmit(props?: {delete?: boolean}) {
     if (this.addRelativeInstance.is_active) this.addRelativeInstance.onChange(datum)
     else if (!props?.delete) this.openFormWithId(datum.id);
 
@@ -137,8 +142,8 @@ absolute() {
   return this
 }
 
-setCardClickOpen(card) {
-  card.setOnCardClick((e, d) => {
+setCardClickOpen(card: {setOnCardClick: (arg: (e: Event,d:FamilyTreeNode)=> void)  => void} ) {
+  card.setOnCardClick((e: Event,d: FamilyTreeNode) => {
     if (this.addRelativeInstance?.is_active) {
       this.open(d)
       return
@@ -153,10 +158,10 @@ setCardClickOpen(card) {
 
 openFormWithId(d_id:string | undefined) {
   if (d_id) {
-    const d = this.store.getDatum(d_id)
+    const d = this.store.getDatum(d_id)!
     this.openWithoutRelCancel({data: d})
   } else {
-    const d = this.store.getMainDatum()
+    const d = this.store.getMainDatum()!
     this.openWithoutRelCancel({data: d})
   }
 }
@@ -186,7 +191,7 @@ setEdit() {
 
   return this
 }
-setFields(fields) {
+setFields(fields: {id: string, type:string,label:string}[]) {
   const new_fields: {type: string, label: string, id: string}[] = []
   if (!Array.isArray(fields)) {
     console.error('fields must be an array')
@@ -209,14 +214,17 @@ setFields(fields) {
 
   return this
 }
-setOnChange(fn) {
+setOnChange(fn: ()=> void) {
   this.onChange = fn
 
   return this
 }
-addRelative(datum) {
+addRelative(datum?: TreePerson) {
   if (!datum) datum = this.store.getMainDatum()
-  this.addRelativeInstance?.activate(datum)
+  if(datum){
+    this.addRelativeInstance?.activate(datum)
+  }
+  
 
   return this
 
@@ -225,7 +233,7 @@ addRelative(datum) {
 setupAddRelative() {
   return addRelative(this.store, cancelCallback.bind(this), onSubmitCallback.bind(this))
 
-  function onSubmitCallback(datum: {id:string}, new_rel_datum?) {
+  function onSubmitCallback(datum: {id:string}, new_rel_datum?: unknown) {
     this.store.updateMainId(datum.id)
     this.openFormWithId(datum.id)
   }
@@ -238,7 +246,7 @@ setupAddRelative() {
 }
 
 
-setEditFirst(editFirst) {
+setEditFirst(editFirst:unknown) {
   this.editFirst = editFirst
 
   return this
@@ -248,17 +256,17 @@ isAddingRelative() {
   return this.addRelativeInstance?.is_active
 }
 
-setAddRelLabels(add_rel_labels) {
+setAddRelLabels(add_rel_labels:Partial<Record<'father' | 'mother' | 'spouse' | 'son' | 'daughter',string>>) {
   this.addRelativeInstance?.setAddRelLabels(add_rel_labels)
   return this
 }
 
 getStoreData() {
-  if (this.addRelativeInstance?.is_active) return this.addRelativeInstance.getStoreData()
-  else return this.store.getData()
+  if (this.addRelativeInstance?.is_active) return this.addRelativeInstance.getStoreData()!
+  else return this.store.state
 }
 
-getDataJson(fn) {
+getDataJson(fn: unknown) {
   const data = this.getStoreData()
   return cleanupDataJson(JSON.stringify(data))
 }

@@ -3,13 +3,14 @@ import type { TreePerson } from "./types.js"
 
 export type TreeStoreState = {
   tree:FamilyTree
-  main_id:string
+  main_id:string | null
   node_separation:number
   level_separation:number
   single_parent_empty_card:boolean
   single_parent_empty_card_label: string
+  tree_fit_on_change:unknown
   is_horizontal:boolean
-  main_id_history:unknown[]
+  main_id_history:string[]
   data:TreePerson[]
 
 }
@@ -17,15 +18,15 @@ export class TreeStore {
   state: TreeStoreState
   onUpdate: ((props: unknown) => void) | undefined
   methods: {}
-  setOnUpdate(f) {
+  setOnUpdate(f: (props?: unknown) => void) {
     this.onUpdate = f
   }
-  updateTree(props){
+  updateTree(props?: unknown){
     this.state.tree = this.calcTree();
     if (!this.state.main_id) this.updateMainId(this.state.tree.main_id)
     if (this.onUpdate) this.onUpdate(props)
   }
-  updateData(data) {
+  updateData(data: TreePerson[]) {
     this.state.data = data
   }
   getMainId() {
@@ -48,37 +49,38 @@ export class TreeStore {
   getMainDatum() {
     return this.state.data.find(d => d.id === this.state.main_id)
   }
-  getDatum(id) {
+  getDatum(id:string) {
     return this.state.data.find(d => d.id === id)
   }
   getTreeMainDatum() {
     if (!this.state.tree) return null;
     return this.state.tree.data.find(d => d.data.id === this.state.main_id)
   }
-  getTreeDatum(id) {
+  getTreeDatum(id:string) {
     if (!this.state.tree) return null;
     return this.state.tree.data.find(d => d.id === id)
   }
-  updateMainId(id) {
+  updateMainId(id:string | null) {
     if (id === this.state.main_id) return
    this.state.main_id_history = this.state.main_id_history.filter(d => d !== id).slice(-10)
+   if(id){
     this.state.main_id_history.push(id)
+   }
     this.state.main_id = id
   }
   // if main_id is deleted, get the last available main_id
   getLastAvailableMainDatum() {
-    let main_id = this.state.main_id_history.slice(0).reverse().find(id => this.getDatum(id))
-    if (!main_id) main_id = this.state.data[0]?.id
+    let main_id = this.state.main_id_history.slice(0).reverse().find(id => this.getDatum(id)) || this.state.data[0]?.id!
     if (main_id !== this.state.main_id) this.updateMainId(main_id)
     return this.getDatum(main_id)
   }
 
-  constructor(initial_state){
+  constructor(initial_state: TreeStoreState){
     this.state = initial_state
     this.state.main_id_history = []
     this.methods = {}
   }
 }
-export default function createStore(initial_state) {
+export default function createStore(initial_state: TreeStoreState) {
   return new TreeStore(initial_state)
 }

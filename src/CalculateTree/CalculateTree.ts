@@ -2,9 +2,9 @@ import * as d3 from 'd3';
 import {sortChildrenWithSpouses} from "./CalculateTree.handlers.ts"
 import {createNewPerson} from "../CreateTree/newPerson.js"
 import {isAllRelativeDisplayed} from "../handlers/general.js"
-import type { FamilyTreeNode } from '../types.ts';
+import type { FamilyTreeNode, FamilyTreeNodePerson, TreePerson } from '../types.ts';
 
-export default function CalculateTree(args: {data: unknown[],main_id?: null | string, node_separation?: number,level_separation?: number,single_parent_empty_card?: boolean,is_horizontal?:boolean}) {
+export default function CalculateTree(args: {data: FamilyTreeNodePerson[],main_id?: null | string, node_separation?: number,level_separation?: number,single_parent_empty_card?: boolean,is_horizontal?:boolean}) {
   return new FamilyTree(args)
 }
 
@@ -12,11 +12,11 @@ export class FamilyTree {
   data: FamilyTreeNode[]
   data_stash: {id:string}[]
   dim:  {width:number,height:number,x_off: number, y_off:number}
-  main_id: unknown
+  main_id: string | null
   is_horizontal:boolean | undefined
   node_separation:number
   level_separation:number
-  constructor({data, main_id=null, node_separation=250, level_separation=150, single_parent_empty_card=true, is_horizontal=false}: {data: FamilyTreeNode[],main_id?: null | string, node_separation?: number,level_separation?: number,single_parent_empty_card?: boolean,is_horizontal?:boolean}){
+  constructor({data, main_id=null, node_separation=250, level_separation=150, single_parent_empty_card=true, is_horizontal=false}: {data: FamilyTreeNodePerson[],main_id?: null | string, node_separation?: number,level_separation?: number,single_parent_empty_card?: boolean,is_horizontal?:boolean}){
     this.node_separation=node_separation
     this.level_separation=level_separation
     if(!data || !data.length){
@@ -157,7 +157,7 @@ export class FamilyTree {
         setupParentPos(d, parent)
       }
 
-      function setupParentPos(d, p) {
+      function setupParentPos(d: {psx: number,psy:number}, p: {sx: number,y: number}) {
         d.psx = !this.is_horizontal ? p.sx : p.y
         d.psy = !this.is_horizontal ? p.y : p.sx
       }
@@ -195,7 +195,7 @@ export class FamilyTree {
     }
   }
 
-  createRelsToAdd(data: {id: string,data: {gender: string},rels:{children: unknown[], spouses: unknown[], father: unknown,mother: unknown}}[]) {
+  createRelsToAdd(data: Pick<TreePerson,'rels' | 'data' | 'id'>[]) {
     const to_add_spouses : (ReturnType<typeof createNewPerson>)[] = [];
     for (let i = 0; i < data.length; i++) {
       const d = data[i]!;
@@ -210,7 +210,7 @@ export class FamilyTree {
           if (child.rels[!is_father ? 'father' : 'mother']) return
           if (!spouse) {
             spouse = createToAddSpouse(d)
-            d.rels.spouses.push(spouse.id)
+            d.rels.spouses?.push(spouse.id)
           }
           spouse.rels.children?.push(child.id)
           child.rels[!is_father ? 'father' : 'mother'] = spouse.id
@@ -220,7 +220,7 @@ export class FamilyTree {
     to_add_spouses.forEach(d => data.push(d as typeof data[number]))
     return data
 
-    function createToAddSpouse(d: {id: string,data: {gender: string}}) {
+    function createToAddSpouse(d: {id: string,data: {gender?: string}}) {
       const spouse = createNewPerson({
         data: {gender: d.data.gender === "M" ? "F" : "M"},
         rels: {spouses: [d.id], children: []},

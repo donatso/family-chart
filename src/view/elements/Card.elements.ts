@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import {cardChangeMain, cardEdit, cardShowHideRels} from "../../handlers/cardMethods.js"
+import {cardChangeMain, cardEdit, cardShowHideRels, type CardEditForm} from "../../handlers/cardMethods.js"
 import {
   CardBody,
   CardBodyAddNew,
@@ -7,8 +7,12 @@ import {
   LinkBreakIconWrapper,
   MiniTree,
   PencilIcon,
-  PlusIcon
+  PlusIcon,
+  type CardDisplayFn
 } from "./Card.templates.ts"
+import type { FamilyTreeNode, FamilyTreeNodePerson, TreePerson } from '../../types.ts';
+import type { CardDim } from './Card.defs.ts';
+import type { TreeStore } from '../../createStore.ts';
 
 const CardElements = {
   miniTree,
@@ -20,7 +24,7 @@ const CardElements = {
 }
 export default CardElements
 
-function miniTree(d, props) {
+function miniTree(d: FamilyTreeNode, props: {store: TreeStore,card_dim: CardDim, onMiniTreeClick?: (e: MouseEvent,d: FamilyTreeNode)=>void}) {
   if (d.data.to_add) return
   const card_dim = props.card_dim;
   if (d.all_rels_displayed) return
@@ -33,7 +37,7 @@ function miniTree(d, props) {
   return g.node()
 }
 
-function lineBreak(d, props) {
+function lineBreak(d: FamilyTreeNode, props: {card_dim: CardDim, store: TreeStore}) {
   if (d.data.to_add) return
   const card_dim = props.card_dim;
   const g = d3.create('svg:g').html(LinkBreakIconWrapper({d,card_dim}).template)
@@ -41,7 +45,7 @@ function lineBreak(d, props) {
   return g.node()
 }
 
-function cardBody(d, props) {
+function cardBody(d: FamilyTreeNode, props: {store: TreeStore,cardEditForm?: CardEditForm,card_dim: CardDim, card_display: CardDisplayFn, onCardClick: (e: MouseEvent,d: FamilyTreeNode) => unknown}) {
   const unknown_lbl = props.cardEditForm ? 'ADD' : 'UNKNOWN'
   const card_dim = props.card_dim;
 
@@ -60,14 +64,14 @@ function cardBody(d, props) {
   return g.node()
 }
 
-function cardImage(d, props) {
+function cardImage(d: FamilyTreeNode, props: {card_dim:CardDim}) {
   if (d.data.to_add) return
   const card_dim = props.card_dim;
   const g = d3.create('svg:g').html(CardImage({d, image: d.data.data.avatar || null, card_dim, maleIcon: null, femaleIcon: null}).template)
   return g.node()
 }
 
-function cardEditIcon(d, props) {
+function cardEditIcon(d: FamilyTreeNode, props: {card_dim: CardDim, store: TreeStore, cardEditForm?: CardEditForm}) {
   if (d.data.to_add) return
   const card_dim = props.card_dim;
   const g = d3.create('svg:g').html(PencilIcon({card_dim, x: card_dim.w-46, y: card_dim.h-20}).template)
@@ -76,7 +80,7 @@ function cardEditIcon(d, props) {
   return g.node()
 }
 
-function cardAddIcon(d, props) {
+function cardAddIcon(d: FamilyTreeNode, props: {card_dim: CardDim, addRelative: (args: {d: FamilyTreeNode}) => void}) {
   if (d.data.to_add) return
   const card_dim = props.card_dim;
   const g = d3.create('svg:g').html(PlusIcon({card_dim, x: card_dim.w-26, y: card_dim.h-20}).template)
@@ -86,7 +90,7 @@ function cardAddIcon(d, props) {
 }
 
 
-export function appendElement(el_maybe, parent, is_first?) {
+export function appendElement(el_maybe: Element | null | undefined, parent: Element, is_first?: unknown) {
   if (!el_maybe) return
   if (is_first) parent.insertBefore(el_maybe, parent.firstChild)
   else parent.appendChild(el_maybe)

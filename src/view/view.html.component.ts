@@ -19,10 +19,8 @@ export default function updateCardsComponent(div: d3.BaseType, tree: FamilyTree,
   card.each(cardUpdateNoEnter)
   card_enter.each(cardEnter)
   card_update.each(cardUpdate)
-
-  function cardEnter(d: {_x: number, _y:number}) {
+  function cardEnter(d: {_x?: number, _y?:number}) {
     const card_element = d3.select(Card(d))
-
     card_element
       .style('position', 'absolute')
       .style('top', '0').style('left', '0').style("opacity", 0)

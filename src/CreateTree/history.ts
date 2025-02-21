@@ -1,9 +1,11 @@
 import * as d3 from 'd3';
 import {cleanupDataJson} from "./form.js"
 import * as icons from "../view/elements/Card.icons.js"
+import type { TreeStore, TreeStoreState } from '../createStore.js';
+import type { TreePerson } from '../types.js';
 
-export function createHistory(store, getStoreData, onUpdate) {
-  let history: unknown[] = []
+export function createHistory(store: TreeStore, getStoreData: () => TreeStoreState, onUpdate: () => unknown) {
+  let history: TreeStoreState[] = []
   let history_index = -1
   
   return {
@@ -16,7 +18,7 @@ export function createHistory(store, getStoreData, onUpdate) {
 
   function changed() {
     if (history_index < history.length - 1) history = history.slice(0, history_index)
-    const clean_data = JSON.parse(cleanupDataJson(JSON.stringify(getStoreData())))
+    const clean_data: TreeStoreState = JSON.parse(JSON.stringify(getStoreData())) // TODO There are better ways to do this now in latest browsers
     clean_data.main_id = store.getMainId()
     history.push(clean_data)
     history_index++
@@ -25,13 +27,13 @@ export function createHistory(store, getStoreData, onUpdate) {
   function back() {
     if (!canBack()) return
     history_index--
-    updateData(history[history_index])
+    updateData(history[history_index]!)
   }
 
   function forward() {
     if (!canForward()) return
     history_index++
-    updateData(history[history_index])
+    updateData(history[history_index]!)
   }
 
   function canForward() {
@@ -42,14 +44,14 @@ export function createHistory(store, getStoreData, onUpdate) {
     return history_index > 0
   }
 
-  function updateData(data) {
+  function updateData(data: TreeStoreState) {
     store.updateMainId(data.main_id)
-    store.updateData(data)
+    store.updateData(data.data)
     onUpdate()
   }
 }
 
-export function createHistoryControls(cont, history: ReturnType<typeof createHistory>, onUpdate=()=>{}) {
+export function createHistoryControls(cont: d3.BaseType , history: ReturnType<typeof createHistory>, onUpdate=()=>{}) {
   let _history: ReturnType<typeof createHistory> | null  = history
   const history_controls = d3.select(cont).append("div").attr("class", "f3-history-controls")
   const back_btn = history_controls.append("button").attr("class", "f3-back-button").on("click", () => {

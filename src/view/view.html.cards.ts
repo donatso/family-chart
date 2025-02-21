@@ -36,7 +36,7 @@ export default function updateCardsHtml(div: d3.BaseType, tree: FamilyTree, Card
     d3.select(this).transition().duration(props.transition_time!).delay(delay).style("transform", `translate(${d.x}px, ${d.y}px)`).style("opacity", 1)
   }
 
-  function cardExit(d: {_x: number, _y:number}) {
+  function cardExit(d: {_x?: number, _y?:number}) {
     const g = d3.select(this)
     g.transition().duration(props.transition_time!).style("opacity", 0).style("transform", `translate(${d._x}px, ${d._y}px)`)
       .on("end", () => g.remove())

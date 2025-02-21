@@ -1,7 +1,7 @@
 import type { FamilyTreeNode, TreePerson } from "../../types"
 import type { CardDim } from "./Card.defs"
-
-export function CardBody({d,card_dim,card_display}: {d: FamilyTreeNode,card_dim:CardDim,card_display: ((datum: TreePerson) => string | ((datum: TreePerson) => string)[])}) {
+export type CardDisplayFn = ((datum: TreePerson) => string | ((datum: TreePerson) => string)[])
+export function CardBody({d,card_dim,card_display}: {d: FamilyTreeNode,card_dim:CardDim,card_display: CardDisplayFn}) {
   return {template: (`
     <g class="card-body">
       <rect width="${card_dim.w}" height="${card_dim.h}" class="card-body-rect" />
@@ -11,7 +11,7 @@ export function CardBody({d,card_dim,card_display}: {d: FamilyTreeNode,card_dim:
   }
 }
 
-export function CardText({d,card_dim,card_display}: {d: FamilyTreeNode,card_dim:CardDim,card_display: ((datum: TreePerson) => string | ((datum: TreePerson) => string)[])}) {
+export function CardText({d,card_dim,card_display}: {d: FamilyTreeNode,card_dim:CardDim,card_display: CardDisplayFn}) {
   return {template: (`
     <g>
       <g class="card-text" clip-path="url(#card_text_clip)">
@@ -27,7 +27,7 @@ export function CardText({d,card_dim,card_display}: {d: FamilyTreeNode,card_dim:
   }
 }
 
-export function CardBodyAddNew({d,card_dim,card_add,label}: {d?: unknown,card_dim: CardDim, card_add:boolean,label:string}) {
+export function CardBodyAddNew({d,card_dim,card_add,label}: {d?: unknown,card_dim: CardDim, card_add:unknown,label:string}) {
   return {template: (`
     <g class="card-body ${card_add ? 'card_add' : 'card-unknown'}">
       <rect class="card-body-rect" width="${card_dim.w}" height="${card_dim.h}" fill="rgb(59, 85, 96)" />
@@ -140,7 +140,7 @@ export function LinkBreakIcon({x,y,rt,closed}: {x:number, y: number,rt: number, 
   `)})
 }
 
-export function LinkBreakIconWrapper({d,card_dim}: { d: {x: number,sx: number,added: unknown,spouse: {data: {rels: {mother?: unknown,father?: unknown, children?: unknown[]}, _rels?: unknown}},is_ancestry: unknown,data: {main: unknown,rels: {mother?: unknown,father?: unknown, children?: unknown[]}, _rels?: unknown, hide_rels: unknown}},card_dim: CardDim}) {
+export function LinkBreakIconWrapper({d,card_dim}: { d: FamilyTreeNode,card_dim: CardDim}) {
   let g = "",
     r = d.data.rels, _r = d.data._rels || {},
     closed = d.data.hide_rels,
@@ -150,13 +150,13 @@ export function LinkBreakIconWrapper({d,card_dim}: { d: {x: number,sx: number,ad
   if (!d.is_ancestry && d.added) {
     const sp = d.spouse, sp_r = sp.data.rels, _sp_r = sp.data._rels || {};
     if ((areChildren(r) || areChildren(_r)) && (areChildren(sp_r) || areChildren(_sp_r))) {
-      g+=LinkBreakIcon({x:d.sx - d.x + card_dim.w/2 +24.4,y: (d.x !== d.sx ? card_dim.h/2 : card_dim.h)+1, rt: 135, closed}).template
+      g+=LinkBreakIcon({x:(d.sx ?? 0) - d.x + card_dim.w/2 +24.4,y: (d.x !== d.sx ? card_dim.h/2 : card_dim.h)+1, rt: 135, closed}).template
     }
   }
   return {template: g}
 }
 
-export function CardImage({d, image, card_dim, maleIcon, femaleIcon}:{d:FamilyTreeNode, image: string,card_dim: CardDim,maleIcon:(args:{card_dim: CardDim}) => string,femaleIcon:(args:{card_dim: CardDim}) => string}) {
+export function CardImage({d, image, card_dim, maleIcon, femaleIcon}:{d:FamilyTreeNode, image: string | null,card_dim: CardDim,maleIcon:null | ((args:{card_dim: CardDim}) => string),femaleIcon:null | ((args:{card_dim: CardDim}) => string)} ) {
   return ({template: (`
     <g style="transform: translate(${card_dim.img_x}px,${card_dim.img_y}px);" class="card_image" clip-path="url(#card_image_clip)">
       ${image 

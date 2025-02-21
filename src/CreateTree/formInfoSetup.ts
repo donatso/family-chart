@@ -1,6 +1,7 @@
 import * as icons from '../view/elements/Card.icons.js'
+import type { FormCreator } from './form.js'
 
-export function formInfoSetup(form_creator, closeCallback) {
+export function formInfoSetup(form_creator: FormCreator, closeCallback:(event: Event) => void) {
   const formContainer = document.createElement('div')
   update()
   return formContainer
@@ -33,8 +34,8 @@ export function formInfoSetup(form_creator, closeCallback) {
     const add_relative_btn = form?.querySelector('.f3-add-relative-btn');
     if (add_relative_btn && form_creator.addRelative) {
       add_relative_btn.addEventListener('click', () => {
-        if (form_creator.addRelativeActive) form_creator.addRelativeCancel()
-        else form_creator.addRelative()
+        if (form_creator.addRelativeActive) form_creator.addRelativeCancel?.()
+        else form_creator.addRelative?.()
         form_creator.addRelativeActive = !form_creator.addRelativeActive
         update()
       });
@@ -63,7 +64,7 @@ export function formInfoSetup(form_creator, closeCallback) {
   }
 }
 
- function getHtml(form_creator) {
+ function getHtml(form_creator: FormCreator) {
   return (` 
     <form id="familyForm" class="f3-form ${form_creator.editable ? '' : 'non-editable'}">
       ${closeBtn()}
@@ -117,11 +118,11 @@ export function formInfoSetup(form_creator, closeCallback) {
     if (!form_creator.editable) return ''
     return (`
       <div class="f3-radio-group">
-        ${form_creator.gender_field.options.map(option => (`
+        ${form_creator.gender_field?.options.map(option => (`
           <label>
-            <input type="radio" name="${form_creator.gender_field.id}" 
+            <input type="radio" name="${form_creator.gender_field?.id}" 
               value="${option.value}" 
-              ${option.value === form_creator.gender_field.initial_value ? 'checked' : ''}
+              ${option.value === form_creator.gender_field?.initial_value ? 'checked' : ''}
             >
             ${option.label}
           </label>
@@ -163,11 +164,11 @@ export function formInfoSetup(form_creator, closeCallback) {
   function otherParentField() {
     return (`
       <div class="f3-form-field">
-        <label>${form_creator.other_parent_field.label}</label>
-        <select name="${form_creator.other_parent_field.id}">
-          ${form_creator.other_parent_field.options.map(option => `
+        <label>${form_creator.other_parent_field?.label}</label>
+        <select name="${form_creator.other_parent_field?.id}">
+          ${form_creator.other_parent_field?.options.map(option => `
             <option value="${option.value}" 
-              ${option.value === form_creator.other_parent_field.initial_value ? 'selected' : ''}>
+              ${option.value === form_creator.other_parent_field?.initial_value ? 'selected' : ''}>
               ${option.label}
             </option>
           `).join('')}

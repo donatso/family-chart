@@ -61,9 +61,9 @@ export default function CardHtmlElementFunction(props: {card_dim: CardDim, card_
 
   function newRelDataDisplay(d: FamilyTreeNode) {
     const attr_list: string[] = []
-    attr_list.push(`data-rel-type="${d.data._new_rel_data.rel_type}"`)
-    if (['son', 'daughter'].includes(d.data._new_rel_data.rel_type)) attr_list.push(`data-other-parent-id="${d.data._new_rel_data.other_parent_id}"`)
-    return `<div ${attr_list.join(' ')}>${d.data._new_rel_data.label}</div>`
+    attr_list.push(`data-rel-type="${d.data._new_rel_data?.rel_type}"`)
+    if (['son', 'daughter'].includes(d.data._new_rel_data?.rel_type ?? '')) attr_list.push(`data-other-parent-id="${d.data._new_rel_data?.other_parent_id}"`)
+    return `<div ${attr_list.join(' ')}>${d.data._new_rel_data?.label}</div>`
   }
 
   function getMiniTree(d: FamilyTreeNode) {
@@ -134,7 +134,7 @@ export default function CardHtmlElementFunction(props: {card_dim: CardDim, card_
     return style
   }
 
-  function noImageIcon(d: {data: {_new_rel_data: unknown}} ) {
+  function noImageIcon(d: {data: {_new_rel_data?: unknown}} ) {
     if (d.data._new_rel_data) return `<div class="person-icon" ${getCardImageStyle()}>${plusSvgIcon()}</div>`
     return `<div class="person-icon" ${getCardImageStyle()}>${personSvgIcon()}</div>`
   }
