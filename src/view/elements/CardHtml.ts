@@ -2,8 +2,9 @@ import * as d3 from 'd3';
 import {personSvgIcon, miniTreeSvgIcon, plusSvgIcon} from "./Card.icons.js"
 import type { FamilyTreeNode, TreePerson } from '../../types.js';
 import type { CardDim } from './Card.defs.js';
+import type { FamilyMemberFormatter } from '../../Cards/utils.js';
 
-export default function CardHtmlElementFunction(props: {card_dim: CardDim, card_display: [(person: TreePerson) => void],style: string,mini_tree: unknown,onCardUpdate: (d: unknown) => void, onCardClick: (e:MouseEvent,d: unknown) => void,onCardMouseleave: (e: MouseEvent,d: unknown) => void, empty_card_label:string, onCardMouseenter: (e: MouseEvent,d: unknown) => void}) {
+export default function CardHtmlElementFunction(props: {card_dim: CardDim, card_display: FamilyMemberFormatter[],style: string,mini_tree: unknown,onCardUpdate?: ((d: FamilyTreeNode) => void) | null, onCardClick: (e:MouseEvent,d: FamilyTreeNode) => void,onCardMouseleave: ((e: MouseEvent,d: FamilyTreeNode) => void) | null, empty_card_label:string | undefined, onCardMouseenter: ((e: MouseEvent,d: FamilyTreeNode) => void)| null}) {
   const cardInner = props.style === 'default' ? cardInnerDefault 
   : props.style === 'imageCircleRect' ? cardInnerImageCircleRect
   : props.style === 'imageCircle' ? cardInnerImageCircle 
@@ -21,8 +22,8 @@ export default function CardHtmlElementFunction(props: {card_dim: CardDim, card_
     this.querySelector('.card').addEventListener('click', (e: MouseEvent) => props.onCardClick(e, d))
     if (props.onCardUpdate) props.onCardUpdate.call(this, d)
 
-    if (props.onCardMouseenter) d3.select(this).select('.card').on('mouseenter', e => props.onCardMouseenter(e, d))
-    if (props.onCardMouseleave) d3.select(this).select('.card').on('mouseleave', e => props.onCardMouseleave(e, d))
+    if (props.onCardMouseenter) d3.select(this).select('.card').on('mouseenter', e => props.onCardMouseenter?.(e, d))
+    if (props.onCardMouseleave) d3.select(this).select('.card').on('mouseleave', e => props.onCardMouseleave?.(e, d))
   }
 
   function getCardInnerImageCircle(d: FamilyTreeNode) {

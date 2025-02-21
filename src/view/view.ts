@@ -5,8 +5,9 @@ import updateCards from "./view.cards.js"
 import updateCardsHtml from "./view.html.cards.ts"
 import updateCardsComponent from "./view.html.component.ts"
 import type { FamilyTree } from '../CalculateTree/CalculateTree.ts';
+import type { FamilyTreeNode } from '../types.ts';
 
-export default function(tree: FamilyTree, svg: SVGElement, Card: ()=> d3.BaseType, props: {tree_position?:string,cardComponent?: d3.BaseType, cardHtml?: d3.BaseType, initial?: boolean, transition_time?: number, scale?:number}={}) {
+export default function(tree: FamilyTree, svg: SVGElement, Card: (d: FamilyTreeNode)=> d3.BaseType | string, props: {tree_position?:string,cardComponent?: d3.BaseType, cardHtml?: d3.BaseType, initial?: boolean, transition_time?: number, scale?:number}={}) {
 
   props.initial = props.hasOwnProperty('initial') ? props.initial : !d3.select(svg.parentElement).select('.card_cont').node()
   props.transition_time = props.hasOwnProperty('transition_time') ? props.transition_time : 2000;

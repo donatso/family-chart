@@ -1,10 +1,10 @@
 import {toggleAllRels, toggleRels} from "../CalculateTree/CalculateTree.handlers.ts"
-import { TreeStore } from "../createStore.ts"
+import { TreeStore, type TreeStoreState } from "../createStore.ts"
 import {deletePerson, moveToAddToAdded} from "../CreateTree/form.js"
 import type { FamilyTreeNode, TreePerson } from "../types.ts"
 
 export function cardChangeMain(store: TreeStore, {d}: {d: FamilyTreeNode}) {
-  toggleAllRels(store.getTree().data, false)
+  toggleAllRels(store.getTree()?.data!, false)
   store.updateMainId(d.data.id)
   store.updateTree({tree_position: store.state.tree_fit_on_change})
   return true

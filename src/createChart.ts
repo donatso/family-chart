@@ -1,23 +1,28 @@
 import f3 from "./index.js"
 import editTree, { EditTree } from "./CreateTree/editTree.js"
 import type createStore from "./createStore.js"
+import type { FamilyTreeNode, TreePerson } from "./types.js"
+import type CardHtml from "./Cards/CardHtml.js"
+import type CardHTMLWrapper from "./Cards/CardHtml.js"
+import CardSvgWrapper from "./Cards/CardSvg.js"
+import type { TreeStore, TreeStoreState } from "./createStore.js"
 
-export default function(cont,data) { return new CreateChart(cont,data) }
+export default function(cont: Element | string,data: TreePerson[]) { return new CreateChart(cont,data) }
 class CreateChart{
-  cont: HTMLElement | SVGElement | null
+  cont: Element| null
   store: ReturnType<typeof createStore> | null
   svg: SVGElement | null | undefined
-  getCard:(() => unknown) | null
-  node_separation:unknown
-  level_separation:unknown
-  is_horizontal:unknown
-  single_parent_empty_card:unknown
-  transition_time:unknown
+  getCard: (()=> d3.BaseType | string) | null
+  node_separation:number
+  level_separation:number
+  is_horizontal:boolean
+  single_parent_empty_card:boolean
+  transition_time:number
   is_card_html:unknown
   beforeUpdate: ((props: unknown) => void) | null
   afterUpdate:  ((props: unknown) => void) | null
   editTreeInstance: EditTree | undefined
-  constructor(cont, data){
+  constructor(cont: Element | string, data: TreePerson[]){
   this.cont = null
   this.store = null
   this.svg = null
@@ -40,8 +45,8 @@ class CreateChart{
 
 
 
-init(cont, data) {
-  this.cont = cont = setCont(cont)
+init(cont: Element | string, data: TreePerson[]) {
+  this.cont = cont = setCont(cont)!
   const getSvgView = () => cont.querySelector('svg .view')
   const getHtmlSvg = () => cont.querySelector('#htmlSvg')
   const getHtmlView = () => cont.querySelector('#htmlSvg .cards_view')
@@ -63,7 +68,7 @@ init(cont, data) {
     if (this.beforeUpdate) this.beforeUpdate(props)
     props = Object.assign({transition_time: this.transition_time}, props || {})
     if (this.is_card_html) props = Object.assign({}, props || {}, {cardHtml: getHtmlSvg()})
-    f3.view(this.store?.getTree(), this.svg, this.getCard?.(), props || {})
+    f3.view(this.store?.getTree()!, this.svg!, this.getCard!, props || {})
     if (this.afterUpdate) this.afterUpdate(props)
   })
 }
@@ -74,13 +79,13 @@ updateTree(props = {initial: false}) {
   return this
 }
 
-updateData(data) {
+updateData(data: TreePerson[]) {
   this.store?.updateData(data)
 
   return this
 }
 
-setCardYSpacing(card_y_spacing) {
+setCardYSpacing(card_y_spacing: number) {
   if (typeof card_y_spacing !== 'number') {
     console.error('card_y_spacing must be a number')
     return this
@@ -93,7 +98,7 @@ setCardYSpacing(card_y_spacing) {
   return this
 }
 
-setCardXSpacing(card_x_spacing) {
+setCardXSpacing(card_x_spacing: number) {
   if (typeof card_x_spacing !== 'number') {
     console.error('card_x_spacing must be a number')
     return this
@@ -125,7 +130,7 @@ setOrientationHorizontal() {
   return this
 }
 
-setSingleParentEmptyCard(single_parent_empty_card, {label='Unknown'} = {}) {
+setSingleParentEmptyCard(single_parent_empty_card: boolean, {label='Unknown'} = {}) {
   this.single_parent_empty_card = single_parent_empty_card
   this.store!.state.single_parent_empty_card = single_parent_empty_card
   this.store!.state.single_parent_empty_card_label = label
@@ -136,7 +141,7 @@ setSingleParentEmptyCard(single_parent_empty_card, {label='Unknown'} = {}) {
 }
 
 
-setCard(Card) {
+setCard(Card: {is_html:boolean} & ((cont: Element,store: TreeStore,) => {getCard: typeof this.getCard })) {
   this.is_card_html = Card.is_html
 
   if (this.is_card_html) {
@@ -147,30 +152,30 @@ setCard(Card) {
     (this.cont?.querySelector('#htmlSvg') as HTMLElement).style.display = 'none'
   }
 
-  const card = Card(this.cont, this.store)
-  this.getCard = () => card.getCard()
+  const card = Card(this.cont!, this.store!)
+  this.getCard = () => card.getCard?.()
 
   return card
 }
 
-setTransitionTime(transition_time) {
+setTransitionTime(transition_time: number) {
   this.transition_time = transition_time
 
   return this
 }
 
 editTree() {
-  return this.editTreeInstance = editTree(this.cont, this.store)
+  return this.editTreeInstance = editTree(this.cont!, this.store!)
 }
 
-updateMain(d) {
+updateMain(d: {data: {id:string}}) {
   this.store!.updateMainId(d.data.id)
   this.store!.updateTree({})
 
   return this
 }
 
-updateMainId(id) {
+updateMainId(id: string) {
   this.store!.updateMainId(id)
 
   return this
@@ -180,24 +185,26 @@ getMainDatum() {
   return this.store!.getMainDatum()
 }
 
-getDataJson(fn) {
+getDataJson(fn: unknown) {
   const data = this.store!.getData()
   return f3.handlers.cleanupDataJson(JSON.stringify(data))
 }
 
 
-setBeforeUpdate = function(fn) {
+setBeforeUpdate(fn: typeof this.beforeUpdate) {
   this.beforeUpdate = fn
   return this
 }
 
-setAfterUpdate = function(fn) {
+setAfterUpdate(fn: typeof this.afterUpdate) {
   this.afterUpdate = fn
   return this
 }
 }
 
-function setCont(cont) {
-  if (typeof cont === "string") cont = document.querySelector(cont)
+function setCont(cont: string | Element):Element | null {
+  if (typeof cont === "string"){
+    return document.querySelector(cont)
+  }
   return cont
 }

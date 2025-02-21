@@ -1,3 +1,5 @@
+import type { FamilyTree } from "../CalculateTree/CalculateTree";
+import type { TreePerson } from "../types";
 
 export type CardDisplayArg = CardDisplayArg1[] | FamilyMemberFormatter | FamilyMemberDataString
 type CardDisplayArg1 = FamilyMemberFormatter | FamilyMemberDataString | CardDisplayArg2
@@ -8,11 +10,11 @@ type StringKeys<T> = {
   }[keyof T];
 
 
-export type FamilyMemberFormatter = (familyMember: IFamilyMember) => string | number
+export type FamilyMemberFormatter = (familyMember: TreePerson) => string
 
-type IFamilyMember = {data: Record<string,string | number>}
 
-type FamilyMemberDataString = StringKeys<IFamilyMember['data']>
+
+type FamilyMemberDataString = StringKeys<TreePerson['data']>
 type ProcessCardDisplay =  (cardDisplay: CardDisplayArg) => FamilyMemberFormatter[]
 
 export const  processCardDisplay: ProcessCardDisplay = (card_display: CardDisplayArg) =>  {
@@ -22,7 +24,7 @@ export const  processCardDisplay: ProcessCardDisplay = (card_display: CardDispla
       if (typeof d === 'function') {
         card_display_arr.push(d)
       } else if (typeof d === 'string') {
-        card_display_arr.push((d1: IFamilyMember) => d1.data[d]!)
+        card_display_arr.push((d1: TreePerson) => d1.data[d]!)
       } else if (Array.isArray(d)) {
         card_display_arr.push(d1 => d.map(d2 => d1.data[d2]).join(' '))
       }

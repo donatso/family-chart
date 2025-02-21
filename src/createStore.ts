@@ -2,20 +2,20 @@ import CalculateTree, { FamilyTree } from "./CalculateTree/CalculateTree.js"
 import type { TreePerson } from "./types.js"
 
 export type TreeStoreState = {
-  tree:FamilyTree
-  main_id:string | null
+  tree?:FamilyTree
+  main_id?:string | null
   node_separation:number
-  level_separation:number
+  level_separation: number
   single_parent_empty_card:boolean
-  single_parent_empty_card_label: string
-  tree_fit_on_change:unknown
+  single_parent_empty_card_label?: string
+  tree_fit_on_change?:unknown
   is_horizontal:boolean
   main_id_history:string[]
   data:TreePerson[]
 
 }
-export class TreeStore {
-  state: TreeStoreState
+export class TreeStore{
+  state: TreeStoreState & Required<Pick<TreeStoreState,'main_id_history'>>
   onUpdate: ((props: unknown) => void) | undefined
   methods: {}
   setOnUpdate(f: (props?: unknown) => void) {
@@ -60,13 +60,13 @@ export class TreeStore {
     if (!this.state.tree) return null;
     return this.state.tree.data.find(d => d.id === id)
   }
-  updateMainId(id:string | null) {
+  updateMainId(id:string | null | undefined) {
     if (id === this.state.main_id) return
    this.state.main_id_history = this.state.main_id_history.filter(d => d !== id).slice(-10)
    if(id){
     this.state.main_id_history.push(id)
    }
-    this.state.main_id = id
+    this.state.main_id = id ?? null
   }
   // if main_id is deleted, get the last available main_id
   getLastAvailableMainDatum() {
@@ -81,6 +81,6 @@ export class TreeStore {
     this.methods = {}
   }
 }
-export default function createStore(initial_state: TreeStoreState) {
-  return new TreeStore(initial_state)
+export default function createStore(initial_state: Omit<TreeStoreState,'main_id_history'> & Partial<Pick<TreeStoreState,'main_id_history'>>) {
+  return new TreeStore(initial_state as TreeStoreState)
 }

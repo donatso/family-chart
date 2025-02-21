@@ -12,7 +12,7 @@ import {
 } from "./Card.templates.ts"
 import type { FamilyTreeNode, FamilyTreeNodePerson, TreePerson } from '../../types.ts';
 import type { CardDim } from './Card.defs.ts';
-import type { TreeStore } from '../../createStore.ts';
+import type { TreeStore, TreeStoreState } from '../../createStore.ts';
 
 const CardElements = {
   miniTree,

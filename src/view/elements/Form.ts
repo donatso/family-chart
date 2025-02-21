@@ -1,4 +1,4 @@
-import type { TreeStore } from "../../createStore";
+import type { TreeStore, TreeStoreState } from "../../createStore";
 import type { TreePerson } from "../../types";
 
 export function Form({datum, rel_datum, store, rel_type, card_edit, postSubmit, card_display, edit: {el, open, close}}: {datum: TreePerson, rel_datum:TreePerson,store: TreeStore, rel_type:string,card_edit:Record<'type' | 'key' | 'placeholder',string>[], postSubmit: (args?:{delete: boolean}) => void, card_display:[(datum: TreePerson) => void],edit: {el: HTMLElement,open:()=> void,close:() => void}}) {

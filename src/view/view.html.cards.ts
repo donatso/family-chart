@@ -4,7 +4,7 @@ import {calculateDelay} from "./view.utils.ts"
 import type { FamilyTree } from '../CalculateTree/CalculateTree.ts';
 import type { FamilyTreeNode } from '../types.ts';
 
-export default function updateCardsHtml(div: d3.BaseType, tree: FamilyTree, Card: (d: FamilyTreeNode) => d3.BaseType, props: {initial?: boolean,transition_time?: number}= {}) {
+export default function updateCardsHtml(div: d3.BaseType, tree: FamilyTree, Card: (d: FamilyTreeNode) => void, props: {initial?: boolean,transition_time?: number}= {}) {
   const card = d3.select(div).select(".cards_view").selectAll("div.card_cont").data(tree.data, (d:any) => d.data.id),
     card_exit = card.exit<FamilyTreeNode>(),
     card_enter = card.enter().append("div").attr("class", "card_cont").style('pointer-events', 'none'),

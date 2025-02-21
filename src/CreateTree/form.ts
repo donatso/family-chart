@@ -1,4 +1,4 @@
-import type { TreeStore } from "../createStore.ts"
+import type { TreeStore, TreeStoreState } from "../createStore.ts"
 import type { FamilyTreeNodePerson, TreePerson } from "../types.ts"
 import type { AddRelative } from "./addRelative.ts"
 import {checkIfRelativesConnectedWithoutPerson} from "./checkIfRelativesConnectedWithoutPerson.js"

@@ -18,6 +18,11 @@ export type TreePerson = {
     hide_rels?:unknown
 }
 export type FamilyTreeNodePerson = {parents?: FamilyTreeNode[], spouses: FamilyTreeNode[], spouse: FamilyTreeNode,depth: unknown,is_ancestry?:boolean,x: number, y: number,added?:unknown,all_rels_displayed?:boolean,_x?: number, _y?: number, sx?: number, psx?: number,psy?: number, exiting: unknown}
+export type HierarchyLikePerson= {data: TreePerson, depth: number} & Pretty
+export type HierarchyPerson = HierarchyNode<TreePerson> | {data: TreePerson, depth: number}
+type Pretty = {is_ancestry?: boolean, added?:unknown, x?: number, y?: number, sx?: number, sy?: number, psx?: number | undefined, psy?: number |undefined,spouse?: HierarchyPersonPretty,spouses?: HierarchyPersonPretty[]}
+export type HierarchyPersonPretty = HierarchyPerson & Pretty & {parents?: HierarchyPersonPretty[]}
+
 export type FamilyTreeNode = HierarchyNode<TreePerson>  & FamilyTreeNodePerson
 
 export type Zoomable<T> = T & Partial<{__zoomObj: d3.ZoomBehavior<Element, unknown>,__zoom:unknown}>

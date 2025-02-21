@@ -1,24 +1,26 @@
 import * as d3 from 'd3';
 import f3 from "../index.js"
-import {updateCardSvgDefs} from "../view/elements/Card.defs.js"
-import {processCardDisplay, type FamilyMemberFormatter} from "./utils.js"
-import type { TreeStore } from '../createStore.js';
+import {updateCardSvgDefs, type CardDim} from "../view/elements/Card.defs.js"
+import {processCardDisplay, type CardDisplayArg, type FamilyMemberFormatter} from "./utils.js"
+import type { TreeStore, TreeStoreState } from '../createStore.js';
+import type { CardDisplayFn } from '../view/elements/Card.templates.js';
+import type { FamilyTreeNode, TreePerson } from '../types.js';
 
 CardSvgWrapper.is_html = false
-export default function CardSvgWrapper(cont:Element,store) { return new CardSvg(cont,store) }
+export default function CardSvgWrapper(cont:Element,store: TreeStore) { return new CardSvg(cont,store) }
 
 class CardSvg{
   cont: Element
   store: TreeStore
   svg: SVGElement |null
-  getCard: unknown | null
-  card_dim: Record<'w' | 'h' | 'text_x' | 'text_y' | 'img_w' | 'img_h' | 'img_x'| 'img_y',number>
-  card_display: FamilyMemberFormatter[]
+  getCard: (() => ((d: FamilyTreeNode) => void )) | null
+  card_dim: CardDim
+  card_display: CardDisplayFn
   mini_tree:boolean
   link_break:boolean
-  onCardClick: unknown
-  onCardUpdate: ((d: unknown) => void) | null
-  onCardUpdates: ({fn: ((d: unknown) => void), id?:string })[] | null
+  onCardClick: (e: MouseEvent,d: FamilyTreeNode) => void
+  onCardUpdate: ((d: FamilyTreeNode) => void) | null
+  onCardUpdates: ({fn: ((d: FamilyTreeNode) => void), id?:string })[] | null
   
 
 
@@ -28,7 +30,7 @@ class CardSvg{
   this.svg = null
   this.getCard = null
   this.card_dim = {w:220,h:70,text_x:75,text_y:15,img_w:60,img_h:60,img_x:5,img_y:5}
-  this.card_display = [d => `${d.data["first name"]} ${d.data["last name"]}`]
+  this.card_display = [(d: TreePerson)=> `${d.data["first name"]} ${d.data["last name"]}`]
   this.mini_tree = true
   this.link_break = false
   this.onCardClick = this.onCardClickDefault
@@ -43,61 +45,65 @@ class CardSvg{
 init() {
   this.svg = this.cont.querySelector('svg.main_svg')
 
-  this.getCard = () => f3.elements.Card({
-    store: this.store,
-    svg: this.svg!,
-    card_dim: this.card_dim,
-    card_display: this.card_display,
-    mini_tree: this.mini_tree,
-    link_break: this.link_break,
-    onCardClick: this.onCardClick,
-    onCardUpdate: this.onCardUpdate,
-    onCardUpdates: this.onCardUpdates
-  })
+  this.getCard = () => {
+    const a = f3.elements.Card({
+      store: this.store,
+      svg: this.svg!,
+      card_dim: this.card_dim,
+      card_display: this.card_display,
+      mini_tree: this.mini_tree,
+      link_break: this.link_break,
+      onCardClick: this.onCardClick,
+      onCardUpdate: this.onCardUpdate,
+      onCardUpdates: this.onCardUpdates,
+      addRelative: (d: unknown) => {console.debug("add relative not implemented")}
+    })
+    return a 
+  }
 }
 
 
-setCardDisplay(card_display) {
+setCardDisplay(card_display: CardDisplayArg) {
   this.card_display = processCardDisplay(card_display)
 
   return this
 }
 
-setCardDim(card_dim) {
+setCardDim(card_dim: CardDim) {
   if (typeof card_dim !== 'object') {
     console.error('card_dim must be an object')
     return this
   }
   for (let key in card_dim) {
-    const val = card_dim[key]
+    const val = card_dim[key as keyof CardDim]
     if (typeof val !== 'number') {
       console.error(`card_dim.${key} must be a number`)
       return this
     }
     if (key === 'width') key = 'w'
     if (key === 'height') key = 'h'
-    this.card_dim[key] = val
+    this.card_dim[key as keyof CardDim] = val
   }
 
-  updateCardSvgDefs(this.svg, this.card_dim)
+  updateCardSvgDefs(this.svg!, this.card_dim)
 
   return this
 }
 
-setMiniTree(mini_tree) {
+setMiniTree(mini_tree: boolean) {
   this.mini_tree = mini_tree
 
   return this
 }
 
-setLinkBreak(link_break) {
+setLinkBreak(link_break:boolean) {
   this.link_break = link_break
 
   return this
 }
 
-setCardTextSvg(cardTextSvg) {
-  function onCardUpdate(d) {
+setCardTextSvg(cardTextSvg: (d:TreePerson) => string) {
+  function onCardUpdate(d: FamilyTreeNode) {
     const card_node = d3.select(this)
     const card_text = card_node.select('.card-text text')
     const card_text_g = (card_text.node() as Element)?.parentElement!
@@ -110,12 +116,12 @@ setCardTextSvg(cardTextSvg) {
   return this
 }
 
-onCardClickDefault(e, d) {
+onCardClickDefault(e: MouseEvent, d: FamilyTreeNode) {
   this.store.updateMainId(d.data.id)
   this.store.updateTree({})
 }
 
-setOnCardClick(onCardClick) {
+setOnCardClick(onCardClick: () => void) {
   this.onCardClick = onCardClick
 
   return this

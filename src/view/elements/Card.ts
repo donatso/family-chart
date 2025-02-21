@@ -4,11 +4,11 @@ import cardElements, {appendElement} from "./Card.elements.ts"
 import setupCardSvgDefs, { type CardDim } from "./Card.defs.js"
 import * as d3 from 'd3';
 import type { FamilyTreeNode, TreePerson } from "../../types.ts";
-import type { TreeStore } from "../../createStore.ts";
+import type { TreeStore, TreeStoreState } from "../../createStore.ts";
 import type { CardEditForm } from "../../handlers.ts";
 
 type CardProps = {img: boolean,mini_tree: boolean,link_break:boolean,card_dim: CardDim}
-type CardFNProps = Partial<CardProps>  & {svg: SVGElement ,cardEditForm?:CardEditForm, onCardUpdates?:({id?: string, fn: ((d: unknown) => void)}[]) | null, onCardUpdate?: ((d: unknown) => void) | null, store: TreeStore, card_display: CardDisplayFn, onCardClick: () =>void, addRelative: (args: {d: FamilyTreeNode}) => void}
+type CardFNProps = Partial<CardProps>  & {svg: SVGElement ,cardEditForm?:CardEditForm, onCardUpdates?:({id?: string, fn: ((d: FamilyTreeNode) => void)}[]) | null, onCardUpdate?: ((d: FamilyTreeNode) => void) | null, store: TreeStore, card_display: CardDisplayFn, onCardClick: (e: MouseEvent,d: FamilyTreeNode) =>void, addRelative: (args: {d: FamilyTreeNode}) => void}
 export function Card<TProps extends CardFNProps>(initProps: TProps ) {
   const props = setupProps(initProps);
   setupCardSvgDefs(props.svg, props.card_dim)

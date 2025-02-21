@@ -4,9 +4,9 @@ import type { FamilyTreeNode, TreePerson } from "../types";
 export type TreeLink = {d:unknown[],_d:() => unknown[],curve:boolean,id: string,depth: number,spouse?:unknown,is_ancestry:boolean,source:FamilyTreeNode[] | FamilyTreeNode,target: FamilyTreeNode[] |FamilyTreeNode }
 class TreeLinks {
   links: TreeLink[]
-  tree: unknown
+  tree: FamilyTreeNode[]
   is_horizontal:boolean
-  constructor({d, tree, is_horizontal=false}: {d: FamilyTreeNode,tree: unknown,is_horizontal?:boolean}){
+  constructor({d, tree, is_horizontal=false}: {d: FamilyTreeNode,tree: FamilyTreeNode[],is_horizontal?:boolean}){
     this.links = []
     this.tree = tree
     this.is_horizontal=is_horizontal
@@ -16,7 +16,7 @@ class TreeLinks {
   }
   handleAncestrySide({d}: {d:FamilyTreeNode }) {
     if (!d.parents) return
-    const p1 = d.parents[0]
+    const p1 = d.parents[0]!
     const p2 = d.parents[1] || p1
 
     const p = {x: this.getMid(p1, p2, 'x'), y: this.getMid(p1, p2, 'y')}
@@ -37,12 +37,12 @@ class TreeLinks {
     })
   }
 
-  handleProgenySide({d}: {d: HierarchyNode<TreePerson>}) {
+  handleProgenySide({d}: {d: FamilyTreeNode}) {
     if (!d.children || d.children.length === 0) return
 
-    d.children.forEach((child: unknown, i) => {
+    d.children.forEach((child) => {
       const other_parent = this.otherParent(child, d, this.tree) || d
-      const sx = other_parent.sx
+      const sx = other_parent.sx!
 
       const parent_pos = !this.is_horizontal ? {x: sx, y: d.y} : {x: d.x, y: sx}
       this.links.push({
@@ -72,27 +72,28 @@ class TreeLinks {
         id: this.linkId(d, spouse), 
         depth: d.depth, 
         spouse: true, 
-        is_ancestry: spouse.is_ancestry, 
+        is_ancestry: !!spouse.is_ancestry, 
         source: d, 
         target: spouse
       })
     })
   }
   ///
-  getMid(d1, d2, side, is_?) {
+  getMid<K extends string>(d1:Partial<Record<K | `_${K}`,number>> , d2: Partial<Record<K | `_${K}`,number>>, side: K, is_?:unknown) {
     if (is_) return this._or(d1, side) - (this._or(d1, side) - this._or(d2, side))/2
-    else return d1[side] - (d1[side] - d2[side])/2
+    else return d1[side]! - (d1[side]! - d2[side]!)/2
   }
 
-  _or(d, k) {
-   return d.hasOwnProperty('_'+k) ? d['_'+k] : d[k]
+  _or<K extends string >(d: Partial<Record<K | `_${K}`,number>>, k: K): number {
+   const underscore = `_${k}` as const
+   return (d.hasOwnProperty(underscore) ? d[underscore]! : d[k]!) 
   }
 
-  Link(d, p) {
+  Link(d: {x: number, y:number}, p: {x: number, y: number}) {
     return this.is_horizontal ? this.LinkHorizontal(d, p) : this.LinkVertical(d, p)
   }
 
-  LinkVertical(d, p) {
+  LinkVertical(d: {x: number, y:number}, p: {x: number, y: number}) {
     const hy = (d.y + (p.y - d.y) / 2)
     return [
       [d.x, d.y],
@@ -104,7 +105,7 @@ class TreeLinks {
     ]
   }
 
-  LinkHorizontal(d, p) {
+  LinkHorizontal(d: {x: number, y:number}, p: {x: number, y: number}) {
     const hx = (d.x + (p.x - d.x) / 2)
     return [
       [d.x, d.y],
@@ -116,11 +117,11 @@ class TreeLinks {
     ]
   }
 
-  linkId(...args) {
+  linkId(...args: {data: {id: string}}[]) {
     return args.map(d => d.data.id).sort().join(", ")  // make unique id
   }
 
-  otherParent(child: {data: {rels: {father?: unknown,mother?: unknown}}}, p1: {data: {id: unknown}, x: number, y: number}, data: {x: number, y: number, data: {id: unknown}}[]) {
+  otherParent(child: FamilyTreeNode, p1: FamilyTreeNode, data: FamilyTreeNode[]) {
     const condition = (d0: {data: {id: unknown}}) => (d0.data.id !== p1.data.id) && ((d0.data.id === child.data.rels.mother) || (d0.data.id === child.data.rels.father))
     return this.getRel(p1, data, condition)
   }
@@ -133,36 +134,36 @@ class TreeLinks {
     else return rels[0]
   }
 }
-export function createLinks({d, tree, is_horizontal=false}: {d: FamilyTreeNode,tree: unknown,is_horizontal?:boolean}) {
+export function createLinks({d, tree, is_horizontal=false}: {d: FamilyTreeNode,tree: FamilyTreeNode[],is_horizontal?:boolean}) {
   return new TreeLinks({d,tree,is_horizontal}).links
 }
 
-export function pathToMain(cards: Selection<BaseType,unknown,BaseType,unknown>, links:d3.Selection<BaseType,TreeLink,BaseType,unknown>, datum: TreePerson, main_datum: FamilyTreeNode) {
+export function pathToMain(cards: Selection<BaseType,FamilyTreeNode,BaseType,unknown>, links:d3.Selection<BaseType,TreeLink,BaseType,unknown>, datum: FamilyTreeNode, main_datum: FamilyTreeNode) {
   const is_ancestry = datum.is_ancestry
   const links_data = links.data()
-  let links_node_to_main: {link:TreeLink,node: unknown}[] = []
-  let cards_node_to_main: {card: unknown,node: unknown}[] = []
+  let links_node_to_main: {link:TreeLink,node: BaseType}[] = []
+  let cards_node_to_main: {card: FamilyTreeNode,node: BaseType}[] = []
 
   if (is_ancestry) {
     const links_to_main: TreeLink[] = []
 
     let parent = datum
     let itteration1 = 0
-    while (parent !== main_datum.data && itteration1 < 100) {
+    while (parent !== main_datum && itteration1 < 100) {
       itteration1++  // to prevent infinite loop
-      const spouse_link = links_data.find(d => d.spouse === true && ((!Array.isArray(d.source) && d.source === parent) || d.target === parent))
+      const spouse_link = links_data.find(d => d.spouse === true && ((!Array.isArray(d.source) && d.source === parent) || (d.target) === parent))
       if (spouse_link) {
-        const child_link = links_data.find(d => Array.isArray(d.target) && d.target.includes(spouse_link.source) && d.target.includes(spouse_link.target))
+        const child_link = links_data.find(d => Array.isArray(d.target) && d.target.includes(spouse_link.source as FamilyTreeNode) && d.target.includes(spouse_link.target as FamilyTreeNode))
         if (!child_link) break
         links_to_main.push(spouse_link)
         links_to_main.push(child_link)
-        parent = child_link.source
+        parent = child_link.source as FamilyTreeNode
       } else {
         // single parent
         const child_link = links_data.find(d => Array.isArray(d.target) && d.target.includes(parent))
         if (!child_link) break
         links_to_main.push(child_link)
-        parent = child_link.source
+        parent = child_link.source as FamilyTreeNode
       }
     }
     links.each(function(d) {
@@ -192,23 +193,23 @@ export function pathToMain(cards: Selection<BaseType,unknown,BaseType,unknown>, 
 
     let child = datum
     let itteration1 = 0
-    while (child !== main_datum.data && itteration1 < 100) {
+    while (child !== main_datum && itteration1 < 100) {
       itteration1++  // to prevent infinite loop
       const child_link = links_data.find(d => d.target === child && Array.isArray(d.source))
       if (child_link) {
-        const spouse_link = links_data.find(d => d.spouse === true && sameArray([d.source, d.target], child_link.source))
+        const spouse_link = links_data.find(d => d.spouse === true && sameArray([d.source, d.target], child_link.source as FamilyTreeNode[]))
         links_to_main.push(child_link)
         if(spouse_link){
           links_to_main.push(spouse_link)
         }
       
-        if (spouse_link) child = spouse_link.source
-        else child = child_link.source[0]
+        if (spouse_link) child = spouse_link.source as FamilyTreeNode
+        else child = (child_link.source as FamilyTreeNode[])[0]!
       } else {
         const spouse_link = links_data.find(d => d.target === child && !Array.isArray(d.source))  // spouse link
         if (!spouse_link) break
         links_to_main.push(spouse_link)
-        child = spouse_link.source
+        child = spouse_link.source as FamilyTreeNode
       }
     }
 
@@ -225,26 +226,26 @@ export function pathToMain(cards: Selection<BaseType,unknown,BaseType,unknown>, 
       }
     })
   }
-  return [cards_node_to_main, links_node_to_main]
+  return [cards_node_to_main, links_node_to_main] as const
 
-  function sameArray(arr1, arr2) {
+  function sameArray<T>(arr1: T[], arr2:T[]) {
     return arr1.every(d1 => arr2.some(d2 => d1 === d2))
   }
 
-  function getCardsToMain(first_parent, links_to_main) {
+  function getCardsToMain(first_parent: FamilyTreeNode, links_to_main: TreeLink[]) {
     const all_cards = links_to_main.filter(d => d).reduce((acc, d) => {
       if (Array.isArray(d.target)) acc.push(...d.target)
       else acc.push(d.target)
       if (Array.isArray(d.source)) acc.push(...d.source)
       else acc.push(d.source)
       return acc
-    }, [])
+    }, [] as FamilyTreeNode[])
 
     const cards_to_main = [main_datum, datum]
     getChildren(first_parent)
     return cards_to_main
 
-    function getChildren(d) {
+    function getChildren(d: FamilyTreeNode) {
       if (d.data.rels.children) {
         d.data.rels.children.forEach(child_id => {
           const child = all_cards.find(d0 => d0.data.id === child_id)

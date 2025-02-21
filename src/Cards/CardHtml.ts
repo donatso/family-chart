@@ -1,29 +1,33 @@
-import {processCardDisplay, type CardDisplayArg} from "./utils.js"
+import {processCardDisplay, type CardDisplayArg, type FamilyMemberFormatter} from "./utils.js"
 import {pathToMain, type TreeLink} from "../CalculateTree/createLinks.ts"
 import * as d3 from 'd3';
 import CardHtmlElementFunction from "../view/elements/CardHtml.js";
-
-export default class CardHtml {
+import type { FamilyTreeNode, TreePerson } from "../types.ts";
+import type { TreeStore, TreeStoreState } from "../createStore.ts";
+import type { CardDim } from "../view/elements/Card.defs.ts";
+CardHTMLWrapper.is_html = false
+export default function CardHTMLWrapper(cont:Element,store: TreeStore) { return new CardHtml(cont,store) }
+export class CardHtml {
     is_html = true
-    cont: HTMLElement
+    cont: Element
     svg: SVGElement | undefined 
-    store: {state: {single_parent_empty_card_label: unknown, },updateTree: (obj: unknown) => void, updateMainId:(id: unknown) => void, getTreeMainDatum : () => void}
+    store: TreeStore
     getCard: (() => void) | null | undefined
-    card_display: (((d: {data: Record<string,unknown>}) => string) | unknown)[]
-    onCardClick: (e: unknown,d:{data: {id: unknown}}) => void
+    card_display: FamilyMemberFormatter[]
+    onCardClick: (e: unknown,d:{data: {id?: string}}) => void
     style:'default' | string
     mini_tree: boolean
-    onCardUpdate:  (() => void) | null | undefined
-    card_dim: Record<string,unknown>
-    onCardMouseenter: ((e,datum)=> void) | undefined | null
-    onCardMouseleave: ((e,datum)=> void) | undefined | null
+    onCardUpdate:  ((d: FamilyTreeNode) => void) | null
+    card_dim: Partial<CardDim>
+    onCardMouseenter: ((e: Event,datum: FamilyTreeNode)=> void) | undefined | null
+    onCardMouseleave: ((e: Event,datum: FamilyTreeNode)=> void) | undefined | null
     to_transition: unknown
 
-    constructor(cont,store){
+    constructor(cont: Element,store: TreeStore){
       this.cont = cont
       this.store = store
       this.getCard = null
-      this.card_display = [d => `${d.data["first name"]} ${d.data["last name"]}`]
+      this.card_display = [(d: TreePerson) => `${d.data["first name"]} ${d.data["last name"]}`] as FamilyMemberFormatter[]
       this.onCardClick = this.onCardClickDefault
       this.style = 'default'
       this.mini_tree = false
@@ -36,19 +40,18 @@ export default class CardHtml {
       this.svg = this.cont.querySelector('svg.main_svg') as SVGElement
 
   this.getCard = () => CardHtmlElementFunction({
-    store: this.store,
     card_display: this.card_display,
     onCardClick: this.onCardClick,
     style: this.style,
     mini_tree: this.mini_tree,
     onCardUpdate: this.onCardUpdate,
-    card_dim: this.card_dim,
+    card_dim: this.card_dim as CardDim,
     empty_card_label: this.store.state.single_parent_empty_card_label,
     onCardMouseenter: this.onCardMouseenter ? this.onCardMouseenter.bind(this) : null,
     onCardMouseleave: this.onCardMouseleave ? this.onCardMouseleave.bind(this) : null
   })
     }
-    onCardClickDefault(e: unknown,d:{data: {id: unknown}} ){
+    onCardClickDefault(e: unknown,d:{data: {id?: string}} ){
       this.store.updateMainId(d.data.id)
       this.store.updateTree({})
     }
@@ -56,7 +59,7 @@ export default class CardHtml {
       this.card_display = processCardDisplay(card_display)
       return this
     }
-    setOnCardClick(onCardClick) {
+    setOnCardClick(onCardClick: typeof this.onCardClick) {
       this.onCardClick = onCardClick
       return this
     }
@@ -64,33 +67,38 @@ export default class CardHtml {
       this.style = style
       return this
     }
-    setMiniTree(mini_tree) {
+    setMiniTree(mini_tree: boolean) {
       this.mini_tree = mini_tree
     
       return this
     }
-    setOnCardUpdate(onCardUpdate) {
+    setOnCardUpdate(onCardUpdate: typeof this.onCardUpdate) {
       this.onCardUpdate = onCardUpdate
       return this
     }
-    setCardDim(card_dim) {
+    setCardDim(card_dim: Partial<Record<'width' | 'height' | 'img_width' | 'img_height' | 'img_x' | 'img_y',number>>) {
       if (typeof card_dim !== 'object') {
         console.error('card_dim must be an object')
         return this
       }
-      for (let key in card_dim) {
+      const renameKey = (key:string ) => {
+        if (key === 'width') return 'w'
+        else if (key === 'height') return 'h'
+        else if (key === 'img_width') return 'img_w'
+        else if (key === 'img_height') return 'img_h'
+        else if (key === 'img_x') return  'img_x'
+        else if (key === 'img_y') return 'img_y'
+        return key as keyof CardDim
+      }
+      for (let _key in card_dim) {
+        const key = _key as keyof typeof card_dim
         const val = card_dim[key]
         if (typeof val !== 'number' && typeof val !== 'boolean') {
           console.error(`card_dim.${key} must be a number or boolean`)
           return this
         }
-        if (key === 'width') key = 'w'
-        if (key === 'height') key = 'h'
-        if (key === 'img_width') key = 'img_w'
-        if (key === 'img_height') key = 'img_h'
-        if (key === 'img_x') key = 'img_x'
-        if (key === 'img_y') key = 'img_y'
-        this.card_dim[key] = val
+        const renamed = renameKey(key)
+        this.card_dim[renamed] = val
       }
     
       return this
@@ -109,17 +117,17 @@ export default class CardHtml {
       this.onCardMouseleave = null
       return this
     }
-    onEnterPathToMain(e, datum) {
+    onEnterPathToMain(e: unknown, datum: FamilyTreeNode) {
       this.to_transition = datum.data.id
       const main_datum = this.store.getTreeMainDatum()
-      const cards = d3.select(this.cont).select('div.cards_view').selectAll('.card_cont')
+      const cards = d3.select<d3.BaseType,FamilyTreeNode>(this.cont).select<d3.BaseType>('div.cards_view').selectAll<d3.BaseType,FamilyTreeNode>('.card_cont')
       const links = d3.select(this.cont).select('svg.main_svg .links_view').selectAll('.link') as d3.Selection<d3.BaseType,TreeLink,d3.BaseType,unknown>
-      const [cards_node_to_main, links_node_to_main] = pathToMain(cards, links, datum, main_datum)
+      const [cards_node_to_main, links_node_to_main] = pathToMain(cards, links, datum, main_datum!)
       cards_node_to_main?.forEach(d => {
         const delay = Math.abs(datum.depth - d.card.depth) * 200
-        d3.select(d.node.querySelector('div.card-inner'))
+        d3.select((d.node as Element).querySelector('div.card-inner')!)
           .transition().duration(0).delay(delay)
-          .on('end', () => this.to_transition === datum.data.id && d3.select(d.node.querySelector('div.card-inner')).classed('f3-path-to-main', true))
+          .on('end', () => this.to_transition === datum.data.id && d3.select((d.node as Element).querySelector('div.card-inner')).classed('f3-path-to-main', true))
       })
       links_node_to_main?.forEach(d => {
         const delay = Math.abs(datum.depth - d.link.depth) * 200
@@ -130,7 +138,7 @@ export default class CardHtml {
     
       return this
     }
-    onLeavePathToMain(e, d) {
+    onLeavePathToMain(e: unknown, d: unknown) {
       this.to_transition = false
       d3.select(this.cont).select('div.cards_view').selectAll('div.card-inner').classed('f3-path-to-main', false)
       d3.select(this.cont).select('svg.main_svg .links_view').selectAll('.link').classed('f3-path-to-main', false)

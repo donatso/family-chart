@@ -3,14 +3,14 @@ import addRelative, { AddRelative } from "./addRelative.ts"
 import {cleanupDataJson, createForm, deletePerson} from "./form.js"
 import { createHistory, createHistoryControls } from './history.ts';
 import { formInfoSetup } from './formInfoSetup.ts';
-import type { TreeStore } from '../createStore.ts';
+import type { TreeStore, TreeStoreState } from '../createStore.ts';
 import type { FamilyTreeNode, TreePerson } from '../types.ts';
 
 
-export default function(cont:HTMLElement,store: TreeStore) { return new EditTree(cont,store) }
+export default function(cont:Element,store: TreeStore) { return new EditTree(cont,store) }
 
 export class EditTree {
-  cont: HTMLElement
+  cont: Element
   store: TreeStore
   fields: {type: string, label: string, id: string}[]
   form_cont: HTMLElement | null
@@ -21,7 +21,7 @@ export class EditTree {
   editFirst:unknown
   addRelativeInstance: AddRelative | undefined
   card_display:unknown
-  constructor(cont: HTMLElement, store:TreeStore){
+  constructor(cont: Element, store:TreeStore){
   this.cont = cont
   this.store = store
 

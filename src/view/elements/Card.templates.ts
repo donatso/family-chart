@@ -1,6 +1,6 @@
 import type { FamilyTreeNode, TreePerson } from "../../types"
 import type { CardDim } from "./Card.defs"
-export type CardDisplayFn = ((datum: TreePerson) => string | ((datum: TreePerson) => string)[])
+export type CardDisplayFn = ((datum: TreePerson) => string)| ((datum: TreePerson) => string)[]
 export function CardBody({d,card_dim,card_display}: {d: FamilyTreeNode,card_dim:CardDim,card_display: CardDisplayFn}) {
   return {template: (`
     <g class="card-body">

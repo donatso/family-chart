@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 
-export default function createSvg(cont: HTMLElement, props={}) {
+export default function createSvg(cont: Element, props={}) {
   const svg_dim = cont.getBoundingClientRect();
   const svg_html = (`
     <svg class="main_svg">
@@ -35,8 +35,8 @@ export default function createSvg(cont: HTMLElement, props={}) {
 
   return svg
 
-  function getOrCreateF3Canvas(cont: HTMLElement): HTMLElement {
-    let f3Canvas: HTMLElement | null = cont.querySelector('#f3Canvas')
+  function getOrCreateF3Canvas(cont: Element): Element {
+    let f3Canvas = cont.querySelector('#f3Canvas')
     if (!f3Canvas) {
       f3Canvas = d3.create('div').attr('id', 'f3Canvas').attr('style', 'position: relative; overflow: hidden; width: 100%; height: 100%;').node()!
     }
@@ -44,7 +44,7 @@ export default function createSvg(cont: HTMLElement, props={}) {
   }
 }
 
-function setupZoom(el: HTMLElement & Partial<{__zoom: unknown,__zoomObj:unknown}>, props: {onZoom?:(e: unknown) => void,zoom_polite?:unknown}={}) {
+function setupZoom(el: Element & Partial<{__zoom: unknown,__zoomObj:unknown}>, props: {onZoom?:(e: unknown) => void,zoom_polite?:unknown}={}) {
   if (el.__zoom) return
   const view = el.querySelector('.view'),
   zoom = d3.zoom().on("zoom", (props.onZoom || zoomed))
