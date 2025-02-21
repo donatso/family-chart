@@ -45,8 +45,7 @@ class CardSvg{
 init() {
   this.svg = this.cont.querySelector('svg.main_svg')
 
-  this.getCard = () => {
-    const a = f3.elements.Card({
+  this.getCard = () =>  f3.elements.Card({
       store: this.store,
       svg: this.svg!,
       card_dim: this.card_dim,
@@ -58,9 +57,8 @@ init() {
       onCardUpdates: this.onCardUpdates,
       addRelative: (d: unknown) => {console.debug("add relative not implemented")}
     })
-    return a 
   }
-}
+
 
 
 setCardDisplay(card_display: CardDisplayArg) {
