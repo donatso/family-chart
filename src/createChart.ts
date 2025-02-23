@@ -18,7 +18,7 @@ class CreateChart{
   is_horizontal:boolean
   single_parent_empty_card:boolean
   transition_time:number
-  is_card_html:unknown
+  is_card_html:boolean
   beforeUpdate: ((props: unknown) => void) | null
   afterUpdate:  ((props: unknown) => void) | null
   editTreeInstance: EditTree | undefined
