@@ -1,7 +1,7 @@
 import type { BaseType, HierarchyNode, Selection } from "d3";
 import type { FamilyTreeNode, TreePerson } from "../types";
 
-export type TreeLink = {d:unknown[],_d:() => unknown[],curve:boolean,id: string,depth: number,spouse?:unknown,is_ancestry:boolean,source:FamilyTreeNode[] | FamilyTreeNode,target: FamilyTreeNode[] |FamilyTreeNode }
+export type TreeLink = {d:[number,number][],_d:() => [number,number][],curve:boolean,id: string,depth: number,spouse?:unknown,is_ancestry:boolean,source:FamilyTreeNode[] | FamilyTreeNode,target: FamilyTreeNode[] |FamilyTreeNode }
 class TreeLinks {
   links: TreeLink[]
   tree: FamilyTreeNode[]
@@ -93,7 +93,7 @@ class TreeLinks {
     return this.is_horizontal ? this.LinkHorizontal(d, p) : this.LinkVertical(d, p)
   }
 
-  LinkVertical(d: {x: number, y:number}, p: {x: number, y: number}) {
+  LinkVertical(d: {x: number, y:number}, p: {x: number, y: number}): [number,number][] {
     const hy = (d.y + (p.y - d.y) / 2)
     return [
       [d.x, d.y],
@@ -105,7 +105,7 @@ class TreeLinks {
     ]
   }
 
-  LinkHorizontal(d: {x: number, y:number}, p: {x: number, y: number}) {
+  LinkHorizontal(d: {x: number, y:number}, p: {x: number, y: number}): [number,number][] {
     const hx = (d.x + (p.x - d.x) / 2)
     return [
       [d.x, d.y],
