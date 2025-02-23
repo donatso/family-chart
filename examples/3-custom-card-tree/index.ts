@@ -1,11 +1,12 @@
 import * as d3 from 'd3'
 import f3 from "../../src/index"
+import { FamilyTreeNode } from '../../src/types';
 
 fetch("./data.json").then(r => r.json()).then(data => {
   const svg = f3.createSvg(document.querySelector("#FamilyChart")!)
 
   let tree_data: ReturnType<(typeof f3)['CalculateTree']> |null = null;
-  let main_id = null;
+  let main_id: string | null = null;
 
   update()
 
@@ -20,7 +21,7 @@ fetch("./data.json").then(r => r.json()).then(data => {
     f3.view(tree_data, svg, Card(onCardClick))
   }
 
-  function onCardClick(d) {
+  function onCardClick(d: FamilyTreeNode) {
     const node = this
     console.log(d)
     main_id = d.data.id;
@@ -29,10 +30,10 @@ fetch("./data.json").then(r => r.json()).then(data => {
 
 })
 
-function Card(onClick) {
+function Card(onClick: (d: FamilyTreeNode) =>void) {
   const card_dim = {w: 220, h: 70}
 
-  return function (d) {
+  return function (d: FamilyTreeNode) {
     this.innerHTML = ''
     const g = d3.select(this).append('g')
       .attr('transform', `translate(${[-card_dim.w / 2, -card_dim.h / 2]})`)
@@ -52,6 +53,7 @@ function Card(onClick) {
       g.append('text').attr('transform', `translate(${[20, 70/2+5]})`)
         .text(`${d.data.data['first name']} ${d.data.data['last name']}`)
     }
+    return g.node()
   }
 }
 
