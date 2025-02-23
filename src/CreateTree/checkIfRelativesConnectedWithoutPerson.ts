@@ -1,13 +1,13 @@
 import type { TreePerson } from "../types";
 
 export function checkIfRelativesConnectedWithoutPerson(datum: TreePerson, data_stash: TreePerson[]) {
-  const r = datum.rels,
-    r_ids = [r.father, r.mother, ...(r.spouses || []), ...(r.children || [])].filter(r_id => !!r_id),
-    rels_not_to_main: unknown[] = [];
+  const r = datum.rels
+  const r_ids = [r.father, r.mother, ...(r.spouses || []), ...(r.children || [])].filter(r_id => !!r_id) as string[]
+  const rels_not_to_main: string[] = [];
 
   for (let i = 0; i < r_ids.length; i++) {
     const line = findPersonLineToMain(data_stash.find(d => d.id === r_ids[i])!, [datum])
-    if (!line) {rels_not_to_main.push(r_ids[i]); break;}
+    if (!line) {rels_not_to_main.push(r_ids[i]!); break;}
   }
   return rels_not_to_main.length === 0;
 

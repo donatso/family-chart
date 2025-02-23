@@ -1,7 +1,7 @@
 import type { TreePerson } from "../types.js";
 import {removeToAdd} from "./form.js";
 
-export function handleRelsOfNewDatum({datum, data_stash, rel_type, rel_datum}: {datum: TreePerson,data_stash: TreePerson[], rel_type:unknown, rel_datum: TreePerson}) {
+export function handleRelsOfNewDatum({datum, data_stash, rel_type, rel_datum}: {datum: TreePerson,data_stash: TreePerson[], rel_type:string, rel_datum: TreePerson}) {
   if (rel_type === "daughter" || rel_type === "son") addChild(datum)
   else if (rel_type === "father" || rel_type === "mother") addParent(datum)
   else if (rel_type === "spouse") addSpouse(datum)
@@ -171,7 +171,7 @@ export function createTreeDataWithMainNode({data, version}: {data?: Partial<Tree
   return {data: [createNewPerson({data})], version}
 }
 
-export function addNewPersonAndHandleRels({datum, data_stash, rel_type, rel_datum}: {data_stash: TreePerson[],datum:TreePerson, rel_type: unknown,rel_datum:TreePerson}) {
+export function addNewPersonAndHandleRels({datum, data_stash, rel_type, rel_datum}: {data_stash: TreePerson[],datum:TreePerson, rel_type: string,rel_datum:TreePerson}) {
   addNewPerson({data_stash, datum})
   handleRelsOfNewDatum({datum, data_stash, rel_type, rel_datum})
 }

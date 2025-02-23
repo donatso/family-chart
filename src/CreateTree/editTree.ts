@@ -14,11 +14,11 @@ export class EditTree {
   store: TreeStore
   fields: {type: string, label: string, id: string}[]
   form_cont: HTMLElement | null
-  is_fixed: unknown
+  is_fixed: boolean
   history:(ReturnType<typeof createHistory> & {controls?: ReturnType<typeof createHistoryControls>}) | null
-  no_edit:unknown
+  no_edit:boolean
   onChange:(() => void) | null
-  editFirst:unknown
+  editFirst:boolean
   addRelativeInstance: AddRelative | undefined
   card_display:unknown
   constructor(cont: Element, store:TreeStore){
@@ -233,12 +233,12 @@ addRelative(datum?: TreePerson) {
 setupAddRelative() {
   return addRelative(this.store, cancelCallback.bind(this), onSubmitCallback.bind(this))
 
-  function onSubmitCallback(datum: {id:string}, new_rel_datum?: unknown) {
+  function onSubmitCallback(datum: TreePerson, new_rel_datum?: unknown) {
     this.store.updateMainId(datum.id)
     this.openFormWithId(datum.id)
   }
 
-  function cancelCallback(datum: {id:string}) {
+  function cancelCallback(datum: TreePerson) {
     this.store.updateMainId(datum.id)
     this.store.updateTree({})
     this.openFormWithId(datum.id)
@@ -246,7 +246,7 @@ setupAddRelative() {
 }
 
 
-setEditFirst(editFirst:unknown) {
+setEditFirst(editFirst:boolean) {
   this.editFirst = editFirst
 
   return this

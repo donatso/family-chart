@@ -26,7 +26,7 @@ export default function updateCards(svg:d3.BaseType , tree: FamilyTree, Card: (d
     Card.call(this, d)
   }
 
-  function cardUpdateNoEnter(d: unknown) {}
+  function cardUpdateNoEnter(d: FamilyTreeNode) {}
 
   function cardUpdate(d: FamilyTreeNode) {
     Card.call(this, d)

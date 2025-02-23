@@ -1,5 +1,6 @@
 import * as d3 from 'd3';
 import type { Zoomable } from '../types';
+import type { FamilyTree } from '../CalculateTree/CalculateTree';
 
 function positionTree({t, svg,with_transition, transition_time=2000}: {t: {k: number,x: number,y: number},svg:Zoomable<SVGElement>,with_transition?:unknown,transition_time?: number}) {
   const el_listener: Zoomable<Element> = svg.__zoomObj ? svg : svg.parentElement!  // if we need listener for svg and html, we will use parent node
@@ -8,7 +9,7 @@ function positionTree({t, svg,with_transition, transition_time=2000}: {t: {k: nu
     .call(zoom!.transform, d3.zoomIdentity.scale(t.k).translate(t.x, t.y))
 }
 
-export function treeFit({svg, svg_dim, tree_dim, with_transition, transition_time}: {svg_dim:{width: number, height:number}, tree_dim:  {width:number,height:number,x_off: number, y_off:number},t: unknown,svg:SVGElement,with_transition?:boolean,transition_time?: number}) {
+export function treeFit({svg, svg_dim, tree_dim, with_transition, transition_time}: {t: FamilyTree,svg_dim:{width: number, height:number}, tree_dim:  {width:number,height:number,x_off: number, y_off:number},svg:SVGElement,with_transition?:boolean,transition_time?: number}) {
   const t = calculateTreeFit(svg_dim, tree_dim);
   positionTree({t, svg, with_transition, transition_time})
 }

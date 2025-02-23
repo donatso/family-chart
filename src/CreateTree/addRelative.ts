@@ -2,19 +2,19 @@ import type { TreeStore, TreeStoreState } from "../createStore.js"
 import type { TreePerson } from "../types.js"
 import { handleNewRel, createNewPerson } from "./newPerson.js"
 
-export default (store: TreeStore, cancelCallback: (datum: {id:string}) => void,onSubmitCallback:(datum: {id:string}) => void) => { return new AddRelative(store, cancelCallback,onSubmitCallback) }
+export default (store: TreeStore, cancelCallback: (datum: TreePerson) => void,onSubmitCallback:(datum: TreePerson) => void) => { return new AddRelative(store, cancelCallback,onSubmitCallback) }
 
 export class AddRelative{
   store:TreeStore
-  cancelCallback:(datum: {id:string}) => void
-  onSubmitCallback:(datum: {id:string}) => void
+  cancelCallback:(datum: TreePerson) => void
+  onSubmitCallback:(datum: TreePerson) => void
   datum:TreePerson | null
   onChange:((d: TreePerson) => void) | null
   onCancel:(() => void) | null
   is_active:boolean
   store_data:TreeStoreState| null
   addRelLabels:Partial<Record<'father' | 'mother' | 'spouse' | 'son' | 'daughter',string>>
-  constructor(store: TreeStore, cancelCallback: (datum: {id:string}) => void, onSubmitCallback: (datum: {id:string}) => void){
+  constructor(store: TreeStore, cancelCallback: (datum: TreePerson) => void, onSubmitCallback: (datum: TreePerson) => void){
     this.store = store
 
     this.cancelCallback = cancelCallback

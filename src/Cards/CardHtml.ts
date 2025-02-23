@@ -138,7 +138,7 @@ export class CardHtml {
     
       return this
     }
-    onLeavePathToMain(e: unknown, d: unknown) {
+    onLeavePathToMain(e: MouseEvent, d: FamilyTreeNode) {
       this.to_transition = null
       d3.select(this.cont).select('div.cards_view').selectAll('div.card-inner').classed('f3-path-to-main', false)
       d3.select(this.cont).select('svg.main_svg .links_view').selectAll('.link').classed('f3-path-to-main', false)

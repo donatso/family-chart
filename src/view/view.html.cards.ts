@@ -28,7 +28,7 @@ export default function updateCardsHtml(div: d3.BaseType, tree: FamilyTree, Card
     Card.call(this, d)
   }
 
-  function cardUpdateNoEnter(d: unknown) {}
+  function cardUpdateNoEnter(d: FamilyTreeNode) {}
 
   function cardUpdate(d: FamilyTreeNode) {
     Card.call(this, d)
