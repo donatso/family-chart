@@ -26,7 +26,7 @@ export default function updateCardsComponent(div: d3.BaseType, tree: FamilyTree,
       .style("transform", `translate(${d._x}px, ${d._y}px)`)
   }
 
-  function cardUpdateNoEnter(d: unknown) {}
+  function cardUpdateNoEnter(d: FamilyTreeNode) {}
 
   function cardUpdate(d: FamilyTreeNode) {
     const card_element = d3.select(Card(d) as string)

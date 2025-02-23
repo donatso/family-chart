@@ -18,7 +18,7 @@ class CardSvg{
   card_display: CardDisplayFn
   mini_tree:boolean
   link_break:boolean
-  onCardClick: (e: MouseEvent,d: FamilyTreeNode) => void
+  onCardClick: (e: PointerEvent,d: FamilyTreeNode) => void
   onCardUpdate: ((d: FamilyTreeNode) => void) | null
   onCardUpdates: ({fn: ((d: FamilyTreeNode) => void), id?:string })[] | null
   
@@ -54,8 +54,7 @@ init() {
       link_break: this.link_break,
       onCardClick: this.onCardClick,
       onCardUpdate: this.onCardUpdate,
-      onCardUpdates: this.onCardUpdates,
-      addRelative: (d: unknown) => {console.debug("add relative not implemented")}
+      onCardUpdates: this.onCardUpdates
     })
   }
 
@@ -114,7 +113,7 @@ setCardTextSvg(cardTextSvg: (d:TreePerson) => string) {
   return this
 }
 
-onCardClickDefault(e: MouseEvent, d: FamilyTreeNode) {
+onCardClickDefault(e: PointerEvent, d: FamilyTreeNode) {
   this.store.updateMainId(d.data.id)
   this.store.updateTree({})
 }

@@ -20,7 +20,7 @@ export type TreePerson = {
 export type FamilyTreeNodePerson = {parents?: FamilyTreeNode[], spouses: FamilyTreeNode[], spouse: FamilyTreeNode,depth: number,is_ancestry?:boolean,x: number, y: number,added?:boolean,all_rels_displayed?:boolean,_x?: number, _y?: number, sx?: number, psx?: number,psy?: number, exiting: unknown}
 export type HierarchyLikePerson= {data: TreePerson, depth: number} & Pretty
 export type HierarchyPerson = HierarchyNode<TreePerson> | {data: TreePerson, depth: number}
-type Pretty = {is_ancestry?: boolean, added?:unknown, x?: number, y?: number, sx?: number, sy?: number, psx?: number | undefined, psy?: number |undefined,spouse?: HierarchyPersonPretty,spouses?: HierarchyPersonPretty[]}
+type Pretty = {is_ancestry?: boolean, added?:boolean, x?: number, y?: number, sx?: number, sy?: number, psx?: number | undefined, psy?: number |undefined,spouse?: HierarchyPersonPretty,spouses?: HierarchyPersonPretty[]}
 export type HierarchyPersonPretty = HierarchyPerson & Pretty & {parents?: HierarchyPersonPretty[]}
 
 export type FamilyTreeNode = HierarchyNode<TreePerson>  & FamilyTreeNodePerson

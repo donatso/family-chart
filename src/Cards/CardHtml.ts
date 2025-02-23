@@ -3,7 +3,7 @@ import {pathToMain, type TreeLink} from "../CalculateTree/createLinks.ts"
 import * as d3 from 'd3';
 import CardHtmlElementFunction from "../view/elements/CardHtml.js";
 import type { FamilyTreeNode, TreePerson } from "../types.ts";
-import type { TreeStore, TreeStoreState } from "../createStore.ts";
+import type { TreeStore } from "../createStore.ts";
 import type { CardDim } from "../view/elements/Card.defs.ts";
 CardHTMLWrapper.is_html = false
 export default function CardHTMLWrapper(cont:Element,store: TreeStore) { return new CardHtml(cont,store) }
@@ -14,14 +14,14 @@ export class CardHtml {
     store: TreeStore
     getCard: (() => void) | null | undefined
     card_display: FamilyMemberFormatter[]
-    onCardClick: (e: unknown,d:{data: {id?: string}}) => void
+    onCardClick: (e: PointerEvent,d:{data: {id?: string}}) => void
     style:'default' | string
     mini_tree: boolean
     onCardUpdate:  ((d: FamilyTreeNode) => void) | null
     card_dim: Partial<CardDim>
-    onCardMouseenter: ((e: Event,datum: FamilyTreeNode)=> void) | undefined | null
-    onCardMouseleave: ((e: Event,datum: FamilyTreeNode)=> void) | undefined | null
-    to_transition: unknown
+    onCardMouseenter: ((e: MouseEvent,datum: FamilyTreeNode)=> void) | undefined | null
+    onCardMouseleave: ((e: MouseEvent,datum: FamilyTreeNode)=> void) | undefined | null
+    to_transition: string | undefined | null
 
     constructor(cont: Element,store: TreeStore){
       this.cont = cont
@@ -51,7 +51,7 @@ export class CardHtml {
     onCardMouseleave: this.onCardMouseleave ? this.onCardMouseleave.bind(this) : null
   })
     }
-    onCardClickDefault(e: unknown,d:{data: {id?: string}} ){
+    onCardClickDefault(e: PointerEvent,d:{data: {id?: string}} ){
       this.store.updateMainId(d.data.id)
       this.store.updateTree({})
     }
@@ -117,11 +117,11 @@ export class CardHtml {
       this.onCardMouseleave = null
       return this
     }
-    onEnterPathToMain(e: unknown, datum: FamilyTreeNode) {
+    onEnterPathToMain(e: MouseEvent, datum: FamilyTreeNode) {
       this.to_transition = datum.data.id
       const main_datum = this.store.getTreeMainDatum()
-      const cards = d3.select<d3.BaseType,FamilyTreeNode>(this.cont).select<d3.BaseType>('div.cards_view').selectAll<d3.BaseType,FamilyTreeNode>('.card_cont')
-      const links = d3.select(this.cont).select('svg.main_svg .links_view').selectAll('.link') as d3.Selection<d3.BaseType,TreeLink,d3.BaseType,unknown>
+      const cards = d3.select<d3.BaseType,unknown>(this.cont).select<d3.BaseType>('div.cards_view').selectAll<d3.BaseType,FamilyTreeNode>('.card_cont')
+      const links = d3.select<d3.BaseType,unknown>(this.cont).select<d3.BaseType>('svg.main_svg .links_view').selectAll<d3.BaseType,TreeLink>('.link')
       const [cards_node_to_main, links_node_to_main] = pathToMain(cards, links, datum, main_datum!)
       cards_node_to_main?.forEach(d => {
         const delay = Math.abs(datum.depth - d.card.depth) * 200
@@ -139,7 +139,7 @@ export class CardHtml {
       return this
     }
     onLeavePathToMain(e: unknown, d: unknown) {
-      this.to_transition = false
+      this.to_transition = null
       d3.select(this.cont).select('div.cards_view').selectAll('div.card-inner').classed('f3-path-to-main', false)
       d3.select(this.cont).select('svg.main_svg .links_view').selectAll('.link').classed('f3-path-to-main', false)
     

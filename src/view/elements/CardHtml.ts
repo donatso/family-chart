@@ -4,7 +4,7 @@ import type { FamilyTreeNode, TreePerson } from '../../types.js';
 import type { CardDim } from './Card.defs.js';
 import type { FamilyMemberFormatter } from '../../Cards/utils.js';
 
-export default function CardHtmlElementFunction(props: {card_dim: CardDim, card_display: FamilyMemberFormatter[],style: string,mini_tree: unknown,onCardUpdate?: ((d: FamilyTreeNode) => void) | null, onCardClick: (e:MouseEvent,d: FamilyTreeNode) => void,onCardMouseleave: ((e: MouseEvent,d: FamilyTreeNode) => void) | null, empty_card_label:string | undefined, onCardMouseenter: ((e: MouseEvent,d: FamilyTreeNode) => void)| null}) {
+export default function CardHtmlElementFunction(props: {card_dim: CardDim, card_display: FamilyMemberFormatter[],style: string,mini_tree: boolean,onCardUpdate?: ((d: FamilyTreeNode) => void) | null, onCardClick: (e:PointerEvent,d: FamilyTreeNode) => void,onCardMouseleave: ((e: MouseEvent,d: FamilyTreeNode) => void) | null, empty_card_label:string | undefined, onCardMouseenter: ((e: MouseEvent,d: FamilyTreeNode) => void)| null}) {
   const cardInner = props.style === 'default' ? cardInnerDefault 
   : props.style === 'imageCircleRect' ? cardInnerImageCircleRect
   : props.style === 'imageCircle' ? cardInnerImageCircle 
@@ -19,7 +19,7 @@ export default function CardHtmlElementFunction(props: {card_dim: CardDim, card_
       ${cardInner(d)}
     </div>
     `)
-    this.querySelector('.card').addEventListener('click', (e: MouseEvent) => props.onCardClick(e, d))
+    this.querySelector('.card').addEventListener('click', (e: PointerEvent) => props.onCardClick(e, d))
     if (props.onCardUpdate) props.onCardUpdate.call(this, d)
 
     if (props.onCardMouseenter) d3.select(this).select('.card').on('mouseenter', e => props.onCardMouseenter?.(e, d))
@@ -135,7 +135,7 @@ export default function CardHtmlElementFunction(props: {card_dim: CardDim, card_
     return style
   }
 
-  function noImageIcon(d: {data: {_new_rel_data?: unknown}} ) {
+  function noImageIcon(d: {data: {_new_rel_data?: TreePerson['_new_rel_data']}} ) {
     if (d.data._new_rel_data) return `<div class="person-icon" ${getCardImageStyle()}>${plusSvgIcon()}</div>`
     return `<div class="person-icon" ${getCardImageStyle()}>${personSvgIcon()}</div>`
   }
