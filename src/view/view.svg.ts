@@ -44,18 +44,18 @@ export default function createSvg(cont: Element, props={}) {
   }
 }
 
-function setupZoom(el: Element & Partial<{__zoom: unknown,__zoomObj:unknown}>, props: {onZoom?:(e: unknown) => void,zoom_polite?:unknown}={}) {
+function setupZoom(el: Element & Partial<{__zoom: unknown,__zoomObj:unknown}>, props: {onZoom?:(e: d3.D3ZoomEvent<Element, unknown>) => void,zoom_polite?:boolean}={}) {
   if (el.__zoom) return
   const view = el.querySelector('.view'),
   zoom = d3.zoom().on("zoom", (props.onZoom || zoomed))
 
-  d3.select(el).call(zoom as any) // TODO bug? zoom is not a function
+  d3.select(el).call(zoom) // TODO bug? zoom is not a function
   el.__zoomObj = zoom
 
   if (props.zoom_polite) zoom.filter(zoomFilter)
 
-  function zoomed(e: {transform: number | string | boolean}) {
-    d3.select(view).attr("transform", e.transform);
+  function zoomed(e: d3.D3ZoomEvent<Element,unknown>) {
+    d3.select(view).attr("transform", e.transform.toString());
   }
 
   function zoomFilter(e: TouchEvent) {
