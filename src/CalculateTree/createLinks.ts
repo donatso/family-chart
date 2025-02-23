@@ -1,7 +1,7 @@
 import type { BaseType, HierarchyNode, Selection } from "d3";
 import type { FamilyTreeNode, TreePerson } from "../types";
 
-export type TreeLink = {d:[number,number][],_d:() => [number,number][],curve:boolean,id: string,depth: number,spouse?:unknown,is_ancestry:boolean,source:FamilyTreeNode[] | FamilyTreeNode,target: FamilyTreeNode[] |FamilyTreeNode }
+export type TreeLink = {d:[number,number][],_d:() => [number,number][],curve:boolean,id: string,depth: number,spouse?:boolean,is_ancestry:boolean,source:FamilyTreeNode[] | FamilyTreeNode,target: FamilyTreeNode[] |FamilyTreeNode }
 class TreeLinks {
   links: TreeLink[]
   tree: FamilyTreeNode[]
@@ -79,7 +79,7 @@ class TreeLinks {
     })
   }
   ///
-  getMid<K extends string>(d1:Partial<Record<K | `_${K}`,number>> , d2: Partial<Record<K | `_${K}`,number>>, side: K, is_?:unknown) {
+  getMid<K extends string>(d1:Partial<Record<K | `_${K}`,number>> , d2: Partial<Record<K | `_${K}`,number>>, side: K, is_?:boolean) {
     if (is_) return this._or(d1, side) - (this._or(d1, side) - this._or(d2, side))/2
     else return d1[side]! - (d1[side]! - d2[side]!)/2
   }
@@ -121,13 +121,13 @@ class TreeLinks {
     return args.map(d => d.data.id).sort().join(", ")  // make unique id
   }
 
-  otherParent(child: FamilyTreeNode, p1: FamilyTreeNode, data: FamilyTreeNode[]) {
-    const condition = (d0: {data: {id: unknown}}) => (d0.data.id !== p1.data.id) && ((d0.data.id === child.data.rels.mother) || (d0.data.id === child.data.rels.father))
+  otherParent<Datum extends  {x: number, y: number} & {data: Pick<TreePerson,'rels' | 'id'>}>(child: Datum, p1: Datum, data: Datum[]) {
+    const condition = (d0: Datum) => (d0.data.id !== p1.data.id) && ((d0.data.id === child.data.rels.mother) || (d0.data.id === child.data.rels.father))
     return this.getRel(p1, data, condition)
   }
 
   // if there is overlapping of personas in different branches of same family tree, return the closest one
-  getRel<Datum extends {x: number, y: number}>(d: {x:number, y:number}, data: Datum[], condition: (datum: NoInfer<Datum>) =>boolean) {
+  getRel<Datum extends {x: number, y: number}>(d: Datum, data: Datum[], condition: (datum: NoInfer<Datum>) =>boolean) {
     const rels = data.filter(condition)
     const dist_xy = (a: {x:number,y:number}, b: {x: number, y:number}) => Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2))
     if (rels.length > 1) return rels.sort((d0, d1) => dist_xy(d0, d) - dist_xy(d1, d))[0]
