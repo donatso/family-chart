@@ -39,7 +39,7 @@ export function calculateEnterAndExitPositions(d:FamilyTreeNode, entering: unkno
   }
 }
 
-export function toggleRels(tree_datum: FamilyTreeNode, hide_rels: unknown) {
+export function toggleRels(tree_datum: FamilyTreeNode, hide_rels: boolean) {
   const
     rels = hide_rels ? 'rels' : '_rels',
     rels_ = hide_rels ? '_rels' : 'rels'
@@ -71,7 +71,7 @@ export function toggleRels(tree_datum: FamilyTreeNode, hide_rels: unknown) {
   }
 }
 
-export function toggleAllRels(tree_data: FamilyTreeNode[], hide_rels: unknown) {
+export function toggleAllRels(tree_data: FamilyTreeNode[], hide_rels: boolean) {
   tree_data.forEach(d => {d.data.hide_rels = hide_rels; toggleRels(d, hide_rels)})
 }
 
