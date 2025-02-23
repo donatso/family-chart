@@ -1,0 +1,124 @@
+import type { TreeStore, TreeStoreState } from "../createStore.ts"
+import type { FamilyTreeNodePerson, TreePerson } from "../types.ts"
+import type { AddRelative } from "./addRelative.ts"
+import {checkIfRelativesConnectedWithoutPerson} from "./checkIfRelativesConnectedWithoutPerson.js"
+import {createTreeDataWithMainNode} from "./newPerson.ts"
+
+export type FormCreator = ReturnType<typeof createForm>
+export function createForm({datum, store, fields, postSubmit, addRelative, deletePerson, onCancel, editFirst} : {datum: TreePerson & {_new_rel_data?: {label:string}},store: TreeStore,fields: {id:string, type:string, label:string}[],postSubmit: (args?: {delete?: boolean}) => void,addRelative: AddRelative | null,deletePerson?: () => void, onCancel?: () => void,editFirst: unknown}) {
+  const form_creator: {fields: {type: string,label:string,initial_value:string,id:string}[], 
+    onSubmit: (e:SubmitEvent) => 
+      void,onDelete?: () => void, 
+    addRelative?: () => void,
+    addRelativeCancel?: () => void,
+    addRelativeActive?:unknown, 
+    editable?:boolean, 
+    title?:string, 
+    new_rel?:boolean,
+    other_parent_field?:{label:string, id:string,options:{value:string, label:string}[], initial_value:string}
+   onCancel?: () => void,
+   can_delete?:boolean
+   no_edit?: unknown
+   gender_field?: {id: string,type:string,label:string, initial_value:unknown, options: {value: string,label:string}[]}
+  } = {
+    fields: [],
+    onSubmit: submitFormChanges,
+  }
+  if (!datum._new_rel_data) {
+    form_creator.onDelete = deletePersonWithPostSubmit
+    form_creator.addRelative = () => addRelative?.activate(datum),
+    form_creator.addRelativeCancel = () => addRelative?.onCancel?.()
+    form_creator.addRelativeActive = addRelative?.is_active
+
+    form_creator.editable = false
+  }
+  if (datum._new_rel_data) {
+    form_creator.title = datum._new_rel_data.label
+    form_creator.new_rel = true
+    form_creator.editable = true
+    form_creator.onCancel = onCancel
+  }
+  if (form_creator.onDelete) form_creator.can_delete = checkIfRelativesConnectedWithoutPerson(datum, store.getData())
+
+  if (editFirst) form_creator.editable = true
+
+  form_creator.gender_field = {
+    id: 'gender', 
+    type: 'switch',
+    label: 'Gender',
+    initial_value: datum.data.gender,
+    options: [{value: 'M', label: 'Male'}, {value: 'F', label: 'Female'}]
+  }
+
+  fields.forEach(d => {
+    const field = {
+      id: d.id,
+      type: d.type,
+      label: d.label,
+      initial_value: datum.data[d.id]!,
+    }
+    form_creator.fields.push(field)
+  })
+
+  return form_creator
+
+  function submitFormChanges(e: SubmitEvent) {
+    e.preventDefault()
+    const form_data = new FormData(e.target as HTMLFormElement)
+    form_data.forEach((v, k: keyof TreePerson['data']) => datum.data[k] = (v  as string))
+    if (datum.to_add) delete datum.to_add
+    postSubmit()
+  }
+
+  function deletePersonWithPostSubmit() {
+    deletePerson?.()
+    postSubmit({delete: true})
+  }
+}
+
+export function moveToAddToAdded(datum: TreePerson, data_stash: TreePerson[]) {
+  delete datum.to_add
+  return datum
+}
+
+export function removeToAdd(datum: TreePerson, data_stash: TreePerson[]) {
+  deletePerson(datum, data_stash)
+  return false
+}
+
+export function deletePerson(datum: TreePerson, data_stash: TreePerson[]) {
+  if (!checkIfRelativesConnectedWithoutPerson(datum, data_stash)) return {success: false, error: 'checkIfRelativesConnectedWithoutPerson'}
+  executeDelete()
+  return {success: true};
+
+  function executeDelete() {
+    data_stash.forEach(d => {
+      for (let rel_k in d.rels) {
+        const k = rel_k as keyof TreePerson['rels']
+        if (!d.rels.hasOwnProperty(k)) continue
+        if (d.rels[k] === datum.id) {
+          delete d.rels[k]
+        } else if (Array.isArray(d.rels[k]) && d.rels[k].includes(datum.id)) {
+          d.rels[k].splice(d.rels[k].findIndex(did => did === datum.id), 1)
+        }
+      }
+    })
+    data_stash.splice(data_stash.findIndex(d => d.id === datum.id), 1)
+    data_stash.forEach(d => {if (d.to_add) deletePerson(d, data_stash)})  // full update of tree
+    const created = createTreeDataWithMainNode({}).data[0] as TreePerson
+    if (data_stash.length === 0) data_stash.push(created)
+  }
+}
+
+export function cleanupDataJson(data_json:string) {
+  let data_no_to_add: TreePerson[] = JSON.parse(data_json)
+  data_no_to_add.forEach(d => d.to_add ? removeToAdd(d, data_no_to_add) : d)
+  data_no_to_add.forEach(d => delete d.main)
+  data_no_to_add.forEach(d => delete d.hide_rels)
+  return JSON.stringify(data_no_to_add, null, 2)
+}
+
+export function removeToAddFromData(data: TreePerson[]) {
+  data.forEach(d => d.to_add ? removeToAdd(d, data) : d)
+  return data
+}
