@@ -171,7 +171,7 @@ export class FamilyTree {
     }
   }
 
-  setupChildrenAndParents({tree}:  {tree: (d3.HierarchyNode<TreePerson> & {is_ancestry?: unknown, parents?: unknown[]})[]}) {
+  setupChildrenAndParents({tree}:  {tree: FamilyTreeNode[]}) {
     tree.forEach(d0 => {
       delete d0.children
       tree.forEach(d1 => {
