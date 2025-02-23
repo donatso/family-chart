@@ -1,3 +1,4 @@
+import type { CardEditForm } from "../../handlers"
 import type { FamilyTreeNode, TreePerson } from "../../types"
 import type { CardDim } from "./Card.defs"
 export type CardDisplayFn = ((datum: TreePerson) => string)| ((datum: TreePerson) => string)[]
@@ -27,7 +28,7 @@ export function CardText({d,card_dim,card_display}: {d: FamilyTreeNode,card_dim:
   }
 }
 
-export function CardBodyAddNew({d,card_dim,card_add,label}: {d?: unknown,card_dim: CardDim, card_add:unknown,label:string}) {
+export function CardBodyAddNew({d,card_dim,card_add,label}: {d?: FamilyTreeNode,card_dim: CardDim, card_add:CardEditForm | undefined,label:string}) {
   return {template: (`
     <g class="card-body ${card_add ? 'card_add' : 'card-unknown'}">
       <rect class="card-body-rect" width="${card_dim.w}" height="${card_dim.h}" fill="rgb(59, 85, 96)" />
@@ -46,7 +47,7 @@ export function CardBodyOutline({d,card_dim, is_new}: {d: {data: TreePerson},car
   }
 }
 
-export function PencilIcon({d,card_dim,x,y}: {d?: unknown, card_dim: {w: number, h:number},x?: number, y?: number}) {
+export function PencilIcon({d,card_dim,x,y}: {d?: FamilyTreeNode, card_dim: CardDim,x?: number, y?: number}) {
   return ({template: (`
     <g transform="translate(${x || card_dim.w-20},${y || card_dim.h-20})scale(.6)" style="cursor: pointer" class="card_edit pencil_icon">
       <circle fill="rgba(0,0,0,0)" r="17" cx="8.5" cy="8.5" />
@@ -60,7 +61,7 @@ export function PencilIcon({d,card_dim,x,y}: {d?: unknown, card_dim: {w: number,
   `)})
 }
 
-export function HideIcon({d,card_dim}: {d?: unknown,card_dim: CardDim}) {
+export function HideIcon({d,card_dim}: {d?: FamilyTreeNode,card_dim: CardDim}) {
   return ({template: (`
     <g transform="translate(${card_dim.w-50},${card_dim.h-20})scale(.035)" style="cursor: pointer" class="card_hide_rels hide_rels_icon">
       <circle fill="rgba(0,0,0,0)" r="256" cx="256" cy="256" />
@@ -75,7 +76,7 @@ export function HideIcon({d,card_dim}: {d?: unknown,card_dim: CardDim}) {
   `)})
 }
 
-export function MiniTree({d,card_dim}: {d?: unknown,card_dim: CardDim}) {
+export function MiniTree({d,card_dim}: {d?: FamilyTreeNode,card_dim: CardDim}) {
   return ({template: (`
     <g class="card_family_tree" style="cursor: pointer">
       <rect x="-31" y="-25" width="72" height="15" fill="rgba(0,0,0,0)"></rect>
@@ -90,7 +91,7 @@ export function MiniTree({d,card_dim}: {d?: unknown,card_dim: CardDim}) {
   `)})
 }
 
-export function PlusIcon({d,card_dim,x,y}: {d?: unknown, card_dim: {w: number, h:number},x?: number, y?: number}) {
+export function PlusIcon({d,card_dim,x,y}: {d?: FamilyTreeNode, card_dim: {w: number, h:number},x?: number, y?: number}) {
   return ({template: (`
     <g class="card_add_relative">
       <g transform="translate(${x || card_dim.w/2},${y || card_dim.h})scale(.13)">
@@ -110,7 +111,7 @@ export function PlusIcon({d,card_dim,x,y}: {d?: unknown, card_dim: {w: number, h
   `)})
 }
 
-export function LinkBreakIcon({x,y,rt,closed}: {x:number, y: number,rt: number, closed:unknown}) {
+export function LinkBreakIcon({x,y,rt,closed}: {x:number, y: number,rt: number, closed:boolean}) {
   return ({template: (`
     <g style="
           transform: translate(-12.2px, -.5px);
@@ -143,9 +144,9 @@ export function LinkBreakIcon({x,y,rt,closed}: {x:number, y: number,rt: number, 
 export function LinkBreakIconWrapper({d,card_dim}: { d: FamilyTreeNode,card_dim: CardDim}) {
   let g = "",
     r = d.data.rels, _r = d.data._rels || {},
-    closed = d.data.hide_rels,
-    areParents = (r: {father?: unknown,mother?: unknown}) => r.father || r.mother,
-    areChildren = (r: {children?: unknown[]}) => r.children && r.children.length > 0
+    closed = !!d.data.hide_rels,
+    areParents = (r: {father?: string,mother?: string}) => r.father || r.mother,
+    areChildren = (r: {children?: string[]}) => r.children && r.children.length > 0
   if ((d.is_ancestry || d.data.main) && (areParents(r) || areParents(_r))) {g+=LinkBreakIcon({x:card_dim.w/2,y:0, rt: -45, closed}).template}
   if (!d.is_ancestry && d.added) {
     const sp = d.spouse, sp_r = sp.data.rels, _sp_r = sp.data._rels || {};
@@ -182,7 +183,7 @@ export function CardImage({d, image, card_dim, maleIcon, femaleIcon}:{d:FamilyTr
   }
 }
 
-export function appendTemplate(template: string, parent:Element, is_first: unknown) {
+export function appendTemplate(template: string, parent:Element, is_first: boolean) {
   const g = document.createElementNS("http://www.w3.org/2000/svg", 'g')
   g.innerHTML = template
 

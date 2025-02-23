@@ -16,7 +16,7 @@ export type TreeStoreState = {
 }
 export class TreeStore{
   state: TreeStoreState & Required<Pick<TreeStoreState,'main_id_history'>>
-  onUpdate: ((props: unknown) => void) | undefined
+  onUpdate: ((props?: unknown) => void) | undefined
   methods: {}
   setOnUpdate(f: (props?: unknown) => void) {
     this.onUpdate = f

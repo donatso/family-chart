@@ -41,7 +41,7 @@ export function onZoomSetup(getSvgView: () => d3.BaseType, getHtmlView: () => d3
   }
 }
 
-export function setupReactiveTreeData<T extends {unique_id?: string,data: {id: unknown}}>(getHtmlSvg: () => d3.BaseType) {
+export function setupReactiveTreeData<T extends {unique_id?: string,data: {id: string}}>(getHtmlSvg: () => d3.BaseType) {
   let tree_data: (T)[] = []
 
   return function getReactiveTreeData(new_tree_data: T[]) {
@@ -62,7 +62,7 @@ export function createHtmlSvg(cont: d3.BaseType) {
   return cardHtml.node()
 }
 
-function getTreeDataExit<TNew extends {data: {id: unknown}},TOld extends {data: {id: unknown}}>(new_tree_data: TNew[], old_tree_data: TOld[]) {
+function getTreeDataExit<TNew extends {data: {id: string}},TOld extends {data: {id: string}}>(new_tree_data: TNew[], old_tree_data: TOld[]) {
   if (old_tree_data.length > 0) {
     return old_tree_data.filter(d => !new_tree_data.find(t => t.data.id === d.data.id))
   } else {

@@ -25,7 +25,7 @@ const CardElements = {
 }
 export default CardElements
 
-function miniTree(d: FamilyTreeNode, props: {store: TreeStore,card_dim: CardDim, onMiniTreeClick?: (e: MouseEvent,d: FamilyTreeNode)=>void}) {
+function miniTree(d: FamilyTreeNode, props: {store: TreeStore,card_dim: CardDim, onMiniTreeClick?: (e: PointerEvent,d: FamilyTreeNode)=>void}) {
   if (d.data.to_add) return
   const card_dim = props.card_dim;
   if (d.all_rels_displayed) return
@@ -46,7 +46,7 @@ function lineBreak(d: FamilyTreeNode, props: {card_dim: CardDim, store: TreeStor
   return g.node()
 }
 
-function cardBody(d: FamilyTreeNode, props: {store: TreeStore,cardEditForm?: CardEditForm,card_dim: CardDim, card_display: CardDisplayFn, onCardClick?: (e: MouseEvent,d: FamilyTreeNode) => unknown}) {
+function cardBody(d: FamilyTreeNode, props: {store: TreeStore,cardEditForm?: CardEditForm,card_dim: CardDim, card_display: CardDisplayFn, onCardClick?: (e: PointerEvent,d: FamilyTreeNode) => void}) {
   const unknown_lbl = props.cardEditForm ? 'ADD' : 'UNKNOWN'
   const card_dim = props.card_dim;
 
@@ -91,7 +91,7 @@ function cardAddIcon(d: FamilyTreeNode, props: {card_dim: CardDim, addRelative?:
 }
 
 
-export function appendElement(el_maybe: Element | null | undefined, parent: Element, is_first?: unknown) {
+export function appendElement(el_maybe: Element | null | undefined, parent: Element, is_first?: boolean) {
   if (!el_maybe) return
   if (is_first) parent.insertBefore(el_maybe, parent.firstChild)
   else parent.appendChild(el_maybe)

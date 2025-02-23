@@ -5,13 +5,13 @@ import {createPath} from "./elements/Link"
 import {calculateDelay} from "./view.utils"
 import type { FamilyTree } from '../CalculateTree/CalculateTree.ts';
 
-export default function updateLinks(svg: SVGElement, tree: FamilyTree, props: {initial?: unknown, transition_time?:number}={}) {
+export default function updateLinks(svg: SVGElement, tree: FamilyTree, props: {initial?: boolean, transition_time?:number}={}) {
   const links_data_dct = tree.data.reduce((acc: Record<string, TreeLink>, d) => {
     createLinks({d, tree:tree.data, is_horizontal: tree.is_horizontal}).forEach(l => acc[l.id] = l)
     return acc
   }, {})
   const links_data: TreeLink[] = Object.values(links_data_dct)
-  const link = d3.select(svg).select(".links_view").selectAll("path.link").data<TreeLink>(links_data, (d: any) => d.id)
+  const link = d3.select(svg).select(".links_view").selectAll<d3.BaseType,TreeLink>("path.link").data<TreeLink>(links_data, (d) => d.id)
   const link_exit = link.exit<TreeLink>()
   const link_enter = link.enter().append("path").attr("class", "link")
   const link_update = link_enter.merge(link as any)

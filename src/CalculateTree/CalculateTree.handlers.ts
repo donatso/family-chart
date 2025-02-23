@@ -25,7 +25,7 @@ function otherParent<Datum extends {id: string}>(d: TreePerson | undefined, p1: 
   return data.find(d0 => (d0.id !== p1.id) && ((d0.id === d.rels.mother) || (d0.id === d.rels.father)))
 }
 
-export function calculateEnterAndExitPositions(d:FamilyTreeNode, entering: unknown, exiting: unknown) {
+export function calculateEnterAndExitPositions(d:FamilyTreeNode, entering: boolean, exiting: boolean) {
   d.exiting = exiting
   if (entering) {
     if (d.depth === 0 && !d.spouse) {d._x = d.x; d._y = d.y}

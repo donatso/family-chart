@@ -8,10 +8,10 @@ export class AddRelative{
   store:TreeStore
   cancelCallback:(datum: {id:string}) => void
   onSubmitCallback:(datum: {id:string}) => void
-  datum:unknown
-  onChange:unknown
+  datum:TreePerson | null
+  onChange:((d: TreePerson) => void) | null
   onCancel:(() => void) | null
-  is_active:unknown
+  is_active:boolean
   store_data:TreeStoreState| null
   addRelLabels:Partial<Record<'father' | 'mother' | 'spouse' | 'son' | 'daughter',string>>
   constructor(store: TreeStore, cancelCallback: (datum: {id:string}) => void, onSubmitCallback: (datum: {id:string}) => void){
