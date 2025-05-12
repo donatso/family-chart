@@ -3,7 +3,7 @@ import {sortChildrenWithSpouses} from "./CalculateTree.handlers.js"
 import {createNewPerson} from "../CreateTree/newPerson.js"
 import {isAllRelativeDisplayed} from "../handlers/general.js"
 
-export default function CalculateTree({data, main_id=null, node_separation=250, level_separation=150, single_parent_empty_card=true, is_horizontal=false}) {
+export default function CalculateTree({data, main_id=null, node_separation=250, level_separation=150, single_parent_empty_card=true, is_horizontal=false, sortChildrenFunction=undefined}) {
   if (!data || !data.length) return {data: [], data_stash: [], dim: {width: 0, height: 0}, main_id: null}
   if (is_horizontal) [node_separation, level_separation] = [level_separation, node_separation]
   const data_stash = single_parent_empty_card ? createRelsToAdd(data) : data
@@ -50,7 +50,8 @@ export default function CalculateTree({data, main_id=null, node_separation=250, 
     function someSpouses(a, b) {return hasSpouses(a) || hasSpouses(b)}
 
     function hierarchyGetterChildren(d) {
-      return [...(d.rels.children || [])].map(id => data_stash.find(d => d.id === id))
+      const children = [...(d.rels.children || [])].map(id => data_stash.find(d => d.id === id))
+      return sortChildrenFunction ? children.sort(sortChildrenFunction) : children
     }
 
     function hierarchyGetterParents(d) {

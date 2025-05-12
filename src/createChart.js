@@ -135,6 +135,12 @@ CreateChart.prototype.setTransitionTime = function(transition_time) {
   return this
 }
 
+CreateChart.prototype.setSortChildrenFunction = function(sortChildrenFunction) {
+  this.store.state.sortChildrenFunction = sortChildrenFunction
+
+  return this
+}
+
 CreateChart.prototype.editTree = function() {
   return this.editTreeInstance = editTree(this.cont, this.store)
 }
