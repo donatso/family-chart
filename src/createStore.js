@@ -36,7 +36,9 @@ export default function createStore(initial_state) {
       node_separation: state.node_separation, level_separation: state.level_separation,
       single_parent_empty_card: state.single_parent_empty_card,
       is_horizontal: state.is_horizontal,
-      sortChildrenFunction: state.sortChildrenFunction
+      sortChildrenFunction: state.sortChildrenFunction,
+      ancestry_depth: state.ancestry_depth,
+      progeny_depth: state.progeny_depth
     })
   }
 

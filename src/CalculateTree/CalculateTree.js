@@ -3,7 +3,16 @@ import {sortChildrenWithSpouses} from "./CalculateTree.handlers.js"
 import {createNewPerson} from "../CreateTree/newPerson.js"
 import {isAllRelativeDisplayed} from "../handlers/general.js"
 
-export default function CalculateTree({data, main_id=null, node_separation=250, level_separation=150, single_parent_empty_card=true, is_horizontal=false, sortChildrenFunction=undefined}) {
+export default function CalculateTree({
+    data, main_id=null,
+    node_separation=250,
+    level_separation=150,
+    single_parent_empty_card=true,
+    is_horizontal=false,
+    sortChildrenFunction=undefined,
+    ancestry_depth=undefined,
+    progeny_depth=undefined
+  }) {
   if (!data || !data.length) return {data: [], data_stash: [], dim: {width: 0, height: 0}, main_id: null}
   if (is_horizontal) [node_separation, level_separation] = [level_separation, node_separation]
   const data_stash = single_parent_empty_card ? createRelsToAdd(data) : data
@@ -15,6 +24,7 @@ export default function CalculateTree({data, main_id=null, node_separation=250, 
   data_stash.forEach(d => d.main = d === main)
   levelOutEachSide(tree_parents, tree_children)
   const tree = mergeSides(tree_parents, tree_children)
+  trimTree(tree, ancestry_depth, progeny_depth)
   setupChildrenAndParents({tree})
   setupSpouses({tree, node_separation})
   setupProgenyParentsPos({tree})
@@ -26,10 +36,13 @@ export default function CalculateTree({data, main_id=null, node_separation=250, 
   return {data: tree, data_stash, dim, main_id: main.id, is_horizontal}
 
   function calculateTreePositions(datum, rt, is_ancestry) {
-    const hierarchyGetter = rt === "children" ? hierarchyGetterChildren : hierarchyGetterParents,
-      d3_tree = d3.tree().nodeSize([node_separation, level_separation]).separation(separation),
-      root = d3.hierarchy(datum, hierarchyGetter);
+    const hierarchyGetter = rt === "children" ? hierarchyGetterChildren : hierarchyGetterParents
+    const d3_tree = d3.tree().nodeSize([node_separation, level_separation]).separation(separation)
+    const root = d3.hierarchy(datum, hierarchyGetter)
+
+    trimTree(root, is_ancestry)
     d3_tree(root);
+    
     return root.descendants()
 
     function separation(a, b) {
@@ -205,6 +218,25 @@ export default function CalculateTree({data, main_id=null, node_separation=250, 
       spouse.to_add = true;
       to_add_spouses.push(spouse);
       return spouse
+    }
+  }
+
+  function trimTree(root, is_ancestry) {
+    const max_depth = is_ancestry ? ancestry_depth : progeny_depth
+    if (!max_depth && max_depth !== 0) return root
+
+    trimNode(root, 0)
+
+    return root
+
+    function trimNode(node, depth) {
+      if (depth === max_depth) {
+        if (node.children) delete node.children
+      } else if (node.children) {
+        node.children.forEach(child => {
+          trimNode(child, depth+1)
+        })
+      }
     }
   }
 
