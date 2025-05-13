@@ -1,5 +1,5 @@
 import d3 from "../d3.js"
-import {sortChildrenWithSpouses} from "./CalculateTree.handlers.js"
+import {sortChildrenWithSpouses, sortAddNewChildren} from "./CalculateTree.handlers.js"
 import {createNewPerson} from "../CreateTree/newPerson.js"
 import {isAllRelativeDisplayed} from "../handlers/general.js"
 
@@ -16,7 +16,6 @@ export default function CalculateTree({
   if (!data || !data.length) return {data: [], data_stash: [], dim: {width: 0, height: 0}, main_id: null}
   if (is_horizontal) [node_separation, level_separation] = [level_separation, node_separation]
   const data_stash = single_parent_empty_card ? createRelsToAdd(data) : data
-  sortChildrenWithSpouses(data_stash)
   const main = (main_id !== null && data_stash.find(d => d.id === main_id)) || data_stash[0]
   const tree_children = calculateTreePositions(main, 'children', false)
   const tree_parents = calculateTreePositions(main, 'parents', true)
@@ -64,7 +63,10 @@ export default function CalculateTree({
 
     function hierarchyGetterChildren(d) {
       const children = [...(d.rels.children || [])].map(id => data_stash.find(d => d.id === id))
-      return sortChildrenFunction ? children.sort(sortChildrenFunction) : children
+      if (sortChildrenFunction) children.sort(sortChildrenFunction)  // first sort by custom function if provided
+      sortAddNewChildren(children)  // then put new children at the end
+      sortChildrenWithSpouses(children, d, data_stash)  // then sort by order of spouses
+      return children
     }
 
     function hierarchyGetterParents(d) {

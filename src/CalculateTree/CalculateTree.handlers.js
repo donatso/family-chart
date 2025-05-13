@@ -1,18 +1,24 @@
-export function sortChildrenWithSpouses(data) {
-  data.forEach(datum => {
-    if (!datum.rels.children) return
-    const spouses = datum.rels.spouses || []
-    datum.rels.children.sort((a, b) => {
-      const a_d = data.find(d => d.id === a),
-        b_d = data.find(d => d.id === b),
-        a_p2 = otherParent(a_d, datum, data) || {},
-        b_p2 = otherParent(b_d, datum, data) || {},
-        a_i = spouses.indexOf(a_p2.id),
-        b_i = spouses.indexOf(b_p2.id)
+export function sortChildrenWithSpouses(children, datum, data) {
+  if (!datum.rels.children) return
+  const spouses = datum.rels.spouses || []
+  return children.sort((a, b) => {
+    const a_p2 = otherParent(a, datum, data) || {}
+    const b_p2 = otherParent(b, datum, data) || {}
+    const a_i = spouses.indexOf(a_p2.id)
+    const b_i = spouses.indexOf(b_p2.id)
 
-      if (datum.data.gender === "M") return a_i - b_i
-      else return b_i - a_i
-    })
+    if (datum.data.gender === "M") return a_i - b_i
+    else return b_i - a_i
+  })
+}
+
+export function sortAddNewChildren(children) {
+  return children.sort((a, b) => {
+    const a_new = a._new_rel_data
+    const b_new = b._new_rel_data
+    if (a_new && !b_new) return 1
+    if (!a_new && b_new) return -1
+    return 0
   })
 }
 
