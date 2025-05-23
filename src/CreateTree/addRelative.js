@@ -138,7 +138,8 @@ function getDatumRelsData(datum, store_data, addRelLabels) {
     })
   }
 
-  const new_spouse = createNewPerson({data: {gender: "F"}, rels: {spouses: [datum.id]}})
+  const spouse_gender = datum.data.gender === "M" ? "F" : "M"
+  const new_spouse = createNewPerson({data: {gender: spouse_gender}, rels: {spouses: [datum.id]}})
   new_spouse._new_rel_data = {rel_type: "spouse", label: addRelLabels.spouse}
   datum.rels.spouses.push(new_spouse.id)
   datum_rels.push(new_spouse)
@@ -146,16 +147,18 @@ function getDatumRelsData(datum, store_data, addRelLabels) {
   if (!datum.rels.children) datum.rels.children = []
   datum.rels.spouses.forEach(spouse_id => {
     const spouse = datum_rels.find(d => d.id === spouse_id)
+    const mother_id = datum.data.gender === "M" ? spouse.id : datum.id
+    const father_id = datum.data.gender === "F" ? spouse.id : datum.id
     if (!spouse.rels.children) spouse.rels.children = []
     spouse.rels.children = spouse.rels.children.filter(child_id => datum.rels.children.includes(child_id))
     
-    const new_son = createNewPerson({data: {gender: "M"}, rels: {father: datum.id, mother: spouse.id}})
+    const new_son = createNewPerson({data: {gender: "M"}, rels: {father: father_id, mother: mother_id}})
     new_son._new_rel_data = {rel_type: "son", label: addRelLabels.son, other_parent_id: spouse.id}
     spouse.rels.children.push(new_son.id)
     datum.rels.children.push(new_son.id)
     datum_rels.push(new_son)
 
-    const new_daughter = createNewPerson({data: {gender: "F"}, rels: {mother: spouse.id, father: datum.id}})
+    const new_daughter = createNewPerson({data: {gender: "F"}, rels: {mother: mother_id, father: father_id}})
     new_daughter._new_rel_data = {rel_type: "daughter", label: addRelLabels.daughter, other_parent_id: spouse.id}
     spouse.rels.children.push(new_daughter.id)
     datum.rels.children.push(new_daughter.id)
