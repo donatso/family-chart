@@ -1,5 +1,5 @@
 import d3 from "../d3.js"
-import {sortChildrenWithSpouses, sortAddNewChildren} from "./CalculateTree.handlers.js"
+import {sortChildrenWithSpouses, sortAddNewChildren, setupSiblings} from "./CalculateTree.handlers.js"
 import {createNewPerson} from "../CreateTree/newPerson.js"
 import {isAllRelativeDisplayed} from "../handlers/general.js"
 
@@ -11,7 +11,8 @@ export default function CalculateTree({
     is_horizontal=false,
     sortChildrenFunction=undefined,
     ancestry_depth=undefined,
-    progeny_depth=undefined
+    progeny_depth=undefined,
+    show_siblings_of_main=false
   }) {
   if (!data || !data.length) return {data: [], data_stash: [], dim: {width: 0, height: 0}, main_id: null}
   if (is_horizontal) [node_separation, level_separation] = [level_separation, node_separation]
@@ -26,6 +27,7 @@ export default function CalculateTree({
   trimTree(tree, ancestry_depth, progeny_depth)
   setupChildrenAndParents({tree})
   setupSpouses({tree, node_separation})
+  if (show_siblings_of_main) setupSiblings({tree, data_stash, node_separation, sortChildrenFunction})
   setupProgenyParentsPos({tree})
   nodePositioning({tree})
   tree.forEach(d => d.all_rels_displayed = isAllRelativeDisplayed(d, tree))
@@ -136,6 +138,7 @@ export default function CalculateTree({
       if (d.is_ancestry) return
       if (d.depth === 0) return
       if (d.added) return
+      if (d.sibling) return
       const m = findDatum(d.data.rels.mother)
       const f = findDatum(d.data.rels.father)
       if (m && f) {

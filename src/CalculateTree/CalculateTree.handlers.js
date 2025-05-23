@@ -1,3 +1,5 @@
+import d3 from "../d3.js"
+
 export function sortChildrenWithSpouses(children, datum, data) {
   if (!datum.rels.children) return
   const spouses = datum.rels.spouses || []
@@ -76,3 +78,84 @@ export function toggleAllRels(tree_data, hide_rels) {
   tree_data.forEach(d => {d.data.hide_rels = hide_rels; toggleRels(d, hide_rels)})
 }
 
+export function setupSiblings({tree, data_stash, node_separation, sortChildrenFunction}) {
+  const main = tree.find(d => d.data.main)
+  const main_father_id = main.data.rels.father
+  const main_mother_id = main.data.rels.mother
+
+  const siblings = findSiblings()
+  const siblings_added = addSiblingsToTree()
+  positionSiblings()
+
+
+  function findSiblings() {
+    return data_stash.filter(d => {
+      if (d.id === main.data.id) return false
+      if (main_father_id && d.rels.father === main_father_id) return true
+      if (main_mother_id && d.rels.mother === main_mother_id) return true
+      return false
+    }) 
+  }
+
+
+  function addSiblingsToTree() {
+    const siblings_added = []
+
+    for (let i = 0; i < siblings.length; i++) {
+      const sib = {data: siblings[i], sibling: true}
+
+      sib.parents = []
+      const father = main.parents.find(d => d.data.id === sib.data.rels.father)
+      const mother = main.parents.find(d => d.data.id === sib.data.rels.mother)
+      if (father) sib.parents.push(father)
+      if (mother) sib.parents.push(mother)
+      
+      sib.x = undefined // to be calculated in positionSiblings
+      sib.y = main.y
+      sib.depth = main.depth-1
+
+      tree.push(sib)
+      siblings_added.push(sib)
+    }
+
+    return siblings_added
+  }
+
+  function positionSiblings() {
+    const sorted_siblings = [main, ...siblings_added]
+    if (sortChildrenFunction) sorted_siblings.sort((a, b) => sortChildrenFunction(a.data, b.data))  // first sort by custom function if provided
+
+    sorted_siblings.sort((a, b) => {
+      const a_father = main.parents.find(d => d.data.id === a.data.rels.father)
+      const a_mother = main.parents.find(d => d.data.id === a.data.rels.mother)
+      const b_father = main.parents.find(d => d.data.id === b.data.rels.father)
+      const b_mother = main.parents.find(d => d.data.id === b.data.rels.mother)
+
+      // If a doesn't have mother, it should be to the left
+      if (!a_mother && b_mother) return -1
+      // If b doesn't have mother, it should be to the left
+      if (a_mother && !b_mother) return 1
+      // If a doesn't have father, it should be to the right
+      if (!a_father && b_father) return 1
+      // If b doesn't have father, it should be to the right
+      if (a_father && !b_father) return -1
+      // If both have same parents or both missing same parent, maintain original order
+      return 0
+    })
+
+    const main_x = main.x
+    const spouses_x = (main.spouses || []).map(d => d.x)
+    const x_range = d3.extent([main_x, ...spouses_x])
+
+    const main_sorted_index = sorted_siblings.findIndex(d => d.data.id === main.data.id)
+    for (let i = 0; i < sorted_siblings.length; i++) {
+      if (i === main_sorted_index) continue
+      const sib = sorted_siblings[i]
+      if (i < main_sorted_index) {
+        sib.x = x_range[0] - node_separation*(main_sorted_index - i)
+      } else {
+        sib.x = x_range[1] + node_separation*(i - main_sorted_index)
+      }
+    }
+  }
+}

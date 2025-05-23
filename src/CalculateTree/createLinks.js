@@ -145,14 +145,18 @@ export function pathToMain(cards, links, datum, main_datum) {
       itteration1++  // to prevent infinite loop
       const spouse_link = links_data.find(d => d.spouse === true && (d.source === parent || d.target === parent))
       if (spouse_link) {
-        const child_link = links_data.find(d => Array.isArray(d.target) && d.target.includes(spouse_link.source) && d.target.includes(spouse_link.target))
+        const child_links = links_data.filter(d => Array.isArray(d.target) && d.target.includes(spouse_link.source) && d.target.includes(spouse_link.target))
+        const child_link = getChildLinkFromAncestrySide(child_links, main_datum)
+
         if (!child_link) break
         links_to_main.push(spouse_link)
         links_to_main.push(child_link)
         parent = child_link.source
       } else {
         // single parent
-        const child_link = links_data.find(d => Array.isArray(d.target) && d.target.includes(parent))
+        const child_links = links_data.filter(d => Array.isArray(d.target) && d.target.includes(parent))
+        const child_link = getChildLinkFromAncestrySide(child_links, main_datum)
+
         if (!child_link) break
         links_to_main.push(child_link)
         parent = child_link.source
@@ -175,6 +179,18 @@ export function pathToMain(cards, links, datum, main_datum) {
       if (d.target === datum) links_node_to_main.push({link: d, node: this})
     })
     const cards_to_main = [main_datum, datum]
+    cards.each(function(d) {
+      if (cards_to_main.includes(d)) {
+        cards_node_to_main.push({card: d, node: this})
+      }
+    })
+  } else if (datum.sibling) {
+    links.each(function(d) {
+      if (d.source === datum) links_node_to_main.push({link: d, node: this})
+      if (d.source === main_datum && d.target.length === 2) links_node_to_main.push({link: d, node: this})
+      if (datum.parents.includes(d.source) && datum.parents.includes(d.target)) links_node_to_main.push({link: d, node: this})
+    })
+    const cards_to_main = [main_datum, datum, ...datum.parents]
     cards.each(function(d) {
       if (cards_to_main.includes(d)) {
         cards_node_to_main.push({card: d, node: this})
@@ -244,6 +260,16 @@ export function pathToMain(cards, links, datum, main_datum) {
           }
         })
       }
+    }
+  }
+
+  function getChildLinkFromAncestrySide(child_links, main_datum) {
+    if (child_links.length === 0) return null
+    else if (child_links.length === 1) return child_links[0]
+    else {
+      // siblings of main
+      // should be last level where we go to the main and not its siblings
+      return child_links.find(d => d.source === main_datum)
     }
   }
 }

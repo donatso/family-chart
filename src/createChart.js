@@ -101,6 +101,12 @@ CreateChart.prototype.setOrientationHorizontal = function() {
   return this
 }
 
+CreateChart.prototype.setShowSiblingsOfMain = function(show_siblings_of_main) {
+  this.store.state.show_siblings_of_main = show_siblings_of_main
+
+  return this
+}
+
 CreateChart.prototype.setSingleParentEmptyCard = function(single_parent_empty_card, {label='Unknown'} = {}) {
   this.single_parent_empty_card = single_parent_empty_card
   this.store.state.single_parent_empty_card = single_parent_empty_card

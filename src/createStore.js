@@ -38,7 +38,8 @@ export default function createStore(initial_state) {
       is_horizontal: state.is_horizontal,
       sortChildrenFunction: state.sortChildrenFunction,
       ancestry_depth: state.ancestry_depth,
-      progeny_depth: state.progeny_depth
+      progeny_depth: state.progeny_depth,
+      show_siblings_of_main: state.show_siblings_of_main
     })
   }
 
