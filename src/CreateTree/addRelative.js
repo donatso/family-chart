@@ -44,9 +44,28 @@ AddRelative.prototype.activate = function(datum) {
       handleNewRel({datum: this.datum, new_rel_datum, data_stash: this.getStoreData()})
       this.onSubmitCallback(this.datum, new_rel_datum)
     } else if (updated_datum.id === this.datum.id) {
-      this.datum.data = updated_datum.data  // if in meanwhile the user changed the data for main datum, we need to keep it
+      const gender_changed = updated_datum.data.gender !== this.datum.data.gender
+
+      // if in meanwhile the user changed the data for main datum, we need to keep it
+      store.getMainDatum().data = JSON.parse(JSON.stringify(updated_datum.data))
+      this.datum.data = JSON.parse(JSON.stringify(updated_datum.data))
+
+      if (gender_changed) updateGendersForNewRelatives()
     } else {
       console.error('Something went wrong')
+    }
+
+    function updateGendersForNewRelatives() {
+      // if gender on main datum is changed, we need to switch mother/father ids for new children
+      const data = store.getData()
+      data.forEach(d => {
+        const rd = d._new_rel_data
+        if (!rd) return
+        if (rd.rel_type === 'spouse') d.data.gender = d.data.gender === 'M' ? 'F' : 'M'
+        if (['son', 'daughter'].includes(rd.rel_type)) {
+          [d.rels.father, d.rels.mother] = [d.rels.mother, d.rels.father]
+        }
+      })
     }
   }
 

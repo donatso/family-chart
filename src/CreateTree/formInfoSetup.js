@@ -119,6 +119,7 @@ export function formInfoSetup(form_creator, closeCallback) {
             <input type="radio" name="${form_creator.gender_field.id}" 
               value="${option.value}" 
               ${option.value === form_creator.gender_field.initial_value ? 'checked' : ''}
+              ${form_creator.gender_field.disabled ? 'disabled' : ''}
             >
             ${option.label}
           </label>

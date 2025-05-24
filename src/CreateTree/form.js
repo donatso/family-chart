@@ -24,11 +24,14 @@ export function createForm({datum, store, fields, postSubmit, addRelative, delet
 
   if (editFirst) form_creator.editable = true
 
+  const childred_added = (datum.rels.children || []).some(c_id => {const child = store.getDatum(c_id); return !child._new_rel_data})
+
   form_creator.gender_field = {
     id: 'gender', 
     type: 'switch',
     label: 'Gender',
     initial_value: datum.data.gender,
+    disabled: ['father', 'mother'].some(rel => rel === datum._new_rel_data?.rel_type) || childred_added,
     options: [{value: 'M', label: 'Male'}, {value: 'F', label: 'Female'}]
   }
 
