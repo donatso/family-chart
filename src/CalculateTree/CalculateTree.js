@@ -12,7 +12,8 @@ export default function CalculateTree({
     sortChildrenFunction=undefined,
     ancestry_depth=undefined,
     progeny_depth=undefined,
-    show_siblings_of_main=false
+    show_siblings_of_main=false,
+    modifyTreeHierarchy=undefined
   }) {
   if (!data || !data.length) return {data: [], data_stash: [], dim: {width: 0, height: 0}, main_id: null}
   if (is_horizontal) [node_separation, level_separation] = [level_separation, node_separation]
@@ -24,7 +25,6 @@ export default function CalculateTree({
   data_stash.forEach(d => d.main = d === main)
   levelOutEachSide(tree_parents, tree_children)
   const tree = mergeSides(tree_parents, tree_children)
-  trimTree(tree, ancestry_depth, progeny_depth)
   setupChildrenAndParents({tree})
   setupSpouses({tree, node_separation})
   if (show_siblings_of_main) setupSiblings({tree, data_stash, node_separation, sortChildrenFunction})
@@ -42,6 +42,7 @@ export default function CalculateTree({
     const root = d3.hierarchy(datum, hierarchyGetter)
 
     trimTree(root, is_ancestry)
+    if (modifyTreeHierarchy) modifyTreeHierarchy(root, is_ancestry)
     d3_tree(root);
     
     return root.descendants()

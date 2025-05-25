@@ -107,6 +107,12 @@ CreateChart.prototype.setShowSiblingsOfMain = function(show_siblings_of_main) {
   return this
 }
 
+CreateChart.prototype.setModifyTreeHierarchy = function(modifyTreeHierarchy) {
+  this.store.state.modifyTreeHierarchy = modifyTreeHierarchy
+
+  return this
+}
+
 CreateChart.prototype.setSingleParentEmptyCard = function(single_parent_empty_card, {label='Unknown'} = {}) {
   this.single_parent_empty_card = single_parent_empty_card
   this.store.state.single_parent_empty_card = single_parent_empty_card
