@@ -27,6 +27,8 @@ function EditTree(cont, store) {
 
   this.editFirst = false
 
+  this.cardDisplayGetter = null
+
   this.init()
 
   return this
@@ -74,7 +76,7 @@ EditTree.prototype.cardEditForm = function(datum) {
     datum, 
     postSubmit: postSubmit.bind(this),
     fields: this.fields, 
-    card_display: this.card_display, 
+    card_display: this.cardDisplayGetter ? this.cardDisplayGetter() : null, 
     addRelative: null,
     onCancel: () => {},
     editFirst: this.editFirst,
@@ -263,6 +265,11 @@ EditTree.prototype.updateHistory = function() {
   if (this.onChange) this.onChange()
 }
 
+EditTree.prototype.setCardDisplayGetter = function(cardDisplayGetter) {
+  this.cardDisplayGetter = cardDisplayGetter
+
+  return this
+}
 
 
 EditTree.prototype.destroy = function() {

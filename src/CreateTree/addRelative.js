@@ -1,4 +1,5 @@
 import { handleNewRel, createNewPerson } from "./newPerson.js"
+import { syncRelReference } from "./form.js"
 
 export default (...args) => { return new AddRelative(...args) }
 
@@ -42,6 +43,7 @@ AddRelative.prototype.activate = function(datum) {
     if (updated_datum?._new_rel_data) {
       const new_rel_datum = updated_datum
       handleNewRel({datum: this.datum, new_rel_datum, data_stash: this.getStoreData()})
+      syncRelReference(updated_datum, [this.datum])
       this.onSubmitCallback(this.datum, new_rel_datum)
     } else if (updated_datum.id === datum.id) {
       if (updated_datum.data.gender !== datum.data.gender) updateGendersForNewRelatives()
@@ -70,6 +72,7 @@ AddRelative.prototype.activate = function(datum) {
     this.is_active = false
 
     store.updateData(this.getStoreData())
+    syncRelReference(this.datum, store.getData())
     this.cancelCallback(this.datum)
 
     this.store_data = null

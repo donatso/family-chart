@@ -1,7 +1,7 @@
 import {checkIfRelativesConnectedWithoutPerson} from "./checkIfRelativesConnectedWithoutPerson.js"
 import {createTreeDataWithMainNode} from "./newPerson.js"
 
-export function createForm({datum, store, fields, postSubmit, addRelative, deletePerson, onCancel, editFirst}) {
+export function createForm({datum, store, fields, postSubmit, addRelative, deletePerson, onCancel, editFirst, card_display}) {
   const form_creator = {
     fields: [],
     onSubmit: submitFormChanges,
@@ -35,22 +35,45 @@ export function createForm({datum, store, fields, postSubmit, addRelative, delet
     options: [{value: 'M', label: 'Male'}, {value: 'F', label: 'Female'}]
   }
 
-  fields.forEach(d => {
-    const field = {
-      id: d.id,
-      type: d.type,
-      label: d.label,
-      initial_value: datum.data[d.id],
-    }
-    form_creator.fields.push(field)
+  fields.forEach(field => {
+    if (field.type === 'rel_reference') addRelReferenceField(field)
+
+    else form_creator.fields.push({
+      id: field.id,
+      type: field.type,
+      label: field.label,
+      initial_value: datum.data[field.id],
+    })
   })
 
   return form_creator
+
+  function addRelReferenceField(field) {
+    if (!card_display) console.error('card_display is not set')
+
+    if (field.rel_type === 'spouse') {
+      (datum.rels.spouses || []).forEach(spouse_id => {
+        const spouse = store.getDatum(spouse_id)
+        const marriage_date_id = `${field.id}__ref__${spouse_id}`
+        
+        form_creator.fields.push({
+          id: marriage_date_id,
+          type: 'rel_reference',
+          label: field.label,
+          rel_id: spouse_id,
+          rel_label: card_display.map(f => f(spouse)).filter(t => t).join(', '),
+          initial_value: datum.data[marriage_date_id],
+        })
+        
+      })
+    }
+  }
 
   function submitFormChanges(e) {
     e.preventDefault()
     const form_data = new FormData(e.target)
     form_data.forEach((v, k) => datum.data[k] = v)
+    syncRelReference(datum, store.getData())
     if (datum.to_add) delete datum.to_add
     postSubmit()
   }
@@ -59,6 +82,30 @@ export function createForm({datum, store, fields, postSubmit, addRelative, delet
     deletePerson()
     postSubmit({delete: true})
   }
+}
+
+export function syncRelReference(datum, data_stash) {
+  Object.keys(datum.data).forEach(k => {
+    if (k.includes('__ref__')) {
+      const rel_id = k.split('__ref__')[1]
+      const rel = data_stash.find(d => d.id === rel_id)
+      if (!rel) return
+      const ref_field_id = k.split('__ref__')[0]+'__ref__'+datum.id
+      rel.data[ref_field_id] = datum.data[k]
+    }
+  })
+}
+
+export function onDeleteSyncRelReference(datum, data_stash) {
+  Object.keys(datum.data).forEach(k => {
+    if (k.includes('__ref__')) {
+      const rel_id = k.split('__ref__')[1]
+      const rel = data_stash.find(d => d.id === rel_id)
+      if (!rel) return
+      const ref_field_id = k.split('__ref__')[0]+'__ref__'+datum.id
+      delete rel.data[ref_field_id]
+    }
+  })
 }
 
 export function moveToAddToAdded(datum, data_stash) {
@@ -87,6 +134,7 @@ export function deletePerson(datum, data_stash) {
         }
       }
     })
+    onDeleteSyncRelReference(datum, data_stash)
     data_stash.splice(data_stash.findIndex(d => d.id === datum.id), 1)
     data_stash.forEach(d => {if (d.to_add) deletePerson(d, data_stash)})  // full update of tree
     if (data_stash.length === 0) data_stash.push(createTreeDataWithMainNode({}).data[0])

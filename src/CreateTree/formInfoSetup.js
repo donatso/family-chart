@@ -43,10 +43,6 @@ export function formInfoSetup(form_creator, closeCallback) {
     const close_btn = form.querySelector('.f3-close-btn');
     close_btn.addEventListener('click', closeCallback)
 
-    if (form_creator.other_parent_field) {
-      cancel_btn.style.display = 'none'
-    }
-
     function onCancel() {
       form_creator.editable = false
       if (form_creator.onCancel) form_creator.onCancel()
@@ -72,8 +68,6 @@ export function formInfoSetup(form_creator, closeCallback) {
       ${genderRadio()}
 
       ${fields()}
-
-      ${form_creator.other_parent_field ? otherParentField() : ''}
 
       ${form_creator.onDelete ? deleteBtn() : ''}
       
@@ -130,48 +124,57 @@ export function formInfoSetup(form_creator, closeCallback) {
 
   function fields() {
     if (!form_creator.editable) return infoField()
-    return form_creator.fields.map(field => (`
-      ${field.type === 'text' ? `
+    let fields_html = ''
+    form_creator.fields.forEach(field => {
+      if (field.type === 'text') {
+        fields_html += `
         <div class="f3-form-field">
           <label>${field.label}</label>
           <input type="${field.type}" 
             name="${field.id}" 
             value="${field.initial_value || ''}"
             placeholder="${field.label}">
-        </div>
-      ` : field.type === 'textarea' ? `
+        </div>`
+      } else if (field.type === 'textarea') {
+        fields_html += `
         <div class="f3-form-field">
           <label>${field.label}</label>
           <textarea name="${field.id}" 
             placeholder="${field.label}">${field.initial_value || ''}</textarea>
-        </div>
-      ` : ''}
-    `)).join('')
+        </div>`
+      } else if (field.type === 'rel_reference') {
+        fields_html += `
+        <div class="f3-form-field">
+          <label>${field.label} - <i>${field.rel_label}</i></label>
+          <input type="text" 
+            name="${field.id}" 
+            value="${field.initial_value || ''}"
+            placeholder="${field.label}">
+        </div>`
+      }
+    })
+    return fields_html
 
     function infoField() {
-      return form_creator.fields.map(field => (`
-        <div class="f3-info-field">
-          <span class="f3-info-field-label">${field.label}</span>
-          <span class="f3-info-field-value">${field.initial_value || ''}</span>
-        </div>
-      `)).join('')
+      let fields_html = ''
+      form_creator.fields.forEach(field => {
+        if (field.type === 'rel_reference') {
+          if (!field.initial_value) return
+          fields_html += `
+          <div class="f3-info-field">
+            <span class="f3-info-field-label">${field.label} - <i>${field.rel_label}</i></span>
+            <span class="f3-info-field-value">${field.initial_value || ''}</span>
+          </div>`
+        } else {
+          fields_html += `
+          <div class="f3-info-field">
+            <span class="f3-info-field-label">${field.label}</span>
+            <span class="f3-info-field-value">${field.initial_value || ''}</span>
+          </div>`
+        }
+      })
+      return fields_html
     }
-  }
-
-  function otherParentField() {
-    return (`
-      <div class="f3-form-field">
-        <label>${form_creator.other_parent_field.label}</label>
-        <select name="${form_creator.other_parent_field.id}">
-          ${form_creator.other_parent_field.options.map(option => `
-            <option value="${option.value}" 
-              ${option.value === form_creator.other_parent_field.initial_value ? 'selected' : ''}>
-              ${option.label}
-            </option>
-          `).join('')}
-        </select>
-      </div>
-    `)
   }
 
   function closeBtn() {
