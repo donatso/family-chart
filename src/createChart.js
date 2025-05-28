@@ -1,6 +1,7 @@
 import d3 from "./d3.js"
 import f3 from "./index.js"
 import editTree from "./CreateTree/editTree.js"
+import linkSpouseText from "./view/elements/LinkSpouseText.js"
 
 export default function(...args) { return new CreateChart(...args) }
 
@@ -14,6 +15,7 @@ function CreateChart(cont, data) {
   this.is_horizontal = false
   this.single_parent_empty_card = true
   this.transition_time = 2000
+  this.linkSpouseText = false
 
   this.is_card_html = false
 
@@ -49,6 +51,7 @@ CreateChart.prototype.init = function(cont, data) {
     props = Object.assign({transition_time: this.transition_time}, props || {})
     if (this.is_card_html) props = Object.assign({}, props || {}, {cardHtml: getHtmlSvg()})
     f3.view(this.store.getTree(), this.svg, this.getCard(), props || {})
+    if (this.linkSpouseText) linkSpouseText(this.svg, this.store.getTree(), Object.assign({}, props || {}, {linkSpouseText: this.linkSpouseText, node_separation: this.node_separation}))
     if (this.afterUpdate) this.afterUpdate(props)
   })
 }
@@ -109,6 +112,12 @@ CreateChart.prototype.setShowSiblingsOfMain = function(show_siblings_of_main) {
 
 CreateChart.prototype.setModifyTreeHierarchy = function(modifyTreeHierarchy) {
   this.store.state.modifyTreeHierarchy = modifyTreeHierarchy
+
+  return this
+}
+
+CreateChart.prototype.setLinkSpouseText = function(linkSpouseText) {
+  this.linkSpouseText = linkSpouseText
 
   return this
 }

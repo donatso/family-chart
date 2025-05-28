@@ -41,6 +41,7 @@ export default function CalculateTree({
     const d3_tree = d3.tree().nodeSize([node_separation, level_separation]).separation(separation)
     const root = d3.hierarchy(datum, hierarchyGetter)
 
+    if (is_ancestry) addSpouseReferences(root)
     trimTree(root, is_ancestry)
     if (modifyTreeHierarchy) modifyTreeHierarchy(root, is_ancestry)
     d3_tree(root);
@@ -243,6 +244,18 @@ export default function CalculateTree({
           trimNode(child, depth+1)
         })
       }
+    }
+  }
+
+  function addSpouseReferences(root) {
+    addSpouses(root)
+
+    function addSpouses(d) {
+      if (d.children && d.children.length === 2) {
+        d.children[0]._spouse = d.children[1]
+        d.children[1]._spouse = d.children[0]
+      }
+      if (d.children) d.children.forEach(d0 => addSpouses(d0))
     }
   }
 
