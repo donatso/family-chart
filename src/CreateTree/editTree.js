@@ -49,8 +49,6 @@ EditTree.prototype.open = function(datum) {
 }
 
 EditTree.prototype.openWithoutRelCancel = function(datum) {
-  if (datum.data.data) datum = datum.data
-
   this.cardEditForm(datum)
 }
 
@@ -143,10 +141,10 @@ EditTree.prototype.setCardClickOpen = function(card) {
 EditTree.prototype.openFormWithId = function(d_id) {
   if (d_id) {
     const d = this.store.getDatum(d_id)
-    this.openWithoutRelCancel({data: d})
+    this.openWithoutRelCancel(d)
   } else {
     const d = this.store.getMainDatum()
-    this.openWithoutRelCancel({data: d})
+    this.openWithoutRelCancel(d)
   }
 }
 
@@ -221,7 +219,7 @@ EditTree.prototype.setupAddRelative = function() {
 
   function onSubmitCallback(datum, new_rel_datum) {
     this.store.updateMainId(datum.id)
-    this.openFormWithId(datum.id)
+    this.openWithoutRelCancel(datum)
   }
 
   function cancelCallback(datum) {

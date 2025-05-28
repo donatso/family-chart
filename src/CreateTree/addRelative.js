@@ -43,14 +43,10 @@ AddRelative.prototype.activate = function(datum) {
       const new_rel_datum = updated_datum
       handleNewRel({datum: this.datum, new_rel_datum, data_stash: this.getStoreData()})
       this.onSubmitCallback(this.datum, new_rel_datum)
-    } else if (updated_datum.id === this.datum.id) {
-      const gender_changed = updated_datum.data.gender !== this.datum.data.gender
-
-      // if in meanwhile the user changed the data for main datum, we need to keep it
-      store.getMainDatum().data = JSON.parse(JSON.stringify(updated_datum.data))
-      this.datum.data = JSON.parse(JSON.stringify(updated_datum.data))
-
-      if (gender_changed) updateGendersForNewRelatives()
+    } else if (updated_datum.id === datum.id) {
+      if (updated_datum.data.gender !== datum.data.gender) updateGendersForNewRelatives()
+      // keep the datum.data copy same as this.datum.data
+      datum.data = JSON.parse(JSON.stringify(updated_datum.data))
     } else {
       console.error('Something went wrong')
     }
