@@ -6,15 +6,19 @@ import {calculateDelay} from "../view.js"
 export default function linkSpouseText(svg, tree, props={}) {
   const links_data = []
   tree.data.forEach(d => {
-    if (d._spouse && d.data.data.gender === 'F') links_data.push({nodes: [d, d._spouse], id: `${d.data.id}-${d._spouse.data.id}`})
-    if (d.spouses) d.spouses.forEach(sp => links_data.push({nodes: [sp, d], id: `${sp.data.id}-${d.data.id}`}))
+    if (d._spouse && d.data.data.gender === 'F') links_data.push({nodes: [d, d._spouse], id: `${d.data.id}--${d._spouse.data.id}`})
+    if (d.spouses) d.spouses.forEach(sp => links_data.push({nodes: [sp, d], id: `${sp.data.id}--${d.data.id}`}))
   })
 
   const link = d3.select(svg).select(".links_view").selectAll("g.link-text").data(links_data, d => d.id)
   const link_exit = link.exit()
   const link_enter = link.enter().append("g").attr("class", "link-text")
   const link_update = link_enter.merge(link)
-  const spouseLineX = (sp1, sp2) => Math.max(sp1.x, sp2.x) - props.node_separation/2
+  const spouseLineX = (sp1, sp2) => {
+    if (sp1.spouse && sp1.data.data.gender === 'F') return sp1.x - props.node_separation/2
+    else if (sp2.spouse && sp2.data.data.gender === 'M') return sp2.x + props.node_separation/2
+    else return Math.min(sp1.x, sp2.x) + props.node_separation/2
+  }
 
   link_exit.each(linkExit)
   link_enter.each(linkEnter)

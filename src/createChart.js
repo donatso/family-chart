@@ -162,6 +162,12 @@ CreateChart.prototype.setSortChildrenFunction = function(sortChildrenFunction) {
   return this
 }
 
+CreateChart.prototype.setSortSpousesFunction = function(sortSpousesFunction) {
+  this.store.state.sortSpousesFunction = sortSpousesFunction
+
+  return this
+}
+
 CreateChart.prototype.setAncestryDepth = function(ancestry_depth) {
   this.store.state.ancestry_depth = ancestry_depth
 

@@ -10,6 +10,7 @@ export default function CalculateTree({
     single_parent_empty_card=true,
     is_horizontal=false,
     sortChildrenFunction=undefined,
+    sortSpousesFunction=undefined,
     ancestry_depth=undefined,
     progeny_depth=undefined,
     show_siblings_of_main=false,
@@ -69,6 +70,7 @@ export default function CalculateTree({
       const children = [...(d.rels.children || [])].map(id => data_stash.find(d => d.id === id))
       if (sortChildrenFunction) children.sort(sortChildrenFunction)  // first sort by custom function if provided
       sortAddNewChildren(children)  // then put new children at the end
+      if (sortSpousesFunction) sortSpousesFunction(d, data_stash)
       sortChildrenWithSpouses(children, d, data_stash)  // then sort by order of spouses
       return children
     }
