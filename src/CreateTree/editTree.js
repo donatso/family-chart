@@ -27,7 +27,7 @@ function EditTree(cont, store) {
 
   this.editFirst = false
 
-  this.cardDisplayGetter = null
+  this.postSubmit = null
 
   this.init()
 
@@ -76,7 +76,6 @@ EditTree.prototype.cardEditForm = function(datum) {
     datum, 
     postSubmit: postSubmit.bind(this),
     fields: this.fields, 
-    card_display: this.cardDisplayGetter ? this.cardDisplayGetter() : null, 
     addRelative: null,
     onCancel: () => {},
     editFirst: this.editFirst,
@@ -93,7 +92,10 @@ EditTree.prototype.cardEditForm = function(datum) {
 
   function postSubmit(props) {
     if (this.addRelativeInstance.is_active) this.addRelativeInstance.onChange(datum)
-    else if (!props?.delete) this.openFormWithId(datum.id);
+    else {
+      if (this.postSubmit) this.postSubmit(datum, this.store.getData())
+      if (!props?.delete) this.openFormWithId(datum.id);
+    }
 
     if (!this.is_fixed) this.closeForm()
     
@@ -219,12 +221,14 @@ EditTree.prototype.addRelative = function(datum) {
 EditTree.prototype.setupAddRelative = function() {
   return addRelative(this.store, cancelCallback.bind(this), onSubmitCallback.bind(this))
 
-  function onSubmitCallback(datum, new_rel_datum) {
+  function onSubmitCallback(datum, new_rel_datum, data_stash) {
+    if (this.postSubmit) this.postSubmit(new_rel_datum, data_stash)
     this.store.updateMainId(datum.id)
     this.openWithoutRelCancel(datum)
   }
 
   function cancelCallback(datum) {
+    if (this.postSubmit) this.postSubmit(datum, this.store.getData())
     this.store.updateMainId(datum.id)
     this.store.updateTree({})
     this.openFormWithId(datum.id)
@@ -265,12 +269,11 @@ EditTree.prototype.updateHistory = function() {
   if (this.onChange) this.onChange()
 }
 
-EditTree.prototype.setCardDisplayGetter = function(cardDisplayGetter) {
-  this.cardDisplayGetter = cardDisplayGetter
+EditTree.prototype.setPostSubmit = function(postSubmit) {
+  this.postSubmit = postSubmit
 
   return this
 }
-
 
 EditTree.prototype.destroy = function() {
   this.history.controls.destroy()

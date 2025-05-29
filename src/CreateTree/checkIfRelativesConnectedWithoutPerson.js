@@ -22,6 +22,7 @@ export function checkIfRelativesConnectedWithoutPerson(datum, data_stash) {
       if (!line) runAllRels(checkRels);
 
       function runAllRels(f) {
+        if (!d0) return // todo: check why this happens. test: click spouse and add spouse
         const r = d0.rels;
         [r.father, r.mother, ...(r.spouses || []), ...(r.children || [])]
           .filter(d_id => (d_id && ![...without_persons, ...history].find(d => d.id === d_id)))

@@ -1,7 +1,7 @@
 import {checkIfRelativesConnectedWithoutPerson} from "./checkIfRelativesConnectedWithoutPerson.js"
 import {createTreeDataWithMainNode} from "./newPerson.js"
 
-export function createForm({datum, store, fields, postSubmit, addRelative, deletePerson, onCancel, editFirst, card_display}) {
+export function createForm({datum, store, fields, postSubmit, addRelative, deletePerson, onCancel, editFirst}) {
   const form_creator = {
     fields: [],
     onSubmit: submitFormChanges,
@@ -37,6 +37,7 @@ export function createForm({datum, store, fields, postSubmit, addRelative, delet
 
   fields.forEach(field => {
     if (field.type === 'rel_reference') addRelReferenceField(field)
+    else if (field.type === 'select') addSelectField(field)
 
     else form_creator.fields.push({
       id: field.id,
@@ -49,7 +50,7 @@ export function createForm({datum, store, fields, postSubmit, addRelative, delet
   return form_creator
 
   function addRelReferenceField(field) {
-    if (!card_display) console.error('card_display is not set')
+    if (!field.getRelLabel) console.error('getRelLabel is not set')
 
     if (field.rel_type === 'spouse') {
       (datum.rels.spouses || []).forEach(spouse_id => {
@@ -61,12 +62,23 @@ export function createForm({datum, store, fields, postSubmit, addRelative, delet
           type: 'rel_reference',
           label: field.label,
           rel_id: spouse_id,
-          rel_label: card_display.map(f => f(spouse)).filter(t => t).join(', '),
+          rel_label: field.getRelLabel(spouse),
           initial_value: datum.data[marriage_date_id],
         })
         
       })
     }
+  }
+
+  function addSelectField(field) {
+    if (!field.optionCreator) return
+    form_creator.fields.push({
+      id: field.id,
+      type: field.type,
+      label: field.label,
+      initial_value: datum.data[field.id],
+      options: field.optionCreator(datum),
+    })
   }
 
   function submitFormChanges(e) {

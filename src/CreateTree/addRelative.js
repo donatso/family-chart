@@ -43,8 +43,8 @@ AddRelative.prototype.activate = function(datum) {
     if (updated_datum?._new_rel_data) {
       const new_rel_datum = updated_datum
       handleNewRel({datum: this.datum, new_rel_datum, data_stash: this.getStoreData()})
-      syncRelReference(updated_datum, [this.datum])
-      this.onSubmitCallback(this.datum, new_rel_datum)
+      syncRelReference(updated_datum, this.getStoreData())
+      this.onSubmitCallback(this.datum, new_rel_datum, this.getStoreData())
     } else if (updated_datum.id === datum.id) {
       if (updated_datum.data.gender !== datum.data.gender) updateGendersForNewRelatives()
       // keep the datum.data copy same as this.datum.data

@@ -142,6 +142,15 @@ export function formInfoSetup(form_creator, closeCallback) {
           <textarea name="${field.id}" 
             placeholder="${field.label}">${field.initial_value || ''}</textarea>
         </div>`
+      } else if (field.type === 'select') {
+        fields_html += `
+        <div class="f3-form-field">
+          <label>${field.label}</label>
+          <select name="${field.id}" value="${field.initial_value || ''}">
+            <option value="">Select ${field.label}</option>
+            ${field.options.map(option => `<option ${option.value === field.initial_value ? 'selected' : ''} value="${option.value}">${option.label}</option>`).join('')}
+          </select>
+        </div>`
       } else if (field.type === 'rel_reference') {
         fields_html += `
         <div class="f3-form-field">
@@ -164,6 +173,13 @@ export function formInfoSetup(form_creator, closeCallback) {
           <div class="f3-info-field">
             <span class="f3-info-field-label">${field.label} - <i>${field.rel_label}</i></span>
             <span class="f3-info-field-value">${field.initial_value || ''}</span>
+          </div>`
+        } else if (field.type === 'select') {
+          if (!field.initial_value) return
+          fields_html += `
+          <div class="f3-info-field">
+            <span class="f3-info-field-label">${field.label}</span>
+            <span class="f3-info-field-value">${field.options.find(option => option.value === field.initial_value)?.label || ''}</span>
           </div>`
         } else {
           fields_html += `
