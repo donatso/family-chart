@@ -91,10 +91,16 @@ EditTree.prototype.cardEditForm = function(datum) {
   this.openForm()
 
   function postSubmit(props) {
-    if (this.addRelativeInstance.is_active) this.addRelativeInstance.onChange(datum)
-    else {
+    if (this.addRelativeInstance.is_active) {
+      this.addRelativeInstance.onChange(datum)
       if (this.postSubmit) this.postSubmit(datum, this.store.getData())
-      if (!props?.delete) this.openFormWithId(datum.id);
+      const active_datum = this.addRelativeInstance.datum
+      this.store.updateMainId(active_datum.id)
+      this.openWithoutRelCancel(active_datum)
+    }
+    else if (!props?.delete) {
+      if (this.postSubmit) this.postSubmit(datum, this.store.getData())
+      this.openFormWithId(datum.id)
     }
 
     if (!this.is_fixed) this.closeForm()
@@ -153,7 +159,7 @@ EditTree.prototype.openFormWithId = function(d_id) {
 }
 
 EditTree.prototype.createHistory = function() {
-  this.history = f3.handlers.createHistory(this.store, this.getStoreData.bind(this), historyUpdateTree.bind(this))
+  this.history = f3.handlers.createHistory(this.store, this.getStoreDataCopy.bind(this), historyUpdateTree.bind(this))
   this.history.controls = f3.handlers.createHistoryControls(this.cont, this.history)
   this.history.changed()
   this.history.controls.updateButtons()
@@ -219,16 +225,9 @@ EditTree.prototype.addRelative = function(datum) {
 }
 
 EditTree.prototype.setupAddRelative = function() {
-  return addRelative(this.store, cancelCallback.bind(this), onSubmitCallback.bind(this))
-
-  function onSubmitCallback(datum, new_rel_datum, data_stash) {
-    if (this.postSubmit) this.postSubmit(new_rel_datum, data_stash)
-    this.store.updateMainId(datum.id)
-    this.openWithoutRelCancel(datum)
-  }
+  return addRelative(this.store, cancelCallback.bind(this))
 
   function cancelCallback(datum) {
-    if (this.postSubmit) this.postSubmit(datum, this.store.getData())
     this.store.updateMainId(datum.id)
     this.store.updateTree({})
     this.openFormWithId(datum.id)
@@ -250,13 +249,14 @@ EditTree.prototype.setAddRelLabels = function(add_rel_labels) {
   return this
 }
 
-EditTree.prototype.getStoreData = function() {
-  if (this.addRelativeInstance.is_active) return this.addRelativeInstance.getStoreData()
-  else return this.store.getData()
+EditTree.prototype.getStoreDataCopy = function() {  // todo: should make more sense
+  let data = JSON.parse(JSON.stringify(this.store.getData()))
+  if (this.addRelativeInstance.is_active) data = this.addRelativeInstance.cleanUp(data)
+  return data
 }
 
 EditTree.prototype.getDataJson = function(fn) {
-  const data = this.getStoreData()
+  const data = this.getStoreDataCopy()
   return f3.handlers.cleanupDataJson(JSON.stringify(data))
 }
 
