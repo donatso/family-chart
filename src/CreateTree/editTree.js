@@ -83,6 +83,7 @@ EditTree.prototype.cardEditForm = function(datum) {
   })
 
   form_creator.no_edit = this.no_edit
+  if (this.no_edit) form_creator.editable = false
   const form_cont = f3.handlers.formInfoSetup(form_creator, this.closeForm.bind(this))
 
   this.form_cont.innerHTML = ''
