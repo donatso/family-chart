@@ -44,8 +44,6 @@ CreateChart.prototype.init = function(cont, data) {
     is_horizontal: this.is_horizontal
   })
 
-  this.setCard(f3.CardSvg) // set default card
-
   this.store.setOnUpdate(props => {
     if (this.beforeUpdate) this.beforeUpdate(props)
     props = Object.assign({transition_time: this.transition_time}, props || {})
@@ -199,11 +197,6 @@ CreateChart.prototype.updateMainId = function(id) {
 
 CreateChart.prototype.getMainDatum = function() {
   return this.store.getMainDatum()
-}
-
-CreateChart.prototype.getDataJson = function(fn) {
-  const data = this.store.getData()
-  return f3.handlers.cleanupDataJson(JSON.stringify(data))
 }
 
 CreateChart.prototype.updateData = function(data) {

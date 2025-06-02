@@ -15,9 +15,8 @@ function CardSvg(cont, store) {
   this.card_display = [d => `${d.data["first name"]} ${d.data["last name"]}`]
   this.mini_tree = true
   this.link_break = false
-  this.onCardClick = this.onCardClickDefault
+  this.onCardClick = this.onCardClickDefault.bind(this)
   this.onCardUpdate = null
-  this.onCardUpdates = null
 
   this.init()
 
@@ -27,7 +26,7 @@ function CardSvg(cont, store) {
 CardSvg.prototype.init = function() {
   this.svg = this.cont.querySelector('svg.main_svg')
 
-  this.getCard = () => f3.elements.Card({
+  this.getCard = () => f3.elements.CardSvg({
     store: this.store,
     svg: this.svg,
     card_dim: this.card_dim,
@@ -35,8 +34,7 @@ CardSvg.prototype.init = function() {
     mini_tree: this.mini_tree,
     link_break: this.link_break,
     onCardClick: this.onCardClick,
-    onCardUpdate: this.onCardUpdate,
-    onCardUpdates: this.onCardUpdates
+    onCardUpdate: this.onCardUpdate
   })
 }
 
@@ -53,17 +51,26 @@ CardSvg.prototype.setCardDim = function(card_dim) {
   }
   for (let key in card_dim) {
     const val = card_dim[key]
-    if (typeof val !== 'number') {
-      console.error(`card_dim.${key} must be a number`)
+    if (typeof val !== 'number' && typeof val !== 'boolean') {
+      console.error(`card_dim.${key} must be a number or boolean`)
       return this
     }
     if (key === 'width') key = 'w'
     if (key === 'height') key = 'h'
+    if (key === 'img_width') key = 'img_w'
+    if (key === 'img_height') key = 'img_h'
+    if (key === 'img_x') key = 'img_x'
+    if (key === 'img_y') key = 'img_y'
     this.card_dim[key] = val
   }
 
   updateCardSvgDefs(this.svg, this.card_dim)
 
+  return this
+}
+
+CardSvg.prototype.setOnCardUpdate = function(onCardUpdate) {
+  this.onCardUpdate = onCardUpdate
   return this
 }
 
@@ -75,21 +82,6 @@ CardSvg.prototype.setMiniTree = function(mini_tree) {
 
 CardSvg.prototype.setLinkBreak = function(link_break) {
   this.link_break = link_break
-
-  return this
-}
-
-CardSvg.prototype.setCardTextSvg = function(cardTextSvg) {
-  function onCardUpdate(d) {
-    const card_node = d3.select(this)
-    const card_text = card_node.select('.card-text text')
-    const card_text_g = card_text.node().parentNode
-    card_text_g.innerHTML = cardTextSvg(d.data)
-  }
-  onCardUpdate.id = 'setCardTextSvg'
-  if (!this.onCardUpdates) this.onCardUpdates = []
-  this.onCardUpdates = this.onCardUpdates.filter(fn => fn.id !== 'setCardTextSvg')
-  this.onCardUpdates.push(onCardUpdate)
 
   return this
 }

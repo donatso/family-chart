@@ -13,7 +13,7 @@ export function CardHtml(props) {
     this.innerHTML = (`
     <div class="card ${getClassList(d).join(' ')}" data-id="${d.data.id}" style="transform: translate(-50%, -50%); pointer-events: auto;">
       ${props.mini_tree ? getMiniTree(d) : ''}
-      ${cardInner(d)}
+      ${(props.cardInnerHtmlCreator && !d.data._new_rel_data) ? props.cardInnerHtmlCreator(d) : cardInner(d)}
     </div>
     `)
     this.querySelector('.card').addEventListener('click', e => props.onCardClick(e, d))
@@ -26,7 +26,7 @@ export function CardHtml(props) {
   function getCardInnerImageCircle(d) {
     return (`
     <div class="card-inner card-image-circle" ${getCardStyle()}>
-      ${d.data.data.avatar ? `<img src="${d.data.data["avatar"]}" ${getCardImageStyle()}>` : noImageIcon(d)}
+      ${d.data.data[props.cardImageField] ? `<img src="${d.data.data[props.cardImageField]}" ${getCardImageStyle()}>` : noImageIcon(d)}
       <div class="card-label">${textDisplay(d)}</div>
     </div>
     `)
@@ -35,7 +35,7 @@ export function CardHtml(props) {
   function getCardInnerImageRect(d) {
     return (`
     <div class="card-inner card-image-rect" ${getCardStyle()}>
-      ${d.data.data.avatar ? `<img src="${d.data.data["avatar"]}" ${getCardImageStyle()}>` : noImageIcon(d)}
+      ${d.data.data[props.cardImageField] ? `<img src="${d.data.data[props.cardImageField]}" ${getCardImageStyle()}>` : noImageIcon(d)}
       <div class="card-label">${textDisplay(d)}</div>
     </div>
     `)
@@ -73,7 +73,7 @@ export function CardHtml(props) {
   }
 
   function cardInnerImageCircleRect(d) {
-    return d.data.data.avatar ? cardInnerImageCircle(d) : cardInnerRect(d)
+    return d.data.data[props.cardImageField] ? cardInnerImageCircle(d) : cardInnerRect(d)
   }
 
   function cardInnerDefault(d) {
@@ -134,6 +134,6 @@ export function CardHtml(props) {
 
   function noImageIcon(d) {
     if (d.data._new_rel_data) return `<div class="person-icon" ${getCardImageStyle()}>${plusSvgIcon()}</div>`
-    return `<div class="person-icon" ${getCardImageStyle()}>${personSvgIcon()}</div>`
+    return `<div class="person-icon" ${getCardImageStyle()}>${props.defaultPersonIcon ? props.defaultPersonIcon(d) : personSvgIcon()}</div>`
   }
 }

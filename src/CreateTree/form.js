@@ -153,12 +153,11 @@ export function deletePerson(datum, data_stash) {
   }
 }
 
-export function cleanupDataJson(data_json) {
-  let data_no_to_add = JSON.parse(data_json)
-  data_no_to_add.forEach(d => d.to_add ? removeToAdd(d, data_no_to_add) : d)
-  data_no_to_add.forEach(d => delete d.main)
-  data_no_to_add.forEach(d => delete d.hide_rels)
-  return JSON.stringify(data_no_to_add, null, 2)
+export function cleanupDataJson(data) {
+  data.forEach(d => d.to_add ? removeToAdd(d, data) : d)
+  data.forEach(d => delete d.main)
+  data.forEach(d => delete d.hide_rels)
+  return data
 }
 
 export function removeToAddFromData(data) {

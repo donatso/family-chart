@@ -12,11 +12,13 @@ function CardHtml(cont, store) {
   this.store = store
   this.getCard = null
   this.card_display = [d => `${d.data["first name"]} ${d.data["last name"]}`]
+  this.cardImageField = 'avatar'
   this.onCardClick = this.onCardClickDefault
   this.style = 'default'
   this.mini_tree = false
   this.onCardUpdate = null
   this.card_dim = {}
+  this.cardInnerHtmlCreator = null
 
   this.init()
 
@@ -29,12 +31,15 @@ CardHtml.prototype.init = function() {
   this.getCard = () => f3.elements.CardHtml({
     store: this.store,
     card_display: this.card_display,
+    cardImageField: this.cardImageField,
+    defaultPersonIcon: this.defaultPersonIcon,
     onCardClick: this.onCardClick,
     style: this.style,
     mini_tree: this.mini_tree,
     onCardUpdate: this.onCardUpdate,
     card_dim: this.card_dim,
     empty_card_label: this.store.state.single_parent_empty_card_label,
+    cardInnerHtmlCreator: this.cardInnerHtmlCreator,
     onCardMouseenter: this.onCardMouseenter ? this.onCardMouseenter.bind(this) : null,
     onCardMouseleave: this.onCardMouseleave ? this.onCardMouseleave.bind(this) : null
   })
@@ -43,6 +48,16 @@ CardHtml.prototype.init = function() {
 CardHtml.prototype.setCardDisplay = function(card_display) {
   this.card_display = processCardDisplay(card_display)
 
+  return this
+}
+
+CardHtml.prototype.setCardImageField = function(cardImageField) {
+  this.cardImageField = cardImageField
+  return this
+}
+
+CardHtml.prototype.setDefaultPersonIcon = function(defaultPersonIcon) {
+  this.defaultPersonIcon = defaultPersonIcon
   return this
 }
 
@@ -97,6 +112,12 @@ CardHtml.prototype.setCardDim = function(card_dim) {
 
 CardHtml.prototype.resetCardDim = function() {
   this.card_dim = {}
+  return this
+}
+
+CardHtml.prototype.setCardInnerHtmlCreator = function(cardInnerHtmlCreator) {
+  this.cardInnerHtmlCreator = cardInnerHtmlCreator
+
   return this
 }
 

@@ -36,6 +36,18 @@ export function CardBodyAddNew({d,card_dim,card_add,label}) {
   }
 }
 
+export function CardBodyAddNewRel({d,card_dim,label}) {
+  return {template: (`
+    <g class="card-body">
+      <rect class="card-body-rect" width="${card_dim.w}" height="${card_dim.h}" />
+      <text transform="translate(${card_dim.img_w+5}, ${card_dim.h/2})">
+        <tspan font-size="18" dy="${8}" pointer-events="none">${label}</tspan>
+      </text>
+    </g>
+  `)
+  }
+}
+
 export function CardBodyOutline({d,card_dim, is_new}) {
   return {template: (`
     <rect width="${card_dim.w}" height="${card_dim.h}" rx="4" ry="4" class="card-outline ${(d.data.main && !is_new) ? 'card-main-outline' : ''} ${is_new ? 'card-new-outline' : ''}" />

@@ -172,6 +172,7 @@ EditTree.prototype.createHistory = function() {
     this.store.updateTree({initial: false})
     this.history.controls.updateButtons()
     this.openFormWithId(this.store.getMainDatum()?.id)
+    if (this.onChange) this.onChange()
   }
 }
 
@@ -251,14 +252,14 @@ EditTree.prototype.setAddRelLabels = function(add_rel_labels) {
 }
 
 EditTree.prototype.getStoreDataCopy = function() {  // todo: should make more sense
-  let data = JSON.parse(JSON.stringify(this.store.getData()))
-  if (this.addRelativeInstance.is_active) data = this.addRelativeInstance.cleanUp(data)
+  let data = JSON.parse(JSON.stringify(this.store.getData()))  // important to make a deep copy of the data
+  if (this.addRelativeInstance.is_active) data = this.addRelativeInstance.cleanUp(data)    
+  data = f3.handlers.cleanupDataJson(data)
   return data
 }
 
-EditTree.prototype.getDataJson = function(fn) {
-  const data = this.getStoreDataCopy()
-  return f3.handlers.cleanupDataJson(JSON.stringify(data))
+EditTree.prototype.getDataJson = function() {
+  return JSON.stringify(this.getStoreDataCopy(), null, 2)
 }
 
 EditTree.prototype.updateHistory = function() {
