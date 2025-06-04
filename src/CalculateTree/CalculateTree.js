@@ -32,6 +32,7 @@ export default function CalculateTree({
   setupProgenyParentsPos({tree})
   nodePositioning({tree})
   tree.forEach(d => d.all_rels_displayed = isAllRelativeDisplayed(d, tree))
+  setupTid({tree})
 
   const dim = calculateTreeDim(tree, node_separation, level_separation)
 
@@ -143,14 +144,14 @@ export default function CalculateTree({
       if (d.depth === 0) return
       if (d.added) return
       if (d.sibling) return
-      const m = findDatum(d.data.rels.mother)
-      const f = findDatum(d.data.rels.father)
-      if (m && f) {
-        if (!m.added && !f.added) console.error('no added spouse', m, f)
-        const added_spouse = m.added ? m : f
+      const p1 = d.parent
+      const p2 = p1.spouses.find(d0 => d0.data.id === d.data.rels.father || d0.data.id === d.data.rels.mother)
+      if (p1 && p2) {
+        if (!p1.added && !p2.added) console.error('no added spouse', p1, p2)
+        const added_spouse = p1.added ? p1 : p2
         setupParentPos(d, added_spouse)
-      } else if (m || f) {
-        const parent = m || f
+      } else if (p1 || p2) {
+        const parent = p1 || p2
         parent.sx = parent.x
         parent.sy = parent.y
         setupParentPos(d, parent)
@@ -161,11 +162,6 @@ export default function CalculateTree({
         d.psy = !is_horizontal ? p.y : p.sx
       }
     })
-
-    function findDatum(id) {
-      if (!id) return null
-      return tree.find(d => d.data.id === id)
-    }
   }
 
   function setupChildrenAndParents({tree}) {
@@ -261,4 +257,19 @@ export default function CalculateTree({
     }
   }
 
+}
+
+function setupTid({tree}) {
+  const ids = []
+  tree.forEach(d => {
+    if (ids.includes(d.data.id)) {
+      const duplicates = tree.filter(d2 => d2.data.id === d.data.id)
+      d.tid = `${d.data.id}--x${duplicates.length}`
+      d.duplicate = duplicates.length
+      duplicates.forEach(d2 => d2.duplicate = duplicates.length)
+    } else {
+      d.tid = d.data.id
+    }
+    ids.push(d.data.id)
+  })
 }

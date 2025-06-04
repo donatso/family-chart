@@ -355,6 +355,27 @@
   width: 55px;
 }
 
+.f3 .f3-card-duplicate-tag {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  color: rgb(255, 251, 220);
+  background-color: rgba(255, 251, 220, 0);
+  border-radius: 50%;
+  padding: 2px;
+  transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+
+.f3 .f3-card-duplicate-hover div.card-inner {
+  transform: translate(0, -2px);
+  outline: 4px solid rgb(255, 251, 220);
+}
+
+.f3 .f3-card-duplicate-hover .f3-card-duplicate-tag {
+  background-color: rgba(255, 251, 220, .8);
+  color: #000;
+}
+
 .f3 div.card > div {
   transition: transform 0.2s ease-in-out;
   box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.8);
@@ -470,6 +491,7 @@
   background-color: transparent;
   border: none;
   margin-right: 10px;
+  color: currentColor;
 }
 
 

@@ -1,7 +1,8 @@
 export function createLinks({d, tree, is_horizontal=false}) {
   const links = [];
-
-  if (d.data.rels.spouses && d.data.rels.spouses.length > 0) handleSpouse({d})
+  // d.spouses is always added to non-ancestry side for main blodline nodes
+  // d._spouse is added to ancestry side
+  if (d.spouses || d._spouse) handleSpouse({d})
   handleAncestrySide({d})
   handleProgenySide({d})
 
@@ -35,7 +36,7 @@ export function createLinks({d, tree, is_horizontal=false}) {
     if (!d.children || d.children.length === 0) return
 
     d.children.forEach((child, i) => {
-      const other_parent = otherParent(child, d, tree) || d
+      const other_parent = otherParent(child, d) || d
       const sx = other_parent.sx
 
       const parent_pos = !is_horizontal ? {x: sx, y: d.y} : {x: d.x, y: sx}
@@ -54,10 +55,14 @@ export function createLinks({d, tree, is_horizontal=false}) {
 
 
   function handleSpouse({d}) {
-    d.data.rels.spouses.forEach(sp_id => {
-      const spouse = getRel(d, tree, d0 => d0.data.id === sp_id)
-      if (!spouse || d.spouse) return
-      links.push({
+    if (d.spouses) {
+      d.spouses.forEach(spouse => links.push(createSpouseLink(d, spouse)))
+    } else if (d._spouse) {
+      links.push(createSpouseLink(d, d._spouse))
+    }
+
+    function createSpouseLink(d, spouse) {
+      return {
         d: [[d.x, d.y], [spouse.x, spouse.y]],
         _d: () => [
           d.is_ancestry ? [_or(d, 'x')-.0001, _or(d, 'y')] : [d.x, d.y], // add -.0001 to line to have some length if d.x === spouse.x
@@ -70,8 +75,8 @@ export function createLinks({d, tree, is_horizontal=false}) {
         is_ancestry: spouse.is_ancestry, 
         source: d, 
         target: spouse
-      })
-    })
+      }
+    }
   }
 
   ///
@@ -113,20 +118,12 @@ export function createLinks({d, tree, is_horizontal=false}) {
   }
 
   function linkId(...args) {
-    return args.map(d => d.data.id).sort().join(", ")  // make unique id
+    return args.map(d => d.tid).sort().join(", ")  // make unique id
   }
 
-  function otherParent(child, p1, data) {
-    const condition = d0 => (d0.data.id !== p1.data.id) && ((d0.data.id === child.data.rels.mother) || (d0.data.id === child.data.rels.father))
-    return getRel(p1, data, condition)
-  }
-
-  // if there is overlapping of personas in different branches of same family tree, return the closest one
-  function getRel(d, data, condition) {
-    const rels = data.filter(condition)
-    const dist_xy = (a, b) => Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2))
-    if (rels.length > 1) return rels.sort((d0, d1) => dist_xy(d0, d) - dist_xy(d1, d))[0]
-    else return rels[0]
+  function otherParent(child, p1) {
+    const p2 = p1.spouses.find(d => d.data.id === child.data.rels.mother || d.data.id === child.data.rels.father)
+    return p2
   }
 }
 

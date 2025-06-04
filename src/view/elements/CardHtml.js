@@ -11,7 +11,7 @@ export function CardHtml(props) {
 
   return function (d) {
     this.innerHTML = (`
-    <div class="card ${getClassList(d).join(' ')}" data-id="${d.data.id}" style="transform: translate(-50%, -50%); pointer-events: auto;">
+    <div class="card ${getClassList(d).join(' ')}" data-id="${d.tid}" style="transform: translate(-50%, -50%); pointer-events: auto;">
       ${props.mini_tree ? getMiniTree(d) : ''}
       ${(props.cardInnerHtmlCreator && !d.data._new_rel_data) ? props.cardInnerHtmlCreator(d) : cardInner(d)}
     </div>
@@ -21,6 +21,7 @@ export function CardHtml(props) {
 
     if (props.onCardMouseenter) d3.select(this).select('.card').on('mouseenter', e => props.onCardMouseenter(e, d))
     if (props.onCardMouseleave) d3.select(this).select('.card').on('mouseleave', e => props.onCardMouseleave(e, d))
+    if (d.duplicate) handleCardDuplicateHover(this, d)
   }
 
   function getCardInnerImageCircle(d) {
@@ -28,6 +29,7 @@ export function CardHtml(props) {
     <div class="card-inner card-image-circle" ${getCardStyle()}>
       ${d.data.data[props.cardImageField] ? `<img src="${d.data.data[props.cardImageField]}" ${getCardImageStyle()}>` : noImageIcon(d)}
       <div class="card-label">${textDisplay(d)}</div>
+      ${d.duplicate ? getCardDuplicateTag(d) : ''}
     </div>
     `)
   }
@@ -37,6 +39,7 @@ export function CardHtml(props) {
     <div class="card-inner card-image-rect" ${getCardStyle()}>
       ${d.data.data[props.cardImageField] ? `<img src="${d.data.data[props.cardImageField]}" ${getCardImageStyle()}>` : noImageIcon(d)}
       <div class="card-label">${textDisplay(d)}</div>
+      ${d.duplicate ? getCardDuplicateTag(d) : ''}
     </div>
     `)
   }
@@ -45,6 +48,7 @@ export function CardHtml(props) {
     return (`
     <div class="card-inner card-rect" ${getCardStyle()}>
       ${textDisplay(d)}
+      ${d.duplicate ? getCardDuplicateTag(d) : ''}
     </div>
     `)
   }
@@ -135,5 +139,18 @@ export function CardHtml(props) {
   function noImageIcon(d) {
     if (d.data._new_rel_data) return `<div class="person-icon" ${getCardImageStyle()}>${plusSvgIcon()}</div>`
     return `<div class="person-icon" ${getCardImageStyle()}>${props.defaultPersonIcon ? props.defaultPersonIcon(d) : personSvgIcon()}</div>`
+  }
+
+  function getCardDuplicateTag(d) {
+    return `<div class="f3-card-duplicate-tag">x${d.duplicate}</div>`
+  }
+
+  function handleCardDuplicateHover(node, d) {
+    d3.select(node).on('mouseenter', e => {
+      d3.select(node.closest('.cards_view')).selectAll('.card_cont').select('.card').classed('f3-card-duplicate-hover', d0 => d0.data.id === d.data.id)
+    })
+    d3.select(node).on('mouseleave', e => {
+      d3.select(node.closest('.cards_view')).selectAll('.card_cont').select('.card').classed('f3-card-duplicate-hover', false)
+    })
   }
 }
