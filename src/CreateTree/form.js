@@ -1,7 +1,7 @@
 import {checkIfRelativesConnectedWithoutPerson} from "./checkIfRelativesConnectedWithoutPerson.js"
 import {createTreeDataWithMainNode} from "./newPerson.js"
 
-export function createForm({datum, store, fields, postSubmit, addRelative, deletePerson, onCancel, editFirst}) {
+export function createForm({datum, store, fields, postSubmit, addRelative, deletePerson, onCancel, editFirst, link_existing_rel_config}) {
   const form_creator = {
     fields: [],
     onSubmit: submitFormChanges,
@@ -19,6 +19,7 @@ export function createForm({datum, store, fields, postSubmit, addRelative, delet
     form_creator.new_rel = true
     form_creator.editable = true
     form_creator.onCancel = onCancel
+    if (link_existing_rel_config) form_creator.linkExistingRelative = createLinkExistingRelative(datum, store.getData(), link_existing_rel_config)
   }
   if (form_creator.onDelete) form_creator.can_delete = checkIfRelativesConnectedWithoutPerson(datum, store.getData())
 
@@ -81,6 +82,15 @@ export function createForm({datum, store, fields, postSubmit, addRelative, delet
     })
   }
 
+  function createLinkExistingRelative(datum, data, link_existing_rel_config) {
+    const obj = {
+      label: link_existing_rel_config.label,
+      options: data.filter(d => d.id !== datum.id && !d._new_rel_data).map(d => ({value: d.id, label: link_existing_rel_config.linkRelLabel(d)})),
+      onSelect: submitLinkExistingRelative
+    }
+    return obj
+  }
+
   function submitFormChanges(e) {
     e.preventDefault()
     const form_data = new FormData(e.target)
@@ -88,6 +98,11 @@ export function createForm({datum, store, fields, postSubmit, addRelative, delet
     syncRelReference(datum, store.getData())
     if (datum.to_add) delete datum.to_add
     postSubmit()
+  }
+
+  function submitLinkExistingRelative(e) {
+    const link_rel_id = e.target.value
+    postSubmit({link_rel_id: link_rel_id})
   }
 
   function deletePersonWithPostSubmit() {

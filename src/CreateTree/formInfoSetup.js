@@ -43,6 +43,11 @@ export function formInfoSetup(form_creator, closeCallback) {
     const close_btn = form.querySelector('.f3-close-btn');
     close_btn.addEventListener('click', closeCallback)
 
+    const link_existing_relative_select = form.querySelector('.f3-link-existing-relative select');
+    if (link_existing_relative_select) {
+      link_existing_relative_select.addEventListener('change', form_creator.linkExistingRelative.onSelect);
+    }
+
     function onCancel() {
       form_creator.editable = false
       if (form_creator.onCancel) form_creator.onCancel()
@@ -70,6 +75,8 @@ export function formInfoSetup(form_creator, closeCallback) {
       ${fields()}
 
       ${form_creator.onDelete ? deleteBtn() : ''}
+
+      ${form_creator.linkExistingRelative ? addLinkExistingRelative() : ''}
       
       <div class="f3-form-buttons">
         <button type="button" class="f3-cancel-btn">Cancel</button>
@@ -192,6 +199,19 @@ export function formInfoSetup(form_creator, closeCallback) {
       return fields_html
     }
   }
+
+  function addLinkExistingRelative() {
+    return (`
+      <div class="f3-link-existing-relative">
+        <label>${form_creator.linkExistingRelative.label}</label>
+        <select>
+          <option value="">Select ${form_creator.linkExistingRelative.label}</option>
+          ${form_creator.linkExistingRelative.options.map(option => `<option value="${option.value}">${option.label}</option>`).join('')}
+        </select>
+      </div>
+    `)
+  }
+  
 
   function closeBtn() {
     return (`

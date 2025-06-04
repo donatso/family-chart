@@ -29,6 +29,8 @@ function EditTree(cont, store) {
 
   this.postSubmit = null
 
+  this.link_existing_rel_config = null
+
   this.init()
 
   return this
@@ -79,6 +81,7 @@ EditTree.prototype.cardEditForm = function(datum) {
     addRelative: null,
     onCancel: () => {},
     editFirst: this.editFirst,
+    link_existing_rel_config: this.link_existing_rel_config,
     ...props
   })
 
@@ -93,7 +96,7 @@ EditTree.prototype.cardEditForm = function(datum) {
 
   function postSubmit(props) {
     if (this.addRelativeInstance.is_active) {
-      this.addRelativeInstance.onChange(datum)
+      this.addRelativeInstance.onChange(datum, props)
       if (this.postSubmit) this.postSubmit(datum, this.store.getData())
       const active_datum = this.addRelativeInstance.datum
       this.store.updateMainId(active_datum.id)
@@ -248,6 +251,11 @@ EditTree.prototype.isAddingRelative = function() {
 
 EditTree.prototype.setAddRelLabels = function(add_rel_labels) {
   this.addRelativeInstance.setAddRelLabels(add_rel_labels)
+  return this
+}
+
+EditTree.prototype.setLinkExistingRelConfig = function(link_existing_rel_config) {
+  this.link_existing_rel_config = link_existing_rel_config
   return this
 }
 

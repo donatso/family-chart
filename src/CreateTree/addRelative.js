@@ -34,9 +34,10 @@ AddRelative.prototype.activate = function(datum) {
   this.onChange = onChange.bind(this)
   this.onCancel = onCancel.bind(this)
 
-  function onChange(updated_datum) {
+  function onChange(updated_datum, props) {
     if (updated_datum?._new_rel_data) {
-      delete updated_datum._new_rel_data
+      if (props?.link_rel_id) handleLinkRel(updated_datum, props.link_rel_id, store.getData())
+      else delete updated_datum._new_rel_data
     } else if (updated_datum.id === datum.id) {
       if (updated_datum.data.gender !== gender_stash) updateGendersForNewRelatives()
     } else {
@@ -230,4 +231,37 @@ function setDatumRels(datum, data) {
 
     datum_rels.push(rel_datum)
   }
+}
+
+function handleLinkRel(updated_datum, link_rel_id, store_data) {
+  const new_rel_id = updated_datum.id
+
+  store_data.forEach(d => {
+    if (d.rels.father === new_rel_id) d.rels.father = link_rel_id
+    if (d.rels.mother === new_rel_id) d.rels.mother = link_rel_id
+    if ((d.rels.spouses || []).includes(new_rel_id)) {
+      d.rels.spouses = d.rels.spouses.filter(id => id !== new_rel_id)
+      if (!d.rels.spouses.includes(link_rel_id)) d.rels.spouses.push(link_rel_id)
+    }
+    if ((d.rels.children || []).includes(new_rel_id)) {
+      d.rels.children = d.rels.children.filter(id => id !== new_rel_id)
+      if (!d.rels.children.includes(link_rel_id)) d.rels.children.push(link_rel_id)
+    }
+  })
+
+  const link_rel = store_data.find(d => d.id === link_rel_id)
+  const new_rel = store_data.find(d => d.id === new_rel_id);
+  (new_rel.rels.children || []).forEach(child_id => {
+    if (!link_rel.rels.children) link_rel.rels.children = []
+    if (!link_rel.rels.children.includes(child_id)) link_rel.rels.children.push(child_id)
+  });
+  (new_rel.rels.spouses || []).forEach(spouse_id => {
+    if (!link_rel.rels.spouses) link_rel.rels.spouses = []
+    if (!link_rel.rels.spouses.includes(spouse_id)) link_rel.rels.spouses.push(spouse_id)
+  })
+
+  if (!link_rel.rels.father && new_rel.rels.father) link_rel.rels.father = new_rel.rels.father  // needed?
+  if (!link_rel.rels.mother && new_rel.rels.mother) link_rel.rels.mother = new_rel.rels.mother  // needed?
+
+  store_data.splice(store_data.findIndex(d => d.id === new_rel_id), 1)
 }
