@@ -40,6 +40,7 @@ CardHtml.prototype.init = function() {
     card_dim: this.card_dim,
     empty_card_label: this.store.state.single_parent_empty_card_label,
     cardInnerHtmlCreator: this.cardInnerHtmlCreator,
+    duplicate_toggle: this.store.state.duplicate_toggle,
     onCardMouseenter: this.onCardMouseenter ? this.onCardMouseenter.bind(this) : null,
     onCardMouseleave: this.onCardMouseleave ? this.onCardMouseleave.bind(this) : null
   })

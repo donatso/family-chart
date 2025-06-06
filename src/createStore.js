@@ -41,7 +41,8 @@ export default function createStore(initial_state) {
       ancestry_depth: state.ancestry_depth,
       progeny_depth: state.progeny_depth,
       show_siblings_of_main: state.show_siblings_of_main,
-      modifyTreeHierarchy: state.modifyTreeHierarchy
+      modifyTreeHierarchy: state.modifyTreeHierarchy,
+      duplicate_toggle: state.duplicate_toggle
     })
   }
 

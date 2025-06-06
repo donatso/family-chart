@@ -85,7 +85,7 @@ export function createForm({datum, store, fields, postSubmit, addRelative, delet
   function createLinkExistingRelative(datum, data, link_existing_rel_config) {
     const obj = {
       label: link_existing_rel_config.label,
-      options: data.filter(d => d.id !== datum.id && !d._new_rel_data).map(d => ({value: d.id, label: link_existing_rel_config.linkRelLabel(d)})),
+      options: data.filter(d => d.id !== datum.id && !d._new_rel_data && !d.to_add).map(d => ({value: d.id, label: link_existing_rel_config.linkRelLabel(d)})),
       onSelect: submitLinkExistingRelative
     }
     return obj

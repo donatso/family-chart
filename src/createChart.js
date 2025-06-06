@@ -178,6 +178,12 @@ CreateChart.prototype.setProgenyDepth = function(progeny_depth) {
   return this
 }
 
+CreateChart.prototype.setDuplicateToggle = function(duplicate_toggle) {
+  this.store.state.duplicate_toggle = duplicate_toggle
+
+  return this
+}
+
 CreateChart.prototype.editTree = function() {
   return this.editTreeInstance = editTree(this.cont, this.store)
 }

@@ -2,6 +2,7 @@ import d3 from "../d3.js"
 import {sortChildrenWithSpouses, sortAddNewChildren, setupSiblings} from "./CalculateTree.handlers.js"
 import {createNewPerson} from "../CreateTree/newPerson.js"
 import {isAllRelativeDisplayed} from "../handlers/general.js"
+import {handleDuplicateSpouseToggle, handleDuplicateHierarchy} from "./CalculateTree.duplicates.js"
 
 export default function CalculateTree({
     data, main_id=null,
@@ -14,7 +15,8 @@ export default function CalculateTree({
     ancestry_depth=undefined,
     progeny_depth=undefined,
     show_siblings_of_main=false,
-    modifyTreeHierarchy=undefined
+    modifyTreeHierarchy=undefined,
+    duplicate_toggle=false
   }) {
   if (!data || !data.length) return {data: [], data_stash: [], dim: {width: 0, height: 0}, main_id: null}
   if (is_horizontal) [node_separation, level_separation] = [level_separation, node_separation]
@@ -33,7 +35,8 @@ export default function CalculateTree({
   nodePositioning({tree})
   tree.forEach(d => d.all_rels_displayed = isAllRelativeDisplayed(d, tree))
   setupTid({tree})
-
+  setupFromTo(tree)
+  if (duplicate_toggle) handleDuplicateSpouseToggle(tree)
   const dim = calculateTreeDim(tree, node_separation, level_separation)
 
   return {data: tree, data_stash, dim, main_id: main.id, is_horizontal}
@@ -45,6 +48,7 @@ export default function CalculateTree({
 
     if (is_ancestry) addSpouseReferences(root)
     trimTree(root, is_ancestry)
+    if (duplicate_toggle) handleDuplicateHierarchy(root, data_stash, is_ancestry)
     if (modifyTreeHierarchy) modifyTreeHierarchy(root, is_ancestry)
     d3_tree(root);
     
@@ -257,6 +261,38 @@ export default function CalculateTree({
     }
   }
 
+  function setupFromTo(tree) {
+    tree.forEach(d => {
+      if (d.data.main) {
+        d.from = []
+        d.to = []
+        d.to_ancestry = d.parents
+      } else if (d.is_ancestry) {
+        d.from = [d.parent]
+        d.to = d.parents
+      } else {
+        if (d.added) {
+          d.from = []
+          d.from_spouse = d.spouse
+          d.to = []
+          return
+        }
+        if (d.sibling) return
+        const p1 = d.parent
+        const p2 = d.parent.spouses.find(d0 => d0.data.id === d.data.rels.father || d0.data.id === d.data.rels.mother)
+
+        d.from = [p1]
+        if (p2) d.from.push(p2)
+
+        if (!p1.to) p1.to = []
+        p1.to.push(d)
+        if (p2) {
+          if (!p2.to) p2.to = []
+          p2.to.push(d)
+        }
+      }
+    })
+  }
 }
 
 function setupTid({tree}) {

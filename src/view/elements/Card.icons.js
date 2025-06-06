@@ -116,6 +116,26 @@ export function miniTreeIcon() {
   `)
 }
 
+export function toggleIconOn() {
+  return (`
+    <g data-icon="toggle-on">
+      ${bgCircle()}
+      <circle class="f3-small-circle" r="4" cx="18" cy="12" />
+      <path d="M17,7H7A5,5 0 0,0 2,12A5,5 0 0,0 7,17H17A5,5 0 0,0 22,12A5,5 0 0,0 17,7M17,15A3,3 0 0,1 14,12A3,3 0 0,1 17,9A3,3 0 0,1 20,12A3,3 0 0,1 17,15Z" />
+    </g>
+  `)
+}
+
+export function toggleIconOff() {
+  return (`
+    <g data-icon="toggle">
+      ${bgCircle()}
+      <circle class="f3-small-circle" r="4" cx="6" cy="12" />
+      <path d="M17,7H7A5,5 0 0,0 2,12A5,5 0 0,0 7,17H17A5,5 0 0,0 22,12A5,5 0 0,0 17,7M7,15A3,3 0 0,1 4,12A3,3 0 0,1 7,9A3,3 0 0,1 10,12A3,3 0 0,1 7,15Z" />
+    </g>
+  `)
+}
+
 export function userSvgIcon() { return svgWrapper(userIcon()) }
 export function userEditSvgIcon() { return svgWrapper(userEditIcon()) }
 export function userPlusSvgIcon() { return svgWrapper(userPlusIcon()) }
@@ -128,6 +148,8 @@ export function historyBackSvgIcon() { return svgWrapper(historyBackIcon()) }
 export function historyForwardSvgIcon() { return svgWrapper(historyForwardIcon()) }
 export function personSvgIcon() { return svgWrapper(personIcon(), '0 0 512 512') }
 export function miniTreeSvgIcon() { return svgWrapper(miniTreeIcon(), '0 0 72 25') }
+export function toggleSvgIconOn() { return svgWrapper(toggleIconOn()) }
+export function toggleSvgIconOff() { return svgWrapper(toggleIconOff()) }
 
 function svgWrapper(icon, viewBox='0 0 24 24') {
   const match = icon.match(/data-icon="([^"]+)"/);
