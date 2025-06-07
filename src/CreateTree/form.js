@@ -170,8 +170,17 @@ export function deletePerson(datum, data_stash) {
 
 export function cleanupDataJson(data) {
   data.forEach(d => d.to_add ? removeToAdd(d, data) : d)
-  data.forEach(d => delete d.main)
-  data.forEach(d => delete d.hide_rels)
+  data.forEach(d => {
+    delete d.main
+    delete d._tgdp
+    delete d._tgdp_sp
+    delete d.__tgdp_sp
+  })
+  data.forEach(d => {
+    Object.keys(d).forEach(k => {
+      if (k[0] === '_') console.error('key starts with _', k)
+    })
+  })
   return data
 }
 

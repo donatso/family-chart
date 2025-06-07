@@ -299,13 +299,15 @@ function setupTid({tree}) {
   const ids = []
   tree.forEach(d => {
     if (ids.includes(d.data.id)) {
-      const duplicates = tree.filter(d2 => d2.data.id === d.data.id)
-      d.tid = `${d.data.id}--x${duplicates.length}`
-      d.duplicate = duplicates.length
-      duplicates.forEach(d2 => d2.duplicate = duplicates.length)
+      const duplicates = tree.filter(d0 => d0.data.id === d.data.id)
+      duplicates.forEach((d0, i) => {
+        d0.tid = `${d.data.id}--x${i+1}`
+        d0.duplicate = duplicates.length
+        ids.push(d.data.id)
+      })
     } else {
       d.tid = d.data.id
+      ids.push(d.data.id)
     }
-    ids.push(d.data.id)
   })
 }

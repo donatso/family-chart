@@ -39,6 +39,7 @@ export function handleDuplicateHierarchy(root, data_stash, is_ancestry) {
           const children_by_spouse = getChildrenBySpouse(d)
           if (!d.data._tgdp_sp) d.data._tgdp_sp = {}
           let parent_id = root === d ? 'main' : d.parent.data.id
+          unstashTgdpSpouse(d, parent_id, p2)
           if (!d.data._tgdp_sp[parent_id]) d.data._tgdp_sp[parent_id] = {}
           if (!d.data._tgdp_sp[parent_id][p2.id]) d.data._tgdp_sp[parent_id][p2.id] = false
           if (d.data._tgdp_sp[parent_id][p2.id]) {
@@ -49,12 +50,29 @@ export function handleDuplicateHierarchy(root, data_stash, is_ancestry) {
           }
         })
       } else {
-        if (d.data)
+        let parent_id = root === d ? 'main' : d.parent.data.id
+        stashTgdpSpouse(d, parent_id, p2);
         (children_by_spouse[p2.id] || []).forEach(child => {
           loopChildrenProgeny(child)
         })
       }
     })
+  }
+
+  function stashTgdpSpouse(d, parent_id, p2) {
+    if (d.data._tgdp_sp && d.data._tgdp_sp[parent_id] && d.data._tgdp_sp[parent_id].hasOwnProperty(p2.id)) {
+      if (!d.data.__tgdp_sp) d.data.__tgdp_sp = {}
+      if (!d.data.__tgdp_sp[parent_id]) d.data.__tgdp_sp[parent_id] = {}
+      d.data.__tgdp_sp[parent_id][p2.id] = d.data._tgdp_sp[parent_id][p2.id]
+      delete d.data._tgdp_sp[parent_id][p2.id]
+    }
+  }
+
+  function unstashTgdpSpouse(d, parent_id, p2) {
+    if (d.data.__tgdp_sp && d.data.__tgdp_sp[parent_id] && d.data.__tgdp_sp[parent_id].hasOwnProperty(p2.id)) {
+      d.data._tgdp_sp[parent_id][p2.id] = d.data.__tgdp_sp[parent_id][p2.id]
+      delete d.data.__tgdp_sp[parent_id][p2.id]
+    }
   }
 
   function findDuplicateProgeny(datum, partner1, partner2) {
