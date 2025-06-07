@@ -7,6 +7,7 @@ export function handleCardDuplicateToggle(node, d, is_horizontal, updateTree) {
   const card = node.querySelector('.card-inner')
   const card_width = node.querySelector('.card').offsetWidth
   let toggle_is_off;
+  let toggle_id;
   const pos = {}
   if (d.spouse) {
     const spouse = d.spouse
@@ -18,6 +19,7 @@ export function handleCardDuplicateToggle(node, d, is_horizontal, updateTree) {
       pos.top = d.sy - d.x + 4
       pos.left = 105
     }
+    toggle_id = spouse._toggle_id
   } else {
     const parent_id = d.data.main ? 'main' : d.parent.data.id
     toggle_is_off = d.data._tgdp[parent_id]
@@ -27,6 +29,7 @@ export function handleCardDuplicateToggle(node, d, is_horizontal, updateTree) {
       pos.top = 5
       pos.left = -55
     }
+    toggle_id = d._toggle_id
   }
 
 
@@ -69,7 +72,7 @@ export function handleCardDuplicateToggle(node, d, is_horizontal, updateTree) {
   .attr('transform', toggle_is_off ? 'translate(10.6, 14.5)' : 'translate(4.1, 14.5)')
   .attr('fill', toggle_is_off ? '#fff' : '#fff')
   .attr('font-size', '7px')
-  .text('C1')
+  .text('C'+toggle_id)
 
 
   if (toggle_is_off) {

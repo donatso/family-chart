@@ -12,11 +12,14 @@ export function handleDuplicateSpouseToggle(tree) {
 }
 
 export function handleDuplicateHierarchy(root, data_stash, is_ancestry) {
+  const progeny_duplicates = []
+  const ancestry_duplicates = []
   if (is_ancestry) {
     loopChildrenAncestry(root)
   } else {
     loopChildrenProgeny(root)
   }
+  setToggleIds(progeny_duplicates, ancestry_duplicates)
 
   function loopChildrenProgeny(d) {
     if (!d.children) return
@@ -25,9 +28,13 @@ export function handleDuplicateHierarchy(root, data_stash, is_ancestry) {
 
     const children_by_spouse = getChildrenBySpouse(d)
     spouses.forEach(p2 => {
+      if (progeny_duplicates.some(d => d.some(d => checkIfDuplicateProgeny([p1, p2], [d.p1, d.p2])))) {
+        return
+      }
       const duplicates = findDuplicateProgeny(d, p1, p2)
       if (duplicates.length > 0) {
         const all_duplicates = [{d, p1, p2}, ...duplicates]
+        progeny_duplicates.push(all_duplicates)
         all_duplicates.forEach(({d, p1, p2}) => {
           const children_by_spouse = getChildrenBySpouse(d)
           if (!d.data._tgdp_sp) d.data._tgdp_sp = {}
@@ -60,21 +67,22 @@ export function handleDuplicateHierarchy(root, data_stash, is_ancestry) {
       if (d.children) {
         const p1 = d.data
         const spouses = (d.data.rels.spouses || []).map(id => data_stash.find(d => d.id === id))
+        const children_by_spouse = getChildrenBySpouse(d)
         spouses.forEach(p2 => {
-          if (checkIfDuplicate([partner1, partner2], [p1, p2])) {
+          if (checkIfDuplicateProgeny([partner1, partner2], [p1, p2])) {
             duplicates.push({d, p1, p2})
           } else {
-            d.children.forEach(child => {
+            (children_by_spouse[p2.id] || []).forEach(child => {
               checkChildren(child)
             })
           }
         })
       }
     }
+  }
 
-    function checkIfDuplicate(arr1, arr2) {
-      return arr1.every(d => arr2.some(d0 => d.id === d0.id))
-    }
+  function checkIfDuplicateProgeny(arr1, arr2) {
+    return arr1.every(d => arr2.some(d0 => d.id === d0.id))
   }
 
   function getChildrenBySpouse(d) {
@@ -91,9 +99,13 @@ export function handleDuplicateHierarchy(root, data_stash, is_ancestry) {
 
   function loopChildrenAncestry(d) {
     if (d.children) {
+      if (ancestry_duplicates.some(d0 => checkIfDuplicateAncestry([d0[0], d0[1]], [d.children[0], d.children[1]]))) {
+        return
+      }
       const duplicates = findDuplicateAncestry(d.children)
       if (duplicates.length > 0) {
         const all_duplicates = [d, ...duplicates]
+        ancestry_duplicates.push(all_duplicates)
         all_duplicates.forEach(d => {
           if (!d.data._tgdp) d.data._tgdp = {}
           const parent_id = root === d ? 'main' : d.parent.data.id
@@ -119,7 +131,7 @@ export function handleDuplicateHierarchy(root, data_stash, is_ancestry) {
 
     function checkChildren(d) {
       if (d.children) {
-        if (checkIfDuplicate(children_1, d.children)) {
+        if (checkIfDuplicateAncestry(children_1, d.children)) {
           duplicates.push(d)
         } else {
         d.children.forEach(child => {
@@ -128,9 +140,25 @@ export function handleDuplicateHierarchy(root, data_stash, is_ancestry) {
         }
       }
     }
+  }
 
-    function checkIfDuplicate(arr1, arr2) {
-      return arr1 !== arr2 && arr1.every(d => arr2.some(d0 => d.data.id === d0.data.id))
-    }
+  function checkIfDuplicateAncestry(arr1, arr2) {
+    return arr1 !== arr2 && arr1.every(d => arr2.some(d0 => d.data.id === d0.data.id))
+  }
+
+  function setToggleIds(progeny_duplicates, ancestry_duplicates) {
+    let toggle_id = 0
+    progeny_duplicates.forEach(dupl_arr => {
+      toggle_id = toggle_id+1
+      dupl_arr.forEach(d => {
+        d.d._toggle_id = toggle_id
+      })
+    })
+    ancestry_duplicates.forEach(dupl_arr => {
+      toggle_id = toggle_id+1
+      dupl_arr.forEach(d => {
+        d._toggle_id = toggle_id
+      })
+    })
   }
 }
