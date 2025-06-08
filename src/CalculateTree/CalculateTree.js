@@ -149,7 +149,7 @@ export default function CalculateTree({
       if (d.added) return
       if (d.sibling) return
       const p1 = d.parent
-      const p2 = p1.spouses.find(d0 => d0.data.id === d.data.rels.father || d0.data.id === d.data.rels.mother)
+      const p2 = (p1.spouses || []).find(d0 => d0.data.id === d.data.rels.father || d0.data.id === d.data.rels.mother)
       if (p1 && p2) {
         if (!p1.added && !p2.added) console.error('no added spouse', p1, p2)
         const added_spouse = p1.added ? p1 : p2
@@ -279,7 +279,7 @@ export default function CalculateTree({
         }
         if (d.sibling) return
         const p1 = d.parent
-        const p2 = d.parent.spouses.find(d0 => d0.data.id === d.data.rels.father || d0.data.id === d.data.rels.mother)
+        const p2 = (d.parent.spouses || []).find(d0 => d0.data.id === d.data.rels.father || d0.data.id === d.data.rels.mother)
 
         d.from = [p1]
         if (p2) d.from.push(p2)

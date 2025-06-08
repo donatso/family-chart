@@ -122,7 +122,7 @@ export function createLinks({d, tree, is_horizontal=false}) {
   }
 
   function otherParent(child, p1) {
-    const p2 = p1.spouses.find(d => d.data.id === child.data.rels.mother || d.data.id === child.data.rels.father)
+    const p2 = (p1.spouses || []).find(d => d.data.id === child.data.rels.mother || d.data.id === child.data.rels.father)
     return p2
   }
 }
