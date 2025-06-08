@@ -159,3 +159,46 @@ export function setupSiblings({tree, data_stash, node_separation, sortChildrenFu
     }
   }
 }
+
+export function handlePrivateCards({root, data_stash, is_ancestry, private_cards_config}) {
+  if (is_ancestry) return
+  let d = root
+  const condition = private_cards_config.condition
+  if (!condition) return console.error('private_cards_config.condition is not set')
+  check(d)
+
+  function check(d) {
+    if (d.data._new_rel_data) return
+    const is_private = condition(d.data)
+    if (is_private) {
+      delete d.children
+      d.is_private = true
+    } else {
+      if (!d.children) return
+      const children_by_spouse = getChildrenBySpouse(d)
+      Object.keys(children_by_spouse).forEach(spouse_id => {
+        const spouse = data_stash.find(d0 => d0.id === spouse_id)
+        const is_private_spouse = condition(spouse)
+        if (is_private_spouse) {
+          d.children = d.children.filter(ch => !children_by_spouse[spouse_id].includes(ch))
+        } else {
+          children_by_spouse[spouse_id].forEach(child => check(child))
+        }
+      })
+      if (d.children.length === 0) delete d.children
+    }
+    if (d.children) d.children.forEach(d0 => check(d0))
+  }
+
+  function getChildrenBySpouse(d) {
+    const children_by_spouse = {}
+    const p1 = d;
+    (d.children || []).forEach(child => {
+      const ch_rels = child.data.rels
+      const p2_id = ch_rels.father === p1.data.id ? ch_rels.mother : ch_rels.father
+      if (!children_by_spouse[p2_id]) children_by_spouse[p2_id] = []
+      children_by_spouse[p2_id].push(child)
+    })
+    return children_by_spouse
+  }
+}

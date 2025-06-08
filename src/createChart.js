@@ -114,6 +114,12 @@ CreateChart.prototype.setModifyTreeHierarchy = function(modifyTreeHierarchy) {
   return this
 }
 
+CreateChart.prototype.setPrivateCardsConfig = function(private_cards_config) {
+  this.store.state.private_cards_config = private_cards_config
+
+  return this
+}
+
 CreateChart.prototype.setLinkSpouseText = function(linkSpouseText) {
   this.linkSpouseText = linkSpouseText
 

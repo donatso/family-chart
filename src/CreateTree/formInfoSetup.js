@@ -154,7 +154,7 @@ export function formInfoSetup(form_creator, closeCallback) {
         <div class="f3-form-field">
           <label>${field.label}</label>
           <select name="${field.id}" value="${field.initial_value || ''}">
-            <option value="">Select ${field.label}</option>
+            <option value="">${field.placeholder || `Select ${field.label}`}</option>
             ${field.options.map(option => `<option ${option.value === field.initial_value ? 'selected' : ''} value="${option.value}">${option.label}</option>`).join('')}
           </select>
         </div>`

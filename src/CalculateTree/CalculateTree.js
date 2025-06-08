@@ -1,5 +1,5 @@
 import d3 from "../d3.js"
-import {sortChildrenWithSpouses, sortAddNewChildren, setupSiblings} from "./CalculateTree.handlers.js"
+import {sortChildrenWithSpouses, sortAddNewChildren, setupSiblings, handlePrivateCards} from "./CalculateTree.handlers.js"
 import {createNewPerson} from "../CreateTree/newPerson.js"
 import {isAllRelativeDisplayed} from "../handlers/general.js"
 import {handleDuplicateSpouseToggle, handleDuplicateHierarchy} from "./CalculateTree.duplicates.js"
@@ -16,6 +16,7 @@ export default function CalculateTree({
     progeny_depth=undefined,
     show_siblings_of_main=false,
     modifyTreeHierarchy=undefined,
+    private_cards_config=undefined,
     duplicate_toggle=false
   }) {
   if (!data || !data.length) return {data: [], data_stash: [], dim: {width: 0, height: 0}, main_id: null}
@@ -49,6 +50,7 @@ export default function CalculateTree({
     if (is_ancestry) addSpouseReferences(root)
     trimTree(root, is_ancestry)
     if (duplicate_toggle) handleDuplicateHierarchy(root, data_stash, is_ancestry)
+    if (private_cards_config) handlePrivateCards({root, data_stash, is_ancestry, private_cards_config})
     if (modifyTreeHierarchy) modifyTreeHierarchy(root, is_ancestry)
     d3_tree(root);
     
@@ -114,7 +116,7 @@ export default function CalculateTree({
   function setupSpouses({tree, node_separation}) {
     for (let i = tree.length; i--;) {
       const d = tree[i]
-      if (!d.is_ancestry && d.data.rels.spouses && d.data.rels.spouses.length > 0){
+      if (!d.is_ancestry && d.data.rels.spouses && d.data.rels.spouses.length > 0 && !d.is_private){
         const side = d.data.data.gender === "M" ? -1 : 1;  // female on right
         d.x += d.data.rels.spouses.length/2*node_separation*side;
         d.data.rels.spouses.forEach((sp_id, i) => {

@@ -72,13 +72,14 @@ export function createForm({datum, store, fields, postSubmit, addRelative, delet
   }
 
   function addSelectField(field) {
-    if (!field.optionCreator) return
+    if (!field.optionCreator && !field.options) return console.error('optionCreator or options is not set for field', field)
     form_creator.fields.push({
       id: field.id,
       type: field.type,
       label: field.label,
       initial_value: datum.data[field.id],
-      options: field.optionCreator(datum),
+      placeholder: field.placeholder,
+      options: field.options || field.optionCreator(datum),
     })
   }
 
