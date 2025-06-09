@@ -1,6 +1,6 @@
 import d3 from "../d3.js"
 import f3 from "../index.js"
-import addRelative from "./addRelative.js"
+import addRelative, {handleLinkRel} from "./addRelative.js"
 import {deletePerson, moveToAddToAdded} from "./form.js"
 
 export default function(...args) { return new EditTree(...args) }
@@ -101,8 +101,11 @@ EditTree.prototype.cardEditForm = function(datum) {
       const active_datum = this.addRelativeInstance.datum
       this.store.updateMainId(active_datum.id)
       this.openWithoutRelCancel(active_datum)
-    }
-    else if (!props?.delete) {
+    } else if (datum.to_add && props?.link_rel_id) {
+      handleLinkRel(datum, props.link_rel_id, this.store.getData())
+      this.store.updateMainId(props.link_rel_id)
+      this.openFormWithId(props.link_rel_id)
+    } else if (!props?.delete) {
       if (this.postSubmit) this.postSubmit(datum, this.store.getData())
       this.openFormWithId(datum.id)
     }

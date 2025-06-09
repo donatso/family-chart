@@ -233,7 +233,7 @@ function setDatumRels(datum, data) {
   }
 }
 
-function handleLinkRel(updated_datum, link_rel_id, store_data) {
+export function handleLinkRel(updated_datum, link_rel_id, store_data) {
   const new_rel_id = updated_datum.id
 
   store_data.forEach(d => {
@@ -260,8 +260,8 @@ function handleLinkRel(updated_datum, link_rel_id, store_data) {
     if (!link_rel.rels.spouses.includes(spouse_id)) link_rel.rels.spouses.push(spouse_id)
   })
 
-  if (!link_rel.rels.father && new_rel.rels.father) link_rel.rels.father = new_rel.rels.father  // needed?
-  if (!link_rel.rels.mother && new_rel.rels.mother) link_rel.rels.mother = new_rel.rels.mother  // needed?
+  if (!link_rel.rels.father && new_rel.rels.father) link_rel.rels.father = new_rel.rels.father
+  if (!link_rel.rels.mother && new_rel.rels.mother) link_rel.rels.mother = new_rel.rels.mother
 
   store_data.splice(store_data.findIndex(d => d.id === new_rel_id), 1)
 }

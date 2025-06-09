@@ -19,6 +19,8 @@ export function createForm({datum, store, fields, postSubmit, addRelative, delet
     form_creator.new_rel = true
     form_creator.editable = true
     form_creator.onCancel = onCancel
+  }
+  if (datum._new_rel_data || datum.to_add) {
     if (link_existing_rel_config) form_creator.linkExistingRelative = createLinkExistingRelative(datum, store.getData(), link_existing_rel_config)
   }
   if (form_creator.onDelete) form_creator.can_delete = checkIfRelativesConnectedWithoutPerson(datum, store.getData())
