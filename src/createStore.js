@@ -43,7 +43,7 @@ export default function createStore(initial_state) {
       show_siblings_of_main: state.show_siblings_of_main,
       modifyTreeHierarchy: state.modifyTreeHierarchy,
       private_cards_config: state.private_cards_config,
-      duplicate_toggle: state.duplicate_toggle
+      duplicate_branch_toggle: state.duplicate_branch_toggle
     })
   }
 

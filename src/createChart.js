@@ -184,8 +184,8 @@ CreateChart.prototype.setProgenyDepth = function(progeny_depth) {
   return this
 }
 
-CreateChart.prototype.setDuplicateToggle = function(duplicate_toggle) {
-  this.store.state.duplicate_toggle = duplicate_toggle
+CreateChart.prototype.setDuplicateBranchToggle = function(duplicate_branch_toggle) {
+  this.store.state.duplicate_branch_toggle = duplicate_branch_toggle
 
   return this
 }

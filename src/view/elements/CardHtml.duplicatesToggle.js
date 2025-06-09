@@ -19,7 +19,7 @@ export function handleCardDuplicateToggle(node, d, is_horizontal, updateTree) {
       pos.top = d.sy - d.x + 4
       pos.left = 105
     }
-    toggle_id = spouse._toggle_id
+    toggle_id = spouse._toggle_id_sp ? spouse._toggle_id_sp[d.data.id] : -1
   } else {
     const parent_id = d.data.main ? 'main' : d.parent.data.id
     toggle_is_off = d.data._tgdp[parent_id]

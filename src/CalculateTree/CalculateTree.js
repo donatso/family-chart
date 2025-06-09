@@ -17,7 +17,7 @@ export default function CalculateTree({
     show_siblings_of_main=false,
     modifyTreeHierarchy=undefined,
     private_cards_config=undefined,
-    duplicate_toggle=false
+    duplicate_branch_toggle=false
   }) {
   if (!data || !data.length) return {data: [], data_stash: [], dim: {width: 0, height: 0}, main_id: null}
   if (is_horizontal) [node_separation, level_separation] = [level_separation, node_separation]
@@ -37,7 +37,7 @@ export default function CalculateTree({
   tree.forEach(d => d.all_rels_displayed = isAllRelativeDisplayed(d, tree))
   setupTid({tree})
   setupFromTo(tree)
-  if (duplicate_toggle) handleDuplicateSpouseToggle(tree)
+  if (duplicate_branch_toggle) handleDuplicateSpouseToggle(tree)
   const dim = calculateTreeDim(tree, node_separation, level_separation)
 
   return {data: tree, data_stash, dim, main_id: main.id, is_horizontal}
@@ -49,7 +49,7 @@ export default function CalculateTree({
 
     if (is_ancestry) addSpouseReferences(root)
     trimTree(root, is_ancestry)
-    if (duplicate_toggle) handleDuplicateHierarchy(root, data_stash, is_ancestry)
+    if (duplicate_branch_toggle) handleDuplicateHierarchy(root, data_stash, is_ancestry)
     if (private_cards_config) handlePrivateCards({root, data_stash, is_ancestry, private_cards_config})
     if (modifyTreeHierarchy) modifyTreeHierarchy(root, is_ancestry)
     d3_tree(root);

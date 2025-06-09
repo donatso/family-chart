@@ -88,7 +88,12 @@ export function createForm({datum, store, fields, postSubmit, addRelative, delet
   function createLinkExistingRelative(datum, data, link_existing_rel_config) {
     const obj = {
       label: link_existing_rel_config.label,
-      options: data.filter(d => d.id !== datum.id && !d._new_rel_data && !d.to_add).map(d => ({value: d.id, label: link_existing_rel_config.linkRelLabel(d)})),
+      options: data.filter(d => d.id !== datum.id && !d._new_rel_data && !d.to_add)
+        .map(d => ({value: d.id, label: link_existing_rel_config.linkRelLabel(d)}))
+        .sort((a, b) => {
+          if (typeof a.label === 'string' && typeof b.label === 'string') return a.label.localeCompare(b.label)
+          else return a.label < b.label ? -1 : 1
+        }),
       onSelect: submitLinkExistingRelative
     }
     return obj

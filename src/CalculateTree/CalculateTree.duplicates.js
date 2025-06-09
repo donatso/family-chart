@@ -169,7 +169,8 @@ export function handleDuplicateHierarchy(root, data_stash, is_ancestry) {
     progeny_duplicates.forEach(dupl_arr => {
       toggle_id = toggle_id+1
       dupl_arr.forEach(d => {
-        d.d._toggle_id = toggle_id
+        if (!d.d._toggle_id_sp) d.d._toggle_id_sp = {}
+        d.d._toggle_id_sp[d.p2.id] = toggle_id
       })
     })
     ancestry_duplicates.forEach(dupl_arr => {

@@ -23,7 +23,7 @@ export function CardHtml(props) {
     if (props.onCardMouseenter) d3.select(this).select('.card').on('mouseenter', e => props.onCardMouseenter(e, d))
     if (props.onCardMouseleave) d3.select(this).select('.card').on('mouseleave', e => props.onCardMouseleave(e, d))
     if (d.duplicate) handleCardDuplicateHover(this, d)
-    if (props.duplicate_toggle) handleCardDuplicateToggle(this, d, props.store.state.is_horizontal, props.store.updateTree)
+    if (props.duplicate_branch_toggle) handleCardDuplicateToggle(this, d, props.store.state.is_horizontal, props.store.updateTree)
     if (location.origin.includes('localhost')) {
       d.__node = this.querySelector('.card')
       d.__label = d.data.data['first name']
