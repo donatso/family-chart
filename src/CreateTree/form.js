@@ -1,5 +1,6 @@
 import {checkIfRelativesConnectedWithoutPerson} from "./checkIfRelativesConnectedWithoutPerson.js"
 import {createTreeDataWithMainNode} from "./newPerson.js"
+import { getLinkRelOptions } from "./addRelative.linkRel.js"
 
 export function createForm({datum, store, fields, postSubmit, addRelative, deletePerson, onCancel, editFirst, link_existing_rel_config}) {
   const form_creator = {
@@ -88,7 +89,7 @@ export function createForm({datum, store, fields, postSubmit, addRelative, delet
   function createLinkExistingRelative(datum, data, link_existing_rel_config) {
     const obj = {
       label: link_existing_rel_config.label,
-      options: data.filter(d => d.id !== datum.id && !d._new_rel_data && !d.to_add)
+      options: getLinkRelOptions(datum, data)
         .map(d => ({value: d.id, label: link_existing_rel_config.linkRelLabel(d)}))
         .sort((a, b) => {
           if (typeof a.label === 'string' && typeof b.label === 'string') return a.label.localeCompare(b.label)
@@ -97,6 +98,8 @@ export function createForm({datum, store, fields, postSubmit, addRelative, delet
       onSelect: submitLinkExistingRelative
     }
     return obj
+
+
   }
 
   function submitFormChanges(e) {

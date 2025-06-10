@@ -1,4 +1,5 @@
 import { createNewPerson } from "./newPerson.js"
+import { handleLinkRel } from "./addRelative.linkRel.js"
 
 export default (...args) => { return new AddRelative(...args) }
 
@@ -127,13 +128,13 @@ function addDatumRelsPlaceholders(datum, store_data, addRelLabels) {
 
   if (!datum.rels.father) {
     const father = createNewPerson({data: {gender: "M"}, rels: {children: [datum.id]}})
-    father._new_rel_data = {rel_type: "father", label: addRelLabels.father}
+    father._new_rel_data = {rel_type: "father", label: addRelLabels.father, rel_id: datum.id}
     datum.rels.father = father.id
     store_data.push(father)
   }
   if (!datum.rels.mother) {
     const mother = createNewPerson({data: {gender: "F"}, rels: {children: [datum.id]}})
-    mother._new_rel_data = {rel_type: "mother", label: addRelLabels.mother}
+    mother._new_rel_data = {rel_type: "mother", label: addRelLabels.mother, rel_id: datum.id}
     datum.rels.mother = mother.id
     store_data.push(mother)
   }
@@ -153,7 +154,7 @@ function addDatumRelsPlaceholders(datum, store_data, addRelLabels) {
       const child = store_data.find(d => d.id === child_id)
       if (!child.rels.mother) {
         if (!new_spouse) new_spouse = createNewPerson({data: {gender: "F"}, rels: {spouses: [datum.id], children: []}})
-        new_spouse._new_rel_data = {rel_type: "spouse", label: addRelLabels.spouse}
+        new_spouse._new_rel_data = {rel_type: "spouse", label: addRelLabels.spouse, rel_id: datum.id}
         new_spouse.rels.children.push(child.id)
         datum.rels.spouses.push(new_spouse.id)
         child.rels.mother = new_spouse.id
@@ -161,7 +162,7 @@ function addDatumRelsPlaceholders(datum, store_data, addRelLabels) {
       }
       if (!child.rels.father) {
         if (!new_spouse) new_spouse = createNewPerson({data: {gender: "M"}, rels: {spouses: [datum.id], children: []}})
-        new_spouse._new_rel_data = {rel_type: "spouse", label: addRelLabels.spouse}
+        new_spouse._new_rel_data = {rel_type: "spouse", label: addRelLabels.spouse, rel_id: datum.id}
         new_spouse.rels.children.push(child.id)
         datum.rels.spouses.push(new_spouse.id)
         child.rels.father = new_spouse.id
@@ -172,7 +173,7 @@ function addDatumRelsPlaceholders(datum, store_data, addRelLabels) {
 
   const spouse_gender = datum.data.gender === "M" ? "F" : "M"
   const new_spouse = createNewPerson({data: {gender: spouse_gender}, rels: {spouses: [datum.id]}})
-  new_spouse._new_rel_data = {rel_type: "spouse", label: addRelLabels.spouse}
+  new_spouse._new_rel_data = {rel_type: "spouse", label: addRelLabels.spouse, rel_id: datum.id}
   datum.rels.spouses.push(new_spouse.id)
   store_data.push(new_spouse)
 
@@ -185,13 +186,13 @@ function addDatumRelsPlaceholders(datum, store_data, addRelLabels) {
     spouse.rels.children = spouse.rels.children.filter(child_id => datum.rels.children.includes(child_id))
     
     const new_son = createNewPerson({data: {gender: "M"}, rels: {father: father_id, mother: mother_id}})
-    new_son._new_rel_data = {rel_type: "son", label: addRelLabels.son, other_parent_id: spouse.id}
+    new_son._new_rel_data = {rel_type: "son", label: addRelLabels.son, other_parent_id: spouse.id, rel_id: datum.id}
     spouse.rels.children.push(new_son.id)
     datum.rels.children.push(new_son.id)
     store_data.push(new_son)
 
     const new_daughter = createNewPerson({data: {gender: "F"}, rels: {mother: mother_id, father: father_id}})
-    new_daughter._new_rel_data = {rel_type: "daughter", label: addRelLabels.daughter, other_parent_id: spouse.id}
+    new_daughter._new_rel_data = {rel_type: "daughter", label: addRelLabels.daughter, other_parent_id: spouse.id, rel_id: datum.id}
     spouse.rels.children.push(new_daughter.id)
     datum.rels.children.push(new_daughter.id)
     store_data.push(new_daughter)
@@ -231,37 +232,4 @@ function setDatumRels(datum, data) {
 
     datum_rels.push(rel_datum)
   }
-}
-
-export function handleLinkRel(updated_datum, link_rel_id, store_data) {
-  const new_rel_id = updated_datum.id
-
-  store_data.forEach(d => {
-    if (d.rels.father === new_rel_id) d.rels.father = link_rel_id
-    if (d.rels.mother === new_rel_id) d.rels.mother = link_rel_id
-    if ((d.rels.spouses || []).includes(new_rel_id)) {
-      d.rels.spouses = d.rels.spouses.filter(id => id !== new_rel_id)
-      if (!d.rels.spouses.includes(link_rel_id)) d.rels.spouses.push(link_rel_id)
-    }
-    if ((d.rels.children || []).includes(new_rel_id)) {
-      d.rels.children = d.rels.children.filter(id => id !== new_rel_id)
-      if (!d.rels.children.includes(link_rel_id)) d.rels.children.push(link_rel_id)
-    }
-  })
-
-  const link_rel = store_data.find(d => d.id === link_rel_id)
-  const new_rel = store_data.find(d => d.id === new_rel_id);
-  (new_rel.rels.children || []).forEach(child_id => {
-    if (!link_rel.rels.children) link_rel.rels.children = []
-    if (!link_rel.rels.children.includes(child_id)) link_rel.rels.children.push(child_id)
-  });
-  (new_rel.rels.spouses || []).forEach(spouse_id => {
-    if (!link_rel.rels.spouses) link_rel.rels.spouses = []
-    if (!link_rel.rels.spouses.includes(spouse_id)) link_rel.rels.spouses.push(spouse_id)
-  })
-
-  if (!link_rel.rels.father && new_rel.rels.father) link_rel.rels.father = new_rel.rels.father
-  if (!link_rel.rels.mother && new_rel.rels.mother) link_rel.rels.mother = new_rel.rels.mother
-
-  store_data.splice(store_data.findIndex(d => d.id === new_rel_id), 1)
 }

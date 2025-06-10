@@ -1,7 +1,8 @@
 import d3 from "../d3.js"
 import f3 from "../index.js"
-import addRelative, {handleLinkRel} from "./addRelative.js"
-import {deletePerson, moveToAddToAdded} from "./form.js"
+import addRelative from "./addRelative.js"
+import {deletePerson} from "./form.js"
+import { handleLinkRel } from "./addRelative.linkRel.js"
 
 export default function(...args) { return new EditTree(...args) }
 
