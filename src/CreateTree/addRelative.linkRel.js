@@ -68,7 +68,7 @@ export function getLinkRelOptions(datum, data) {
     return progeny_ids
 
     function loopCheck(d) {
-      const children = d.rels.children || []
+      const children = d.rels.children ? [...d.rels.children] : []
       if (d.__rels && d.__rels.children) children.push(...d.__rels.children)
       children.forEach(c_id => {
         progeny_ids.push(c_id)
