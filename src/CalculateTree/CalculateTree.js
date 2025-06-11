@@ -2,7 +2,8 @@ import d3 from "../d3.js"
 import {sortChildrenWithSpouses, sortAddNewChildren, setupSiblings, handlePrivateCards} from "./CalculateTree.handlers.js"
 import {createNewPerson} from "../CreateTree/newPerson.js"
 import {isAllRelativeDisplayed} from "../handlers/general.js"
-import {handleDuplicateSpouseToggle, handleDuplicateHierarchy} from "./CalculateTree.duplicates.js"
+import {handleDuplicateSpouseToggle, handleDuplicateHierarchyProgeny} from "./CalculateTree.duplicatesProgeny.js"
+import {handleDuplicateHierarchyAncestry} from "./CalculateTree.duplicatesAncestry.js"
 
 export default function CalculateTree({
     data, main_id=null,
@@ -17,7 +18,8 @@ export default function CalculateTree({
     show_siblings_of_main=false,
     modifyTreeHierarchy=undefined,
     private_cards_config=undefined,
-    duplicate_branch_toggle=false
+    duplicate_branch_toggle=false,
+    on_toggle_one_close_others=true
   }) {
   if (!data || !data.length) return {data: [], data_stash: [], dim: {width: 0, height: 0}, main_id: null}
   if (is_horizontal) [node_separation, level_separation] = [level_separation, node_separation]
@@ -294,6 +296,11 @@ export default function CalculateTree({
         }
       }
     })
+  }
+  
+  function handleDuplicateHierarchy(root, data_stash, is_ancestry) {
+    if (is_ancestry) handleDuplicateHierarchyAncestry(root, on_toggle_one_close_others)
+    else handleDuplicateHierarchyProgeny(root, data_stash, on_toggle_one_close_others)
   }
 }
 
