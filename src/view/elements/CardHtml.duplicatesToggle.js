@@ -12,7 +12,7 @@ export function handleCardDuplicateToggle(node, d, is_horizontal, updateTree) {
   if (d.spouse) {
     const spouse = d.spouse
     const parent_id = spouse.data.main ? 'main' : spouse.parent.data.id
-    toggle_is_off = spouse.data._tgdp_sp[parent_id][d.data.id]
+    toggle_is_off = spouse.data._tgdp_sp[parent_id][d.data.id] < 0
     pos.top = 60
     pos.left = d.sx-d.x-30+card_width/2
     if (is_horizontal) {
@@ -20,9 +20,10 @@ export function handleCardDuplicateToggle(node, d, is_horizontal, updateTree) {
       pos.left = 105
     }
     toggle_id = spouse._toggle_id_sp ? spouse._toggle_id_sp[d.data.id] : -1
+    if (toggle_id === -1) return
   } else {
     const parent_id = d.data.main ? 'main' : d.parent.data.id
-    toggle_is_off = d.data._tgdp[parent_id]
+    toggle_is_off = d.data._tgdp[parent_id] < 0
     pos.top = -65
     pos.left = -30+card_width/2
     if (is_horizontal) {
@@ -53,10 +54,16 @@ export function handleCardDuplicateToggle(node, d, is_horizontal, updateTree) {
       const spouse = d.spouse
       const parent_id = spouse.data.main ? 'main' : spouse.parent.data.id
       if (!spouse.data._tgdp_sp[parent_id].hasOwnProperty(d.data.id)) console.error('no toggle', d, spouse)
-      spouse.data._tgdp_sp[parent_id][d.data.id] = !spouse.data._tgdp_sp[parent_id][d.data.id]
+      let val = spouse.data._tgdp_sp[parent_id][d.data.id]
+      if (val < 0) val = new Date().getTime()
+      else val = -new Date().getTime()
+      spouse.data._tgdp_sp[parent_id][d.data.id] = val
     } else {
       const parent_id = d.data.main ? 'main' : d.parent.data.id
-      d.data._tgdp[parent_id] = !d.data._tgdp[parent_id]
+      let val = d.data._tgdp[parent_id]
+      if (val < 0) val = new Date().getTime()
+      else val = -new Date().getTime()
+      d.data._tgdp[parent_id] = val
     }
 
     updateTree()
