@@ -37,6 +37,7 @@ export default function CalculateTree({
   setupProgenyParentsPos({tree})
   nodePositioning({tree})
   tree.forEach(d => d.all_rels_displayed = isAllRelativeDisplayed(d, tree))
+  if (private_cards_config) handlePrivateCards({tree, data_stash, private_cards_config})
   setupTid({tree})
   setupFromTo(tree)
   if (duplicate_branch_toggle) handleDuplicateSpouseToggle(tree)
@@ -52,7 +53,6 @@ export default function CalculateTree({
     if (is_ancestry) addSpouseReferences(root)
     trimTree(root, is_ancestry)
     if (duplicate_branch_toggle) handleDuplicateHierarchy(root, data_stash, is_ancestry)
-    if (private_cards_config) handlePrivateCards({root, data_stash, is_ancestry, private_cards_config})
     if (modifyTreeHierarchy) modifyTreeHierarchy(root, is_ancestry)
     d3_tree(root);
     
@@ -118,7 +118,7 @@ export default function CalculateTree({
   function setupSpouses({tree, node_separation}) {
     for (let i = tree.length; i--;) {
       const d = tree[i]
-      if (!d.is_ancestry && d.data.rels.spouses && d.data.rels.spouses.length > 0 && !d.is_private){
+      if (!d.is_ancestry && d.data.rels.spouses && d.data.rels.spouses.length > 0){
         const side = d.data.data.gender === "M" ? -1 : 1;  // female on right
         d.x += d.data.rels.spouses.length/2*node_separation*side;
         d.data.rels.spouses.forEach((sp_id, i) => {

@@ -160,45 +160,46 @@ export function setupSiblings({tree, data_stash, node_separation, sortChildrenFu
   }
 }
 
-export function handlePrivateCards({root, data_stash, is_ancestry, private_cards_config}) {
-  if (is_ancestry) return
-  let d = root
+export function handlePrivateCards({tree, data_stash, private_cards_config}) {
+  const private_persons = {}
   const condition = private_cards_config.condition
   if (!condition) return console.error('private_cards_config.condition is not set')
-  check(d)
-
-  function check(d) {
+  tree.forEach(d => {
     if (d.data._new_rel_data) return
-    const is_private = condition(d.data)
-    if (is_private) {
-      delete d.children
-      d.is_private = true
-    } else {
-      if (!d.children) return
-      const children_by_spouse = getChildrenBySpouse(d)
-      Object.keys(children_by_spouse).forEach(spouse_id => {
-        const spouse = data_stash.find(d0 => d0.id === spouse_id)
-        const is_private_spouse = condition(spouse)
-        if (is_private_spouse) {
-          d.children = d.children.filter(ch => !children_by_spouse[spouse_id].includes(ch))
-        } else {
-          children_by_spouse[spouse_id].forEach(child => check(child))
-        }
-      })
-      if (d.children.length === 0) delete d.children
-    }
-    if (d.children) d.children.forEach(d0 => check(d0))
-  }
+    const is_private = isPrivate(d.data.id)
+    if (is_private) d.is_private = is_private
+    return
+  })
 
-  function getChildrenBySpouse(d) {
-    const children_by_spouse = {}
-    const p1 = d;
-    (d.children || []).forEach(child => {
-      const ch_rels = child.data.rels
-      const p2_id = ch_rels.father === p1.data.id ? ch_rels.mother : ch_rels.father
-      if (!children_by_spouse[p2_id]) children_by_spouse[p2_id] = []
-      children_by_spouse[p2_id].push(child)
-    })
-    return children_by_spouse
+  function isPrivate(d_id) {
+    const parents_and_spouses_checked = []
+    let is_private = false
+    checkParentsAndSpouses(d_id)
+    private_persons[d_id] = is_private
+    return is_private
+
+    function checkParentsAndSpouses(d_id) {
+      if (is_private) return
+      if (private_persons.hasOwnProperty(d_id)) {
+        is_private = private_persons[d_id]
+        return is_private
+      }
+      const d = data_stash.find(d0 => d0.id === d_id)
+      if (d._new_rel_data) return
+      if (condition(d)) {
+        is_private = true
+        return true
+      }
+
+      const rels = d.rels;
+      let parents_and_spouses = [rels.father, rels.mother, ...(rels.spouses || [])]
+      if (d.__rels) parents_and_spouses.push(...[d.__rels.father, d.__rels.mother, ...(d.__rels.spouses || [])])
+      parents_and_spouses.forEach(d0_id => {
+        if (!d0_id) return
+        if (parents_and_spouses_checked.includes(d0_id)) return
+        parents_and_spouses_checked.push(d0_id)
+        checkParentsAndSpouses(d0_id)
+      })
+    }
   }
 }
