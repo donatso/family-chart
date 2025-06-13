@@ -40,6 +40,16 @@ export function formInfoSetup(form_creator, closeCallback) {
       });
     }
 
+    const remove_relative_btn = form.querySelector('.f3-remove-relative-btn');
+    if (remove_relative_btn && form_creator.removeRelative) {
+      remove_relative_btn.addEventListener('click', () => {
+        if (form_creator.removeRelativeActive) form_creator.removeRelativeCancel()
+        else form_creator.removeRelative()
+        form_creator.removeRelativeActive = !form_creator.removeRelativeActive
+        update()
+      });
+    }
+
     const close_btn = form.querySelector('.f3-close-btn');
     close_btn.addEventListener('click', closeCallback)
 
@@ -70,18 +80,23 @@ export function formInfoSetup(form_creator, closeCallback) {
         ${form_creator.addRelative && !form_creator.no_edit ? addRelativeBtn() : ''}
         ${form_creator.no_edit ? spaceDiv() : editBtn()}
       </div>
+
       ${genderRadio()}
 
       ${fields()}
-
-      ${form_creator.onDelete ? deleteBtn() : ''}
-
-      ${form_creator.linkExistingRelative ? addLinkExistingRelative() : ''}
       
       <div class="f3-form-buttons">
         <button type="button" class="f3-cancel-btn">Cancel</button>
         <button type="submit">Submit</button>
       </div>
+
+      ${form_creator.linkExistingRelative ? addLinkExistingRelative() : ''}
+
+      <hr>
+
+      ${form_creator.onDelete ? deleteBtn() : ''}
+
+      ${form_creator.removeRelative ? removeRelativeBtn() : ''}
     </form>
   `)
 
@@ -90,6 +105,16 @@ export function formInfoSetup(form_creator, closeCallback) {
       <div>
         <button type="button" class="f3-delete-btn" ${form_creator.can_delete ? '' : 'disabled'}>
           Delete
+        </button>
+      </div>
+    `)
+  }
+
+  function removeRelativeBtn() {
+    return (`
+      <div>
+        <button type="button" class="f3-remove-relative-btn${form_creator.removeRelativeActive ? ' active' : ''}">
+          ${form_creator.removeRelativeActive ? 'Cancel Remove Relation' : 'Remove Relation'}
         </button>
       </div>
     `)
@@ -201,13 +226,19 @@ export function formInfoSetup(form_creator, closeCallback) {
   }
 
   function addLinkExistingRelative() {
+    const title = form_creator.linkExistingRelative.hasOwnProperty('title') ? form_creator.linkExistingRelative.title : 'Profile already exists?'
+    const select_placeholder = form_creator.linkExistingRelative.hasOwnProperty('select_placeholder') ? form_creator.linkExistingRelative.select_placeholder : 'Select profile'
+    const options = form_creator.linkExistingRelative.options
     return (`
-      <div class="f3-link-existing-relative">
-        <label>${form_creator.linkExistingRelative.label}</label>
-        <select>
-          <option value="">Select ${form_creator.linkExistingRelative.label}</option>
-          ${form_creator.linkExistingRelative.options.map(option => `<option value="${option.value}">${option.label}</option>`).join('')}
-        </select>
+      <div>
+        <hr>
+        <div class="f3-link-existing-relative">
+          <label>${title}</label>
+          <select>
+            <option value="">${select_placeholder}</option>
+            ${options.map(option => `<option value="${option.value}">${option.label}</option>`).join('')}
+          </select>
+        </div>
       </div>
     `)
   }

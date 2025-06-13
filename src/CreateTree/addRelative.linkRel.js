@@ -40,9 +40,10 @@ export function getLinkRelOptions(datum, data) {
   const progeny_ids = getProgeny(datum, data)
   if (datum._new_rel_data && ['son', 'daughter'].includes(datum._new_rel_data.rel_type)) progeny_ids.push(...getProgeny(rel_datum, data))
 
-  return data.filter(d => d.id !== datum.id && d.id !== rel_datum?.id && !d._new_rel_data && !d.to_add)
+  return data.filter(d => d.id !== datum.id && d.id !== rel_datum?.id && !d._new_rel_data && !d.to_add && !d.unknown)
     .filter(d => !ancestry_ids.includes(d.id))
     .filter(d => !progeny_ids.includes(d.id))
+    .filter(d => !(d.rels.spouses || []).includes(datum.id))
 
 
   function getAncestry(datum, data_stash) {

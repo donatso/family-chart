@@ -209,23 +209,27 @@ export default function CalculateTree({
       if (d.rels.children && d.rels.children.length > 0) {
         if (!d.rels.spouses) d.rels.spouses = []
         const is_father = d.data.gender === "M"
-        let spouse
+        let to_add_spouse
 
         d.rels.children.forEach(d0 => {
           const child = data.find(d1 => d1.id === d0)
           if (child.rels[is_father ? 'father' : 'mother'] !== d.id) return
           if (child.rels[!is_father ? 'father' : 'mother']) return
-          if (!spouse) {
-            spouse = createToAddSpouse(d)
-            d.rels.spouses.push(spouse.id)
+          if (!to_add_spouse) {
+            to_add_spouse = findOrCreateToAddSpouse(d)
           }
-          spouse.rels.children.push(child.id)
-          child.rels[!is_father ? 'father' : 'mother'] = spouse.id
+          to_add_spouse.rels.children.push(child.id)
+          child.rels[!is_father ? 'father' : 'mother'] = to_add_spouse.id
         })
       }
     }
     to_add_spouses.forEach(d => data.push(d))
     return data
+
+    function findOrCreateToAddSpouse(d) {
+      const spouses = d.rels.spouses.map(sp_id => data.find(d0 => d0.id === sp_id))
+      return spouses.find(sp => sp.to_add) || createToAddSpouse(d)
+    }
 
     function createToAddSpouse(d) {
       const spouse = createNewPerson({
@@ -234,6 +238,7 @@ export default function CalculateTree({
       });
       spouse.to_add = true;
       to_add_spouses.push(spouse);
+      d.rels.spouses.push(spouse.id)
       return spouse
     }
   }

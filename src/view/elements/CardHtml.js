@@ -62,6 +62,7 @@ export function CardHtml(props) {
   function textDisplay(d) {
     if (d.data._new_rel_data) return newRelDataDisplay(d)
     if (d.data.to_add) return `<div>${props.empty_card_label || 'ADD'}</div>`
+    if (d.data.unknown) return `<div>${props.unknown_card_label || 'UNKNOWN'}</div>`
     return (`
       ${props.card_display.map(display => `<div>${display(d.data)}</div>`).join('')}
     `)
@@ -108,11 +109,15 @@ export function CardHtml(props) {
     else if (d.data.data.gender === 'F') class_list.push('card-female')
     else class_list.push('card-genderless')
 
+    class_list.push(`card-depth-${d.is_ancestry ? -d.depth : d.depth}`)
+
     if (d.data.main) class_list.push('card-main')
 
     if (d.data._new_rel_data) class_list.push('card-new-rel')
 
     if (d.data.to_add) class_list.push('card-to-add')
+
+    if (d.data.unknown) class_list.push('card-unknown')
 
     return class_list
   }

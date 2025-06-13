@@ -2,7 +2,7 @@ import {checkIfRelativesConnectedWithoutPerson} from "./checkIfRelativesConnecte
 import {createTreeDataWithMainNode} from "./newPerson.js"
 import { getLinkRelOptions } from "./addRelative.linkRel.js"
 
-export function createForm({datum, store, fields, postSubmit, addRelative, deletePerson, onCancel, editFirst, link_existing_rel_config}) {
+export function createForm({datum, store, fields, postSubmit, addRelative, removeRelative, deletePerson, onCancel, editFirst, link_existing_rel_config}) {
   const form_creator = {
     fields: [],
     onSubmit: submitFormChanges,
@@ -13,6 +13,10 @@ export function createForm({datum, store, fields, postSubmit, addRelative, delet
     form_creator.addRelativeCancel = () => addRelative.onCancel()
     form_creator.addRelativeActive = addRelative.is_active
 
+    form_creator.removeRelative = () => removeRelative.activate(datum),
+    form_creator.removeRelativeCancel = () => removeRelative.onCancel()
+    form_creator.removeRelativeActive = removeRelative.is_active
+
     form_creator.editable = false
   }
   if (datum._new_rel_data) {
@@ -21,10 +25,10 @@ export function createForm({datum, store, fields, postSubmit, addRelative, delet
     form_creator.editable = true
     form_creator.onCancel = onCancel
   }
-  if (datum._new_rel_data || datum.to_add) {
+  if (datum._new_rel_data || datum.to_add || datum.unknown) {
     if (link_existing_rel_config) form_creator.linkExistingRelative = createLinkExistingRelative(datum, store.getData(), link_existing_rel_config)
   }
-  if (form_creator.onDelete) form_creator.can_delete = checkIfRelativesConnectedWithoutPerson(datum, store.getData())
+  if (form_creator.onDelete) form_creator.can_delete = true
 
   if (editFirst) form_creator.editable = true
 
@@ -108,6 +112,7 @@ export function createForm({datum, store, fields, postSubmit, addRelative, delet
     form_data.forEach((v, k) => datum.data[k] = v)
     syncRelReference(datum, store.getData())
     if (datum.to_add) delete datum.to_add
+    if (datum.unknown) delete datum.unknown
     postSubmit()
   }
 
@@ -157,9 +162,13 @@ export function removeToAdd(datum, data_stash) {
 }
 
 export function deletePerson(datum, data_stash) {
-  if (!checkIfRelativesConnectedWithoutPerson(datum, data_stash)) return {success: false, error: 'checkIfRelativesConnectedWithoutPerson'}
-  executeDelete()
-  return {success: true};
+  if (!checkIfRelativesConnectedWithoutPerson(datum, data_stash)) {
+    changeToUnknown()
+    return {success: true}
+  } else {
+    executeDelete()
+    return {success: true};
+  }
 
   function executeDelete() {
     data_stash.forEach(d => {
@@ -176,6 +185,14 @@ export function deletePerson(datum, data_stash) {
     data_stash.splice(data_stash.findIndex(d => d.id === datum.id), 1)
     data_stash.forEach(d => {if (d.to_add) deletePerson(d, data_stash)})  // full update of tree
     if (data_stash.length === 0) data_stash.push(createTreeDataWithMainNode({}).data[0])
+  }
+
+  function changeToUnknown() {
+    onDeleteSyncRelReference(datum, data_stash)
+    datum.data = {
+      gender: datum.data.gender,
+    }
+    datum.unknown = true
   }
 }
 

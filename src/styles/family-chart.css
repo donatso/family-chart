@@ -2,6 +2,7 @@
   --female-color: rgb(196, 138, 146);
   --male-color: rgb(120, 159, 172);
   --background-color: rgb(33, 33, 33);
+  --text-color: #fff;
 
   font-family: 'Roboto', sans-serif;
 }
@@ -94,7 +95,7 @@
   height:900px;
   max-height:70vh;
   background-color: var(--background-color);
-  color:#fff;
+  color: var(--text-color);
 }
 .f3 {
   position: relative;
@@ -165,6 +166,20 @@
   cursor: not-allowed;
 }
 
+.f3-form .f3-remove-relative-btn {
+  background-color: transparent;
+  border: 1px solid currentColor;
+  color: currentColor;
+  width: 100%;
+  padding: 5px 10px;
+}
+
+.f3-remove-relative-btn:hover, .f3-remove-relative-btn.active {
+  background-color: var(--text-color);
+  border-color: var(--text-color);
+  color: var(--background-color);
+}
+
 .f3-radio-group {
   margin: 15px 0;
 }
@@ -204,7 +219,10 @@
   text-align: center;
 }
 
-.f3-form.non-editable .f3-form-buttons, .f3-form.non-editable .f3-delete-btn {
+.f3-form.non-editable .f3-form-buttons,
+.f3-form.non-editable .f3-delete-btn,
+.f3-form.non-editable .f3-remove-relative-btn,
+.f3-form.non-editable .f3-link-existing-relative {
   display: none;
 }
 
@@ -214,7 +232,7 @@
   left: 10px;
   top: 8px;
   font-size: 30px;
-  color: #fff;
+  color: var(--text-color);
 }
 
 .f3-edit-btn {
@@ -238,7 +256,7 @@
 
 .f3 div.card {
   cursor: pointer;
-  color: #fff;
+  color: var(--text-color);
   position: relative;
   line-height: 1.2;
 }
@@ -376,6 +394,46 @@
   color: #000;
 }
 
+.f3 .f3-remove-relative-active .card {
+  background-color: var(--background-color);
+}
+
+.f3 .f3-remove-relative-active .card-inner {
+  transition: border 0.2s ease-in-out, opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+  opacity: .75;
+}
+
+.f3 .f3-remove-relative-active .card:hover .card-inner {
+  opacity: .25;
+}
+
+.f3 .f3-remove-relative-active .card-male.card-depth--1:hover .card-inner {
+  transform: translate(-8px, -8px);
+}
+
+.f3 .f3-remove-relative-active .card.card-female.card-depth--1:hover .card-inner {
+  transform: translate(8px, -8px);
+}
+
+.f3 .f3-remove-relative-active .card.card-female.card-depth-0:hover .card-inner {
+  transform: translate(8px, 0);
+}
+
+.f3 .f3-remove-relative-active .card.card-male.card-depth-0:hover .card-inner {
+  transform: translate(-8px, 0);
+}
+
+.f3 .f3-remove-relative-active .card.card-depth-1:hover .card-inner {
+  transform: translate(0, 8px);
+}
+
+.f3 .f3-remove-relative-active .card.card-main .card-inner {
+  transform: translate(0, 0)!important;
+  opacity: 1!important;
+}
+
+
+
 .f3 div.card > div {
   transition: transform 0.2s ease-in-out;
   box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.8);
@@ -427,6 +485,33 @@
   border-color: var(--male-color);
 }
 
+.f3 div.card-unknown .card-inner {
+  background-color: var(--background-color);
+  border: 1px solid;
+}
+
+.f3 div.card-unknown .card-inner .card-label {
+  margin: 0 auto;
+}
+
+.f3 div.card-unknown .person-icon {
+  display: none;
+}
+
+.f3 div.card-new-rel .card-inner {
+  border-width: 1px;
+  border-style: dashed;
+  outline: 0px !important;
+}
+.f3 div.card-new-rel.card-female .card-inner, .f3 div.card-unknown.card-female .card-inner {
+  border-color: var(--female-color);
+  color: var(--female-color);
+}
+.f3 div.card-new-rel.card-male .card-inner, .f3 div.card-unknown.card-male .card-inner {
+  color: var(--male-color);
+  border-color: var(--male-color);
+}
+
 .f3 div.card:hover > div {
   transform: translate(0, -2px);
 }
@@ -473,6 +558,12 @@
 
 .f3-form {
   padding: 20px;
+}
+
+.f3-form hr {
+  border-style: solid; 
+  border-width: thin 0 0 0;
+  opacity: 0.15;
 }
 
 .f3-history-controls {

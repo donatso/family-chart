@@ -3,9 +3,10 @@ import { handleLinkRel } from "./addRelative.linkRel.js"
 
 export default (...args) => { return new AddRelative(...args) }
 
-function AddRelative(store, cancelCallback) {
+function AddRelative(store, onActivate, cancelCallback) {
   this.store = store
 
+  this.onActivate = onActivate
   this.cancelCallback = cancelCallback
 
   this.datum = null
@@ -22,6 +23,7 @@ function AddRelative(store, cancelCallback) {
 
 AddRelative.prototype.activate = function(datum) {
   if (this.is_active) this.onCancel()
+  this.onActivate()
   this.is_active = true
   this.store.state.one_level_rels = true
 
