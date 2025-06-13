@@ -14,7 +14,7 @@ export function createHistory(store, getStoreDataCopy, onUpdate) {
   }
 
   function changed() {
-    if (history_index < history.length - 1) history = history.slice(0, history_index)
+    if (history_index < history.length - 1) history = history.slice(0, history_index+1)
     const clean_data = getStoreDataCopy()
     clean_data.main_id = store.getMainId()
     history.push(clean_data)
@@ -42,7 +42,9 @@ export function createHistory(store, getStoreDataCopy, onUpdate) {
   }
 
   function updateData(data) {
-    store.updateMainId(data.main_id)
+    const current_main_id = store.getMainId()
+    data = JSON.parse(JSON.stringify(data))
+    if (!data.find(d => d.id === current_main_id)) store.updateMainId(data.main_id)
     store.updateData(data)
     onUpdate()
   }
