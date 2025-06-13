@@ -11,6 +11,7 @@ export default function CalculateTree({
     level_separation=150,
     single_parent_empty_card=true,
     is_horizontal=false,
+    one_level_rels=false,
     sortChildrenFunction=undefined,
     sortSpousesFunction=undefined,
     ancestry_depth=undefined,
@@ -33,7 +34,7 @@ export default function CalculateTree({
   const tree = mergeSides(tree_parents, tree_children)
   setupChildrenAndParents({tree})
   setupSpouses({tree, node_separation})
-  if (show_siblings_of_main) setupSiblings({tree, data_stash, node_separation, sortChildrenFunction})
+  if (show_siblings_of_main && !one_level_rels) setupSiblings({tree, data_stash, node_separation, sortChildrenFunction})
   setupProgenyParentsPos({tree})
   nodePositioning({tree})
   tree.forEach(d => d.all_rels_displayed = isAllRelativeDisplayed(d, tree))
@@ -62,7 +63,9 @@ export default function CalculateTree({
       let offset = 1;
       if (!is_ancestry) {
         if (!sameParent(a, b)) offset+=.25
-        if (someSpouses(a,b)) offset+=offsetOnPartners(a,b)
+        if (!one_level_rels) {
+          if (someSpouses(a,b)) offset+=offsetOnPartners(a,b)
+        }
         if (sameParent(a, b) && !sameBothParents(a,b)) offset+=.125
       }
       return offset
@@ -119,6 +122,7 @@ export default function CalculateTree({
     for (let i = tree.length; i--;) {
       const d = tree[i]
       if (!d.is_ancestry && d.data.rels.spouses && d.data.rels.spouses.length > 0){
+        if (one_level_rels && d.depth > 0) continue
         const side = d.data.data.gender === "M" ? -1 : 1;  // female on right
         d.x += d.data.rels.spouses.length/2*node_separation*side;
         d.data.rels.spouses.forEach((sp_id, i) => {
@@ -235,7 +239,8 @@ export default function CalculateTree({
   }
 
   function trimTree(root, is_ancestry) {
-    const max_depth = is_ancestry ? ancestry_depth : progeny_depth
+    let max_depth = is_ancestry ? ancestry_depth : progeny_depth
+    if (one_level_rels) max_depth = 1
     if (!max_depth && max_depth !== 0) return root
 
     trimNode(root, 0)

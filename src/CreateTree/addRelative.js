@@ -23,6 +23,7 @@ function AddRelative(store, cancelCallback) {
 AddRelative.prototype.activate = function(datum) {
   if (this.is_active) this.onCancel()
   this.is_active = true
+  this.store.state.one_level_rels = true
 
   const store = this.store
 
@@ -63,6 +64,7 @@ AddRelative.prototype.activate = function(datum) {
   function onCancel() {
     if (!this.is_active) return
     this.is_active = false
+    this.store.state.one_level_rels = false
 
     this.cleanUp()
     this.cancelCallback(this.datum)
@@ -111,12 +113,6 @@ AddRelative.prototype.cleanUp = function(data) {
         if ((d2.rels.spouses || []).includes(d.id)) d2.rels.spouses.splice(d2.rels.spouses.indexOf(d.id), 1)
       })
       data.splice(i, 1)
-    } else if (d.__rels) {
-      if (d.__rels.father) d.rels.father = d.__rels.father
-      if (d.__rels.mother) d.rels.mother = d.__rels.mother
-      if (d.__rels.children) d.__rels.children.forEach(child_id => { if (!d.rels.children.includes(child_id)) d.rels.children.push(child_id) })
-      if (d.__rels.spouses) d.__rels.spouses.forEach(spouse_id => { if (!d.rels.spouses.includes(spouse_id)) d.rels.spouses.push(spouse_id) })
-      delete d.__rels
     }
   }
 
@@ -124,8 +120,6 @@ AddRelative.prototype.cleanUp = function(data) {
 }
 
 function addDatumRelsPlaceholders(datum, store_data, addRelLabels) {
-  setDatumRels(datum, store_data)
-
   if (!datum.rels.father) {
     const father = createNewPerson({data: {gender: "M"}, rels: {children: [datum.id]}})
     father._new_rel_data = {rel_type: "father", label: addRelLabels.father, rel_id: datum.id}
@@ -140,11 +134,16 @@ function addDatumRelsPlaceholders(datum, store_data, addRelLabels) {
   }
   const mother = store_data.find(d => d.id === datum.rels.mother)
   const father = store_data.find(d => d.id === datum.rels.father)
-  mother.rels.spouses = [father.id]
-  father.rels.spouses = [mother.id]
 
-  mother.rels.children = [datum.id]
-  father.rels.children = [datum.id]
+  if (!mother.rels.spouses) mother.rels.spouses = []
+  if (!father.rels.spouses) father.rels.spouses = []
+  if (!mother.rels.spouses.includes(father.id)) mother.rels.spouses.push(father.id)
+  if (!father.rels.spouses.includes(mother.id)) father.rels.spouses.push(mother.id)
+
+  if (!mother.rels.children) mother.rels.children = []
+  if (!father.rels.children) father.rels.children = []
+  if (!mother.rels.children.includes(datum.id)) mother.rels.children.push(datum.id)
+  if (!father.rels.children.includes(datum.id)) father.rels.children.push(datum.id)
 
   if (!datum.rels.spouses) datum.rels.spouses = []
 
@@ -183,7 +182,6 @@ function addDatumRelsPlaceholders(datum, store_data, addRelLabels) {
     const mother_id = datum.data.gender === "M" ? spouse.id : datum.id
     const father_id = datum.data.gender === "F" ? spouse.id : datum.id
     if (!spouse.rels.children) spouse.rels.children = []
-    spouse.rels.children = spouse.rels.children.filter(child_id => datum.rels.children.includes(child_id))
     
     const new_son = createNewPerson({data: {gender: "M"}, rels: {father: father_id, mother: mother_id}})
     new_son._new_rel_data = {rel_type: "son", label: addRelLabels.son, other_parent_id: spouse.id, rel_id: datum.id}
@@ -199,37 +197,4 @@ function addDatumRelsPlaceholders(datum, store_data, addRelLabels) {
   })
 
   return store_data
-}
-
-function setDatumRels(datum, data) {
-  datum.__rels = JSON.parse(JSON.stringify(datum.rels))
-  const datum_rels = [datum]
-  Object.keys(datum.rels).forEach(rel_type => {
-    const rel = datum.rels[rel_type]
-    if (Array.isArray(rel)) {
-      rel.forEach(rel_id => {
-        findAndPushRel(rel_type, rel_id)
-      })
-    } else {
-      findAndPushRel(rel_type, rel)
-    }
-  })
-  return datum_rels
-
-  function findAndPushRel(rel_type, rel_id) {
-    const rel_datum = data.find(d => d.id === rel_id)
-    rel_datum.__rels = JSON.parse(JSON.stringify(rel_datum.rels))
-
-    if (rel_type === 'father' || rel_type === 'mother') {
-      delete rel_datum.rels.father
-      delete rel_datum.rels.mother
-    }
-
-    if (rel_type === 'children') {
-      rel_datum.rels.children = []
-      rel_datum.rels.spouses = []
-    }
-
-    datum_rels.push(rel_datum)
-  }
 }

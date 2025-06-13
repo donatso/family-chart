@@ -52,7 +52,6 @@ export function getLinkRelOptions(datum, data) {
 
     function loopCheck(d) {
       const parents = [d.rels.father, d.rels.mother]
-      if (d.__rels) parents.push(...[d.__rels.father, d.__rels.mother])
       parents.forEach(p_id => {
         if (p_id) {
           ancestry_ids.push(p_id)
@@ -69,7 +68,6 @@ export function getLinkRelOptions(datum, data) {
 
     function loopCheck(d) {
       const children = d.rels.children ? [...d.rels.children] : []
-      if (d.__rels && d.__rels.children) children.push(...d.__rels.children)
       children.forEach(c_id => {
         progeny_ids.push(c_id)
         loopCheck(data_stash.find(d => d.id === c_id))

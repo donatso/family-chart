@@ -192,9 +192,7 @@ export function handlePrivateCards({tree, data_stash, private_cards_config}) {
       }
 
       const rels = d.rels;
-      let parents_and_spouses = [rels.father, rels.mother, ...(rels.spouses || [])]
-      if (d.__rels) parents_and_spouses.push(...[d.__rels.father, d.__rels.mother, ...(d.__rels.spouses || [])])
-      parents_and_spouses.forEach(d0_id => {
+      [rels.father, rels.mother, ...(rels.spouses || [])].forEach(d0_id => {
         if (!d0_id) return
         if (parents_and_spouses_checked.includes(d0_id)) return
         parents_and_spouses_checked.push(d0_id)
