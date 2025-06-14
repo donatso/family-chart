@@ -4,8 +4,10 @@ import {toggleSvgIconOff, toggleSvgIconOn, miniTreeSvgIcon} from "./Card.icons.j
 export function handleCardDuplicateToggle(node, d, is_horizontal, updateTree) {
   if (!d.hasOwnProperty('_toggle')) return
 
-  const card = node.querySelector('.card-inner')
+  const card = node.querySelector('.card')
+  const card_inner = card.querySelector('.card-inner')
   const card_width = node.querySelector('.card').offsetWidth
+  const card_height = node.querySelector('.card').offsetHeight
   let toggle_is_off;
   let toggle_id;
   const pos = {}
@@ -17,7 +19,8 @@ export function handleCardDuplicateToggle(node, d, is_horizontal, updateTree) {
     pos.left = d.sx-d.x-30+card_width/2
     if (is_horizontal) {
       pos.top = d.sy - d.x + 4
-      pos.left = 105
+      pos.left = card_width/2 + 4
+      if ((Math.abs(d.sx - d.y)) < 10) pos.left = card_width - 4
     }
     toggle_id = spouse._toggle_id_sp ? spouse._toggle_id_sp[d.data.id] : -1
     if (toggle_id === -1) return
@@ -33,21 +36,14 @@ export function handleCardDuplicateToggle(node, d, is_horizontal, updateTree) {
     toggle_id = d._toggle_id
   }
 
+  card_inner.style.zIndex = 1
 
   const toggle_div = d3.select(card)
   .append('div')
   .attr('class', 'f3-toggle-div')
-  .attr('style', 'cursor: pointer; width: 60px; height: 60px;position: absolute;')
+  .attr('style', 'cursor: pointer; width: 60px; height: 60px;position: absolute; z-index: -1;')
   .style('top', pos.top+'px')
   .style('left', pos.left+'px')
-
-  toggle_div
-  .append('div')
-  .html(toggle_is_off ? toggleSvgIconOff() : toggleSvgIconOn())
-  .select('svg')
-  .classed('f3-toggle-icon', true)
-  .style('color', toggle_is_off ? '#585656' : '#61bf52')
-  .style('padding', '0')
   .on('click', (e) => {
     e.stopPropagation()
     if (d.spouse) {
@@ -68,6 +64,14 @@ export function handleCardDuplicateToggle(node, d, is_horizontal, updateTree) {
 
     updateTree()
   })
+
+  toggle_div
+  .append('div')
+  .html(toggle_is_off ? toggleSvgIconOff() : toggleSvgIconOn())
+  .select('svg')
+  .classed('f3-toggle-icon', true)
+  .style('color', toggle_is_off ? '#585656' : '#61bf52')
+  .style('padding', '0')
 
   d3.select(card)
   .select('.f3-toggle-icon .f3-small-circle')
@@ -102,6 +106,6 @@ export function handleCardDuplicateToggle(node, d, is_horizontal, updateTree) {
     .attr('transform', transform)
     .attr('viewBox', '0 0 72 125')
     .select('line')
-    .attr('y1', d.is_ancestry ? '62' : '100')
+    .attr('y1', d.is_ancestry ? '62' : '92')
   } 
 }
