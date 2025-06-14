@@ -4,6 +4,7 @@ import addRelative from "./addRelative.js"
 import {deletePerson} from "./form.js"
 import { handleLinkRel } from "./addRelative.linkRel.js"
 import removeRelative from "./removeRelative.js"
+import modal from "./modal.js"
 
 export default function(...args) { return new EditTree(...args) }
 
@@ -40,6 +41,7 @@ function EditTree(cont, store) {
 
 EditTree.prototype.init = function() {
   this.form_cont = d3.select(this.cont).append('div').classed('f3-form-cont', true).node()
+  this.modal = this.setupModal()
   this.addRelativeInstance = this.setupAddRelative()
   this.removeRelativeInstance = this.setupRemoveRelative()
   this.createHistory()
@@ -68,10 +70,13 @@ EditTree.prototype.open = function(datum) {
         this.removeRelativeInstance.onCancel()
         this.cardEditForm(datum)
       } else {
-        this.removeRelativeInstance.onChange(tree_datum)
-        this.removeRelativeInstance.onCancel()
-        this.updateHistory()
-        this.store.updateTree({})
+        this.removeRelativeInstance.onChange(tree_datum, onAccept.bind(this))
+
+        function onAccept() {
+          this.removeRelativeInstance.onCancel()
+          this.updateHistory()
+          this.store.updateTree({})
+        }
       }
     }
   }
@@ -276,23 +281,27 @@ EditTree.prototype.setupAddRelative = function() {
 }
 
 EditTree.prototype.setupRemoveRelative = function() {
-  return removeRelative(this.store, onActivate.bind(this), cancelCallback.bind(this))
+  return removeRelative(this.store, onActivate.bind(this), cancelCallback.bind(this), this.modal)
 
   function onActivate() {
     if (this.addRelativeInstance.is_active) this.addRelativeInstance.onCancel()
-    setClass(true)
+    setClass(this.cont, true)
   }
 
   function cancelCallback(datum) {
-    setClass(false)
+    setClass(this.cont, false)
     this.store.updateMainId(datum.id)
     this.store.updateTree({})
     this.openFormWithId(datum.id)
   }
 
-  function setClass(add) {
-    d3.select(this.cont).select('#f3Canvas').classed('f3-remove-relative-active', add)
+  function setClass(cont, add) {
+    d3.select(cont).select('#f3Canvas').classed('f3-remove-relative-active', add)
   }
+}
+
+EditTree.prototype.setupModal = function() {
+  return modal(this.cont)
 }
 
 EditTree.prototype.setEditFirst = function(editFirst) {

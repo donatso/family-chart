@@ -589,3 +589,77 @@
 .f3-back-button.disabled, .f3-forward-button.disabled {
   opacity: 0.5;
 }
+
+.f3-modal {
+  display: none;
+  position: absolute;
+  z-index: 10;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0,0.4);
+}
+
+.f3-modal-content {
+  position: relative;
+  background-color: var(--background-color);
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  border-radius: 5px;
+  width: 500px;
+  max-width: 90%;
+}
+
+.f3-modal-close {
+  color: #aaa;
+  position: absolute;
+  right: 10px;
+  top: 7px;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.f3-modal-close:hover,
+.f3-modal-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+} 
+
+
+
+.f3-btn {
+  position: relative;
+  cursor: pointer;
+  padding: 5px 10px;
+
+  overflow: hidden;
+
+  border-width: 0;
+  outline: none;
+  border-radius: 3px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .6);
+  
+  background-color: var(--text-color);
+  color: var(--background-color);
+  
+  transition: background-color .3s;
+  font-size: 14px;
+}
+
+.f3-btn:hover, .f3-btn:focus {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.f3-female-bg {
+  background-color: var(--female-color);
+}
+
+.f3-male-bg {
+  background-color: var(--male-color);
+}
