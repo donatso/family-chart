@@ -57,26 +57,27 @@ EditTree.prototype.open = function(datum) {
   }
 
   function handleAddRelative() {
-    if (this.addRelativeInstance.is_active && !datum._new_rel_data) {
+    if (datum._new_rel_data) {
+      this.cardEditForm(datum)
+    } else {
       this.addRelativeInstance.onCancel()
-      datum = this.store.getDatum(datum.id)  // remove this?
+      this.cardEditForm(datum)
+      this.store.updateMainId(datum.id)
+      this.store.updateTree({})
     }
-    this.cardEditForm(datum)
   }
 
   function handleRemoveRelative() {
-    if (this.removeRelativeInstance.is_active) {
-      if (datum.id === this.removeRelativeInstance.datum.id) {
-        this.removeRelativeInstance.onCancel()
-        this.cardEditForm(datum)
-      } else {
-        this.removeRelativeInstance.onChange(tree_datum, onAccept.bind(this))
+    if (datum.id === this.removeRelativeInstance.datum.id) {
+      this.removeRelativeInstance.onCancel()
+      this.cardEditForm(datum)
+    } else {
+      this.removeRelativeInstance.onChange(tree_datum, onAccept.bind(this))
 
-        function onAccept() {
-          this.removeRelativeInstance.onCancel()
-          this.updateHistory()
-          this.store.updateTree({})
-        }
+      function onAccept() {
+        this.removeRelativeInstance.onCancel()
+        this.updateHistory()
+        this.store.updateTree({})
       }
     }
   }
@@ -173,11 +174,11 @@ EditTree.prototype.absolute = function() {
 EditTree.prototype.setCardClickOpen = function(card) {
   card.setOnCardClick((e, d) => {
     if (this.isAddingRelative()) {
-      this.open(d)
+      this.open(d.data)
     } else if (this.isRemovingRelative()) {
-      this.open(d)
+      this.open(d.data)
     } else {
-      this.open(d)
+      this.open(d.data)
       card.onCardClickDefault(e, d)
     }
   })

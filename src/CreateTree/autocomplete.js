@@ -157,7 +157,7 @@ Autocomplete.prototype.setOptionsGetterPerson = function(getData, getLabel) {
     const options = []
     const data = getData()
     data.forEach(d => {
-      if (d.to_add || d.unknown || d.new_rel_data) return
+      if (d.to_add || d.unknown || d._new_rel_data) return
       if (options.find(d0 => d0.value === d.id)) return
       options.push({
         label: getLabel(d),

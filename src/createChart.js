@@ -215,7 +215,6 @@ CreateChart.prototype.getMainDatum = function() {
 }
 
 CreateChart.prototype.updateData = function(data) {
-  if (this.editTreeInstance) console.error('should use f3EditTree updateData instead')
   this.store.updateData(data)
 }
 
