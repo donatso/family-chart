@@ -95,9 +95,7 @@ EditTree.prototype.cardEditForm = function(datum) {
     props.addRelative = this.addRelativeInstance
     props.removeRelative = this.removeRelativeInstance
     props.deletePerson = () => {
-      const data = this.store.getData()
-      deletePerson(datum, data)
-      this.store.updateData(data)
+      deletePerson(datum, this.store.getData())
       this.openFormWithId(this.store.getLastAvailableMainDatum().id)
 
       this.store.updateTree({})
