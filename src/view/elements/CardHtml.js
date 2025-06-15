@@ -27,6 +27,10 @@ export function CardHtml(props) {
     if (location.origin.includes('localhost')) {
       d.__node = this.querySelector('.card')
       d.__label = d.data.data['first name']
+      if (d.data.to_add) {
+        const spouse = d.spouse || d._spouse || null
+        if (spouse) d3.select(this).select('.card').attr('data-to-add', spouse.data.data['first name'])
+      }
     }
   }
 

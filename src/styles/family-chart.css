@@ -1,6 +1,7 @@
 .f3 {
   --female-color: rgb(196, 138, 146);
   --male-color: rgb(120, 159, 172);
+  --genderless-color: lightgray;
   --background-color: rgb(33, 33, 33);
   --text-color: #fff;
 
@@ -28,7 +29,7 @@
   fill: var(--male-color);
 }
 .f3 .card-genderless .card-body-rect, .f3 .card-genderless .text-overflow-mask {
-  fill: lightgray;
+  fill: var(--genderless-color);
 }
 .f3 .card_add .card-body-rect {
   fill: #3b5560;
@@ -451,7 +452,7 @@
   background-color: var(--male-color);
 }
 .f3 div.card-genderless .card-inner, .f3 div.card-genderless .person-icon svg {
-  background-color: lightgray;
+  background-color: var(--genderless-color);
 }
 
 .f3 div.card-new-rel .card-inner, .f3 div.card-new-rel .person-icon svg {
@@ -566,11 +567,18 @@
   opacity: 0.15;
 }
 
-.f3-history-controls {
+.f3-nav-cont {
   position: absolute;
   top: 0;
   left: 0;
+  width: 100%;
   z-index: 5;
+  display: flex;
+  justify-content: space-between;
+}
+
+.f3-history-controls {
+  padding: 7px 0 7px 7px;
 }
 
 .f3-back-button, .f3-forward-button {
@@ -662,4 +670,79 @@
 
 .f3-male-bg {
   background-color: var(--male-color);
+}
+
+.f3-genderless-bg {
+  background-color: var(--genderless-color);
+}
+
+.f3-female-color {
+  color: var(--female-color);
+}
+
+.f3-male-color {
+  color: var(--male-color);
+}
+
+.f3-genderless-color {
+  color: var(--genderless-color);
+}
+
+.f3-autocomplete-cont {
+  position: relative;
+  display: inline-block;
+  z-index: 2;
+  font-size: 14px;
+  width: 200px;
+}
+
+.f3-autocomplete input {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  padding: 10px;
+  width: 100%;
+}
+.f3-autocomplete input:focus {
+  outline: none;
+}
+
+.f3-autocomplete-toggle {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
+  color: var(--text-color);
+  transition: color 0.3s ease-in-out;
+  width: 20px;
+}
+
+.f3-autocomplete-items {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-top: none;
+  overflow-y: auto;
+  max-height: 0;
+  background-color: var(--background-color);
+  transition: max-height 0.3s ease-in-out;
+}
+
+.f3-autocomplete.active .f3-autocomplete-items {
+  max-height: 300px;
+}
+
+.f3-autocomplete-item > div {
+  padding: 10px;
+  cursor: pointer;
+  background-color: var(--background-color);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+.f3-autocomplete-item > div:hover, .f3-autocomplete-item.f3-selected > div {
+  background-color: var(--text-color);
+  color: var(--background-color);
+}
+
+.f3-autocomplete-active {
+  background-color: DodgerBlue !important;
+  color: #ffffff;
 }

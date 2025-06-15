@@ -136,6 +136,35 @@ export function toggleIconOff() {
   `)
 }
 
+export function chevronDownIcon() {
+  return (`
+    <g data-icon="chevron-down">
+      ${bgCircle()}
+      <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
+    </g>
+  `)
+}
+
+export function chevronUpIcon() {
+  return (`
+    <g data-icon="chevron-up">
+      ${bgCircle()}
+      <path d="M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z" />
+    </g>
+  `)
+}
+
+export function linkOffIcon() {
+  return (`
+    <g data-icon="link-off">
+      ${bgCircle()}
+      <path d="M17,7H13V8.9H17C18.71,8.9 20.1,10.29 20.1,12C20.1,13.43 19.12,14.63 17.79,15L19.25,16.44C20.88,15.61 22,13.95 
+      22,12A5,5 0 0,0 17,7M16,11H13.81L15.81,13H16V11M2,4.27L5.11,7.38C3.29,8.12 2,9.91 2,12A5,5 0 0,0 7,17H11V15.1H7C5.29,15.1 
+      3.9,13.71 3.9,12C3.9,10.41 5.11,9.1 6.66,8.93L8.73,11H8V13H10.73L13,15.27V17H14.73L18.74,21L20,19.74L3.27,3L2,4.27Z" />
+    </g>
+  `)
+}
+
 export function userSvgIcon() { return svgWrapper(userIcon()) }
 export function userEditSvgIcon() { return svgWrapper(userEditIcon()) }
 export function userPlusSvgIcon() { return svgWrapper(userPlusIcon()) }
@@ -150,6 +179,9 @@ export function personSvgIcon() { return svgWrapper(personIcon(), '0 0 512 512')
 export function miniTreeSvgIcon() { return svgWrapper(miniTreeIcon(), '0 0 72 25') }
 export function toggleSvgIconOn() { return svgWrapper(toggleIconOn()) }
 export function toggleSvgIconOff() { return svgWrapper(toggleIconOff()) }
+export function chevronDownSvgIcon() { return svgWrapper(chevronDownIcon()) }
+export function chevronUpSvgIcon() { return svgWrapper(chevronUpIcon()) }
+export function linkOffSvgIcon() { return svgWrapper(linkOffIcon()) }
 
 function svgWrapper(icon, viewBox='0 0 24 24') {
   const match = icon.match(/data-icon="([^"]+)"/);

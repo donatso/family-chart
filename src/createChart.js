@@ -2,6 +2,7 @@ import d3 from "./d3.js"
 import f3 from "./index.js"
 import editTree from "./CreateTree/editTree.js"
 import linkSpouseText from "./view/elements/LinkSpouseText.js"
+import autocomplete from "./CreateTree/autocomplete.js"
 
 export default function(...args) { return new CreateChart(...args) }
 
@@ -16,6 +17,7 @@ function CreateChart(cont, data) {
   this.single_parent_empty_card = true
   this.transition_time = 2000
   this.linkSpouseText = false
+  this.personSearch = null
 
   this.is_card_html = false
 
@@ -35,6 +37,7 @@ CreateChart.prototype.init = function(cont, data) {
 
   this.svg = f3.createSvg(cont, {onZoom: f3.htmlHandlers.onZoomSetup(getSvgView, getHtmlView)})
   f3.htmlHandlers.createHtmlSvg(cont)
+  createNavCont(this.cont)
 
   this.store = f3.createStore({
     data,
@@ -212,6 +215,7 @@ CreateChart.prototype.getMainDatum = function() {
 }
 
 CreateChart.prototype.updateData = function(data) {
+  if (this.editTreeInstance) console.error('should use f3EditTree updateData instead')
   this.store.updateData(data)
 }
 
@@ -225,7 +229,30 @@ CreateChart.prototype.setAfterUpdate = function(fn) {
   return this
 }
 
+CreateChart.prototype.setPersonDropdown = function(getLabel, cont=this.cont.querySelector('.f3-nav-cont')) {
+  this.personSearch = autocomplete(cont, onSelect.bind(this))
+
+  this.personSearch.setOptionsGetterPerson(this.store.getData, getLabel)
+
+  function onSelect(value) {
+    if (this.editTreeInstance) this.editTreeInstance.open(this.store.getDatum(value))
+    this.updateMainId(value)
+    this.updateTree({initial: false})
+  }
+  return this
+}
+
+CreateChart.prototype.unSetPersonSearch = function() {
+  this.personSearch.destroy()
+  this.personSearch = null
+  return this
+}
+
 function setCont(cont) {
   if (typeof cont === "string") cont = document.querySelector(cont)
   return cont
+}
+
+function createNavCont(cont) {
+  d3.select(cont).append('div').attr('class', 'f3-nav-cont')
 }

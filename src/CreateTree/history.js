@@ -50,17 +50,16 @@ export function createHistory(store, getStoreDataCopy, onUpdate) {
   }
 }
 
-export function createHistoryControls(cont, history, onUpdate=()=>{}) {
+export function createHistoryControls(cont, history) {
   const history_controls = d3.select(cont).append("div").attr("class", "f3-history-controls")
+  cont.insertBefore(history_controls.node(), cont.firstChild)
   const back_btn = history_controls.append("button").attr("class", "f3-back-button").on("click", () => {
     history.back()
     updateButtons()
-    onUpdate()
   })
   const forward_btn = history_controls.append("button").attr("class", "f3-forward-button").on("click", () => {
     history.forward()
     updateButtons()
-    onUpdate()
   })
 
   back_btn.html(icons.historyBackSvgIcon())
@@ -76,7 +75,11 @@ export function createHistoryControls(cont, history, onUpdate=()=>{}) {
   function updateButtons() {
     back_btn.classed("disabled", !history.canBack())
     forward_btn.classed("disabled", !history.canForward())
-    history_controls.style("display", !history.canBack() && !history.canForward() ? "none" : null)
+    if (!history.canBack() && !history.canForward()) {
+      history_controls.style("opacity", 0).style("pointer-events", "none")
+    } else {
+      history_controls.style("opacity", 1).style("pointer-events", "auto")
+    }
   }
 
   function destroy() {

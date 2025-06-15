@@ -1,4 +1,4 @@
-import {checkIfRelativesConnectedWithoutPerson} from "./checkIfRelativesConnectedWithoutPerson.js"
+import {checkIfRelativesConnectedWithoutPerson} from "./checkPersonConnection.js"
 import {createTreeDataWithMainNode} from "./newPerson.js"
 import { getLinkRelOptions } from "./addRelative.linkRel.js"
 

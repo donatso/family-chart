@@ -172,14 +172,13 @@ EditTree.prototype.absolute = function() {
 
 EditTree.prototype.setCardClickOpen = function(card) {
   card.setOnCardClick((e, d) => {
-    if (this.addRelativeInstance.is_active) {
+    if (this.isAddingRelative()) {
       this.open(d)
-    } else if (this.removeRelativeInstance.is_active) {
+    } else if (this.isRemovingRelative()) {
       this.open(d)
     } else {
       this.open(d)
-      this.store.updateMainId(d.data.id)
-      this.store.updateTree({})
+      card.onCardClickDefault(e, d)
     }
   })
 
@@ -198,7 +197,7 @@ EditTree.prototype.openFormWithId = function(d_id) {
 
 EditTree.prototype.createHistory = function() {
   this.history = f3.handlers.createHistory(this.store, this.getStoreDataCopy.bind(this), historyUpdateTree.bind(this))
-  this.history.controls = f3.handlers.createHistoryControls(this.cont, this.history)
+  this.history.controls = f3.handlers.createHistoryControls(this.cont.querySelector('.f3-nav-cont'), this.history)
   this.history.changed()
   this.history.controls.updateButtons()
 
