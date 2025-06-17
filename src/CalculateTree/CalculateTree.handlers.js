@@ -214,12 +214,15 @@ export function getMaxDepth(d_id, data_stash) {
 
 
   function hierarchyGetterChildren(d) {
-    const children = [...(d.rels.children || [])].map(id => data_stash.find(d => d.id === id))
-    return children
+    return [...(d.rels.children || [])]
+      .map(id => data_stash.find(d => d.id === id))
+      .filter(d => d && !d._new_rel_data && !d.to_add)
   }
 
   function hierarchyGetterParents(d) {
     return [d.rels.father, d.rels.mother]
-      .filter(d => d).map(id => data_stash.find(d => d.id === id))
+      .filter(d => d)
+      .map(id => data_stash.find(d => d.id === id))
+      .filter(d => d && !d._new_rel_data && !d.to_add)
   }
 }
