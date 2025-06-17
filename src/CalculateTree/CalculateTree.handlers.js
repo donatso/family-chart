@@ -201,3 +201,25 @@ export function handlePrivateCards({tree, data_stash, private_cards_config}) {
     }
   }
 }
+
+export function getMaxDepth(d_id, data_stash) {
+  const datum = data_stash.find(d => d.id === d_id)
+  const root_ancestry = d3.hierarchy(datum, hierarchyGetterParents)
+  const root_progeny = d3.hierarchy(datum, hierarchyGetterChildren)
+
+  return {
+    ancestry: root_ancestry.height,
+    progeny: root_progeny.height
+  }
+
+
+  function hierarchyGetterChildren(d) {
+    const children = [...(d.rels.children || [])].map(id => data_stash.find(d => d.id === id))
+    return children
+  }
+
+  function hierarchyGetterParents(d) {
+    return [d.rels.father, d.rels.mother]
+      .filter(d => d).map(id => data_stash.find(d => d.id === id))
+  }
+}

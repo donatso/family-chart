@@ -3,6 +3,7 @@ import f3 from "./index.js"
 import editTree from "./CreateTree/editTree.js"
 import linkSpouseText from "./view/elements/LinkSpouseText.js"
 import autocomplete from "./CreateTree/autocomplete.js"
+import { getMaxDepth } from "./CalculateTree/CalculateTree.handlers.js"
 
 export default function(...args) { return new CreateChart(...args) }
 
@@ -185,6 +186,10 @@ CreateChart.prototype.setProgenyDepth = function(progeny_depth) {
   this.store.state.progeny_depth = progeny_depth
 
   return this
+}
+
+CreateChart.prototype.getMaxDepth = function(d_id) {
+  return getMaxDepth(d_id, this.store.getData())
 }
 
 CreateChart.prototype.setDuplicateBranchToggle = function(duplicate_branch_toggle) {
