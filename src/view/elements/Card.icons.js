@@ -165,6 +165,15 @@ export function linkOffIcon() {
   `)
 }
 
+export function infoIcon() {
+  return (`
+    <g data-icon="info">
+      ${bgCircle()}
+      <path d="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
+    </g>
+  `)
+}
+
 export function userSvgIcon() { return svgWrapper(userIcon()) }
 export function userEditSvgIcon() { return svgWrapper(userEditIcon()) }
 export function userPlusSvgIcon() { return svgWrapper(userPlusIcon()) }
@@ -182,6 +191,7 @@ export function toggleSvgIconOff() { return svgWrapper(toggleIconOff()) }
 export function chevronDownSvgIcon() { return svgWrapper(chevronDownIcon()) }
 export function chevronUpSvgIcon() { return svgWrapper(chevronUpIcon()) }
 export function linkOffSvgIcon() { return svgWrapper(linkOffIcon()) }
+export function infoSvgIcon() { return svgWrapper(infoIcon()) }
 
 function svgWrapper(icon, viewBox='0 0 24 24') {
   const match = icon.match(/data-icon="([^"]+)"/);

@@ -5,6 +5,7 @@ import {deletePerson} from "./form.js"
 import { handleLinkRel } from "./addRelative.linkRel.js"
 import removeRelative from "./removeRelative.js"
 import modal from "./modal.js"
+import { kinshipInfo } from "./kinshipInfo.js"
 
 export default function(...args) { return new EditTree(...args) }
 
@@ -33,6 +34,10 @@ function EditTree(cont, store) {
   this.postSubmit = null
 
   this.link_existing_rel_config = null
+
+  this.onFormCreation = null
+
+  this.kinship_info_config = null
 
   this.init()
 
@@ -112,6 +117,8 @@ EditTree.prototype.cardEditForm = function(datum) {
     onCancel: () => {},
     editFirst: this.editFirst,
     link_existing_rel_config: this.link_existing_rel_config,
+    getKinshipInfo: this.kinship_info_config ? () => kinshipInfo(this.kinship_info_config, datum.id, this.store.getData()) : null,
+    onFormCreation: this.onFormCreation,
     ...props
   })
 
@@ -323,6 +330,18 @@ EditTree.prototype.setAddRelLabels = function(add_rel_labels) {
 
 EditTree.prototype.setLinkExistingRelConfig = function(link_existing_rel_config) {
   this.link_existing_rel_config = link_existing_rel_config
+  return this
+}
+
+EditTree.prototype.setOnFormCreation = function(onFormCreation) {
+  this.onFormCreation = onFormCreation
+
+  return this
+}
+
+EditTree.prototype.setKinshipInfo = function(kinship_info_config) {
+  this.kinship_info_config = kinship_info_config
+
   return this
 }
 

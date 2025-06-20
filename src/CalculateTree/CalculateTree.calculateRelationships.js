@@ -156,12 +156,19 @@ function findSameAncestor(main_id, rel_id, data_stash) {
   let is_ancestor;
   let is_half_rel;
   checkIfRel(rel_id)
+  checkIfSpouse(rel_id)
   loopCheck(rel_id)
   if (!found) return null
   return {found, is_ancestor, is_half_rel}
   
   function loopCheck(rel_id) {
     if (found) return
+    if (rel_id === main_id) {
+      is_ancestor = true
+      found = rel_id
+      is_half_rel = false
+      return
+    }
     const d = data_stash.find(d => d.id === rel_id)
     const rels = d.rels
     const parents = getParents(rels)
@@ -203,6 +210,14 @@ function findSameAncestor(main_id, rel_id, data_stash) {
     }
   }
 
+  function checkIfSpouse(rel_id) {
+    const main_datum = data_stash.find(d => d.id === main_id)
+    if ((main_datum.rels.spouses || []).includes(rel_id)) {
+      found = [main_id, rel_id]
+    }
+  }
+
+
   function checkIfHalfRelationship(ancestors1, ancestors2) {
     return ancestors1[0] !== ancestors2[0] || ancestors1[1] !== ancestors2[1]
   }
@@ -232,7 +247,7 @@ export function getRelationshipsDataStash(main_id, rel_id, data_stash, relations
     return datum
   })
 
-  if (kinship_data_stash.length > 0 && !same_ancestors.is_ancestor) addRootSpouse(kinship_data_stash)
+  if (kinship_data_stash.length > 0 && !same_ancestors.is_ancestor && !same_ancestors.is_half_rel) addRootSpouse(kinship_data_stash)
 
   return kinship_data_stash
 
@@ -285,9 +300,9 @@ export function getRelationshipsDataStash(main_id, rel_id, data_stash, relations
         children: datum.rels.children
       }
     }
-    kinship_data_stash.push(spouse_datum)
+    kinship_data_stash.push(spouse_datum);
 
-    datum.rels.children.forEach(child_id => {
+    (datum.rels.children || []).forEach(child_id => {
       const child = data_stash.find(d => d.id === child_id)
       const kinship_child = kinship_data_stash.find(d => d.id === child_id)
       kinship_child.rels.father = child.rels.father

@@ -58,6 +58,18 @@ export function formInfoSetup(form_creator, closeCallback) {
       link_existing_relative_select.addEventListener('change', form_creator.linkExistingRelative.onSelect);
     }
 
+    if (form_creator.onFormCreation) {
+      form_creator.onFormCreation({
+        cont: formContainer,
+        form_creator: form_creator
+      })
+    }
+
+    if (form_creator.getKinshipInfo) {
+      const kinship_info = form_creator.getKinshipInfo()
+      if (kinship_info) formContainer.appendChild(kinship_info)
+    }
+
     function onCancel() {
       form_creator.editable = false
       if (form_creator.onCancel) form_creator.onCancel()

@@ -2,10 +2,26 @@ import {checkIfRelativesConnectedWithoutPerson} from "./checkPersonConnection.js
 import {createTreeDataWithMainNode} from "./newPerson.js"
 import { getLinkRelOptions } from "./addRelative.linkRel.js"
 
-export function createForm({datum, store, fields, postSubmit, addRelative, removeRelative, deletePerson, onCancel, editFirst, link_existing_rel_config}) {
+export function createForm({
+  datum,
+  store,
+  fields,
+  postSubmit,
+  addRelative,
+  removeRelative,
+  deletePerson,
+  onCancel,
+  editFirst,
+  link_existing_rel_config,
+  getKinshipInfo,
+  onFormCreation
+}) {
   const form_creator = {
+    datum_id: datum.id,
     fields: [],
     onSubmit: submitFormChanges,
+    getKinshipInfo: getKinshipInfo,
+    onFormCreation: onFormCreation
   }
   if (!datum._new_rel_data) {
     form_creator.onDelete = deletePersonWithPostSubmit
@@ -28,6 +44,7 @@ export function createForm({datum, store, fields, postSubmit, addRelative, remov
   if (datum._new_rel_data || datum.to_add || datum.unknown) {
     if (link_existing_rel_config) form_creator.linkExistingRelative = createLinkExistingRelative(datum, store.getData(), link_existing_rel_config)
   }
+
   if (form_creator.onDelete) form_creator.can_delete = true
 
   if (editFirst) form_creator.editable = true
