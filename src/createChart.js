@@ -4,7 +4,7 @@ import editTree from "./CreateTree/editTree.js"
 import linkSpouseText from "./view/elements/LinkSpouseText.js"
 import autocomplete from "./CreateTree/autocomplete.js"
 import { getMaxDepth } from "./CalculateTree/CalculateTree.handlers.js"
-import { calculateRelationships, getRelationshipsDataStash } from "./CalculateTree/CalculateTree.calculateRelationships.js"
+import { calculateKinships, getKinshipsDataStash } from "./CalculateTree/CalculateTree.calculateKinships.js"
 
 export default function(...args) { return new CreateChart(...args) }
 
@@ -193,12 +193,12 @@ CreateChart.prototype.getMaxDepth = function(d_id) {
   return getMaxDepth(d_id, this.store.getData())
 }
 
-CreateChart.prototype.calculateRelationships = function(d_id) {
-  return calculateRelationships(d_id, this.store.getData())
+CreateChart.prototype.calculateKinships = function(d_id) {
+  return calculateKinships(d_id, this.store.getData())
 }
 
-CreateChart.prototype.getRelationshipsDataStash = function(main_id, rel_id) {
-  return getRelationshipsDataStash(main_id, rel_id, this.store.getData(), this.calculateRelationships(main_id))
+CreateChart.prototype.getKinshipsDataStash = function(main_id, rel_id) {
+  return getKinshipsDataStash(main_id, rel_id, this.store.getData(), this.calculateKinships(main_id))
 }
 
 CreateChart.prototype.setDuplicateBranchToggle = function(duplicate_branch_toggle) {

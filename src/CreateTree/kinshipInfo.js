@@ -1,11 +1,11 @@
 import d3 from '../d3.js'
 import f3 from '../index.js'
-import { calculateRelationships, getRelationshipsDataStash } from '../CalculateTree/CalculateTree.calculateRelationships.js'
+import { calculateKinships, getKinshipsDataStash } from '../CalculateTree/CalculateTree.calculateKinships.js'
 import { infoSvgIcon } from '../view/elements/Card.icons.js'
 
 export function kinshipInfo(kinship_info_config, rel_id, data_stash) {
   const {self_id, getLabel, title} = kinship_info_config
-  const relationships = calculateRelationships(self_id, data_stash)
+  const relationships = calculateKinships(self_id, data_stash)
   const relationship = relationships[rel_id]
   if (!relationship) return
   let label = relationship
@@ -64,7 +64,7 @@ function createSmallTree(self_id, rel_id, data_stash, relationships, parent_cont
   }
   const small_chart = d3.select('#SmallChart')
   small_chart.selectAll('*').remove()
-  const small_chart_data = getRelationshipsDataStash(self_id, rel_id, data_stash, relationships)
+  const small_chart_data = getKinshipsDataStash(self_id, rel_id, data_stash, relationships)
 
   let kinship_label_toggle = true
   const kinship_label_toggle_cont = small_chart.append('div')
