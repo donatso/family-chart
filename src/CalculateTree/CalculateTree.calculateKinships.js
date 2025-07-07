@@ -49,21 +49,18 @@ export function calculateKinships(d_id, data_stash) {
         loopCheck(id, 'uncle', depth + 1)
       });
     }
-    else if (kinship === 'grandchild') {
-      (rels.children || []).forEach(id => loopCheck(id, 'great-grandchild', depth + 1));
-    }
-    else if (kinship.includes('great-grandchild')) {
-      (rels.children || []).forEach(id => loopCheck(id, `great-${kinship}`, depth + 1));
+    else if (kinship.includes('grandchild')) {
+      (rels.children || []).forEach(id => loopCheck(id, getGreatKinship(kinship, depth + 1), depth + 1));
     }
     else if (kinship.includes('great-grandparent')) {
       if (!prev_rel_id) console.error(`${kinship} should have prev_rel_id`)
-      loopCheck(rels.father, `great-${kinship}`, depth - 1, d_id);
-      loopCheck(rels.mother, `great-${kinship}`, depth - 1, d_id);
+      loopCheck(rels.father, getGreatKinship(kinship, depth - 1), depth - 1, d_id);
+      loopCheck(rels.mother, getGreatKinship(kinship, depth - 1), depth - 1, d_id);
       (rels.children || []).forEach(id => {
         if (prev_rel_id && prev_rel_id === id) return
         const great_count = getGreatCount(depth + 1)
         if (great_count === 0) loopCheck(id, 'granduncle', depth + 1)
-        else if (great_count > 0) loopCheck(id, `${Array(great_count).fill('great').join('-')}-granduncle`, depth + 1)
+        else if (great_count > 0) loopCheck(id, getGreatKinship('granduncle', depth + 1), depth + 1)
         else console.error(`${kinship} should have great_count > -1`)
       });
     }
@@ -71,7 +68,7 @@ export function calculateKinships(d_id, data_stash) {
       (rels.children || []).forEach(id => loopCheck(id, 'grandnephew', depth + 1));
     }
     else if (kinship.includes('grandnephew')) {
-      (rels.children || []).forEach(id => loopCheck(id, `great-${kinship}`, depth + 1));
+      (rels.children || []).forEach(id => loopCheck(id, getGreatKinship(kinship, depth + 1), depth + 1));
     }
     else if (kinship === 'uncle') {
       (rels.children || []).forEach(id => loopCheck(id, '1st Cousin', depth + 1));
@@ -109,7 +106,7 @@ export function calculateKinships(d_id, data_stash) {
       if (kinship.includes('child')) return
       if (kinship === 'spouse') return
       const same_ancestors = findSameAncestor(main_datum.id, d_id, data_stash)
-      if (!same_ancestors) return console.error(`${data_stash.find(d => d.id === d_id).data['first name']} not found in main_ancestry`)  // todo: remove this
+      if (!same_ancestors) return console.error(`${data_stash.find(d => d.id === d_id).data} not found in main_ancestry`)
 
       if (same_ancestors.is_half_kin) half_kinships.push(d_id)
     })
@@ -320,4 +317,17 @@ function getOrdinal(n) {
 function getGreatCount(depth) {
   const depth_abs = Math.abs(depth)
   return depth_abs - 2
+}
+
+function getGreatKinship(kinship, depth) {
+  const great_count = getGreatCount(depth)
+  if (kinship.includes('great-')) kinship = kinship.split('great-')[1]
+  if (great_count === 1) {
+    return `great-${kinship}`
+  } else if (great_count > 1) {
+    return `${great_count}x-great-${kinship}`;
+  } else {
+    console.error(`${kinship} should have great_count > 1`)
+    return kinship
+  }
 }

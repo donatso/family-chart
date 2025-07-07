@@ -10,7 +10,7 @@ export function kinshipInfo(kinship_info_config, rel_id, data_stash) {
   if (!relationship) return
   let label = relationship
   if (relationship === 'self') label = 'You'
-  else label = label[0].toUpperCase() + label.slice(1)
+  else label = capitalizeLabel(label)
   const html = (`
     <div class="f3-kinship-info">
       <div class="f3-info-field">
@@ -98,7 +98,7 @@ function createSmallTree(self_id, rel_id, data_stash, relationships, parent_cont
 
     function getCardInnerRect(d) {
       let label = d.data.kinship === 'self' ? 'You' : d.data.kinship
-      label = label[0].toUpperCase() + label.slice(1)
+      label = capitalizeLabel(label)
       if (!kinship_label_toggle) label = getLabel(d.data)
       
       return (`
@@ -138,4 +138,10 @@ function createSmallTree(self_id, rel_id, data_stash, relationships, parent_cont
       f3.handlers.zoomTo(svg, zoom_level)
     }
   }
+}
+
+function capitalizeLabel(label) {
+  label = label[0].toUpperCase() + label.slice(1)
+  if (label.includes('great-')) label = label.replace('great-', 'Great-')
+  return label
 }
