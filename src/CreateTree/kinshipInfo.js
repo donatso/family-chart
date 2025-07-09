@@ -5,7 +5,7 @@ import { infoSvgIcon } from '../view/elements/Card.icons.js'
 
 export function kinshipInfo(kinship_info_config, rel_id, data_stash) {
   const {self_id, getLabel, title} = kinship_info_config
-  const relationships = calculateKinships(self_id, data_stash)
+  const relationships = calculateKinships(self_id, data_stash, kinship_info_config)
   const relationship = relationships[rel_id]
   if (!relationship) return
   let label = relationship

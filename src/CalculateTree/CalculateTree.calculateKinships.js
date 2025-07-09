@@ -1,12 +1,12 @@
 import d3 from '../d3.js'
 
 // https://support.ancestry.co.uk/s/article/Understanding-Kinship-Terms
-export function calculateKinships(d_id, data_stash) {
+export function calculateKinships(d_id, data_stash, kinship_info_config={}) {
   const main_datum = data_stash.find(d => d.id === d_id)
   const kinships = {}
   loopCheck(main_datum.id, 'self', 0)
   setupHalfKinships(kinships)
-  setupInLawKinships(kinships, data_stash)
+  if (kinship_info_config.show_in_law) setupInLawKinships(kinships, data_stash)
   setupKinshipsGender(kinships)
 
   return kinships

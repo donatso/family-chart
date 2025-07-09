@@ -193,8 +193,8 @@ CreateChart.prototype.getMaxDepth = function(d_id) {
   return getMaxDepth(d_id, this.store.getData())
 }
 
-CreateChart.prototype.calculateKinships = function(d_id) {
-  return calculateKinships(d_id, this.store.getData())
+CreateChart.prototype.calculateKinships = function(d_id, config) {
+  return calculateKinships(d_id, this.store.getData(), config)
 }
 
 CreateChart.prototype.getKinshipsDataStash = function(main_id, rel_id) {
