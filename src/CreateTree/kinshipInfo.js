@@ -129,13 +129,16 @@ function createSmallTree(self_id, rel_id, data_stash, relationships, parent_cont
           .attr('checked', true)
           .on('change', (e) => {
             kinship_label_toggle = !kinship_label_toggle
-            f3Chart.updateTree({initial: false})
+            f3Chart.updateTree({initial: false, tree_position: 'inherit'})
           })
     }
 
     function setupSameZoom(zoom_level) {
       const svg = f3Chart.cont.querySelector('svg.main_svg')
-      f3.handlers.zoomTo(svg, zoom_level)
+      const current_zoom = f3.handlers.getCurrentZoom(svg)
+      if (current_zoom.k > zoom_level) {
+        f3.handlers.zoomTo(svg, zoom_level)
+      }
     }
   }
 }

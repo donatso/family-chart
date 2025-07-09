@@ -6,6 +6,7 @@ export function calculateKinships(d_id, data_stash) {
   const kinships = {}
   loopCheck(main_datum.id, 'self', 0)
   setupHalfKinships(kinships)
+  setupInLawKinships(kinships, data_stash)
   setupKinshipsGender(kinships)
 
   return kinships
@@ -116,6 +117,32 @@ export function calculateKinships(d_id, data_stash) {
     })
   }
 
+  function setupInLawKinships(kinships, data_stash) {
+    Object.keys(kinships).forEach(d_id => {
+      const kinship = kinships[d_id]
+      const datum = data_stash.find(d => d.id === d_id)
+
+      if (kinship === 'spouse') {
+        const siblings = [];
+        if (datum.rels.mother) (getD(datum.rels.mother).rels.children || []).forEach(d_id => siblings.push(d_id))
+        if (datum.rels.father) (getD(datum.rels.father).rels.children || []).forEach(d_id => siblings.push(d_id))
+        siblings.forEach(sibling_id => {if (!kinships[sibling_id]) kinships[sibling_id] = 'sibling-in-law'})  // gender label is added in setupKinshipsGender
+      }
+
+      if (kinship === 'child') {
+        (datum.rels.spouses || []).forEach(spouse_id => {if (!kinships[spouse_id]) kinships[spouse_id] = 'child-in-law'})  // gender label is added in setupKinshipsGender
+      }
+
+      if (kinship === 'uncle') {
+        (datum.rels.spouses || []).forEach(spouse_id => {if (!kinships[spouse_id]) kinships[spouse_id] = 'uncle-in-law'})  // gender label is added in setupKinshipsGender
+      }
+
+      if (kinship.includes('Cousin')) {
+        (datum.rels.spouses || []).forEach(spouse_id => {if (!kinships[spouse_id]) kinships[spouse_id] = `${kinship} in-law`})  // gender label is added in setupKinshipsGender
+      }
+    })
+  }
+
   function setupKinshipsGender(kinships) {
     Object.keys(kinships).forEach(d_id => {
       const kinship = kinships[d_id]
@@ -143,6 +170,10 @@ export function calculateKinships(d_id, data_stash) {
         kinships[d_id] = kinships[d_id].replace('nephew', rel_type)
       }
     })
+  }
+
+  function getD(d_id) {
+    return data_stash.find(d => d.id === d_id)
   }
 }
 
@@ -221,6 +252,18 @@ function findSameAncestor(main_id, rel_id, data_stash) {
 }
 
 export function getKinshipsDataStash(main_id, rel_id, data_stash, kinships) {
+  let in_law_id;
+  const kinship = kinships[rel_id].toLowerCase()
+  if (kinship.includes('in-law')) {
+    in_law_id = rel_id
+    const datum = data_stash.find(d => d.id === in_law_id)
+    if (kinship.includes('sister') || kinship.includes('brother')) {
+      rel_id = main_id
+    } else {
+      rel_id = datum.rels.spouses.find(d_id => kinships[d_id] && !kinships[d_id].includes('in-law'))
+    }
+  }
+
   const same_ancestors = findSameAncestor(main_id, rel_id, data_stash)
   if (!same_ancestors) return console.error(`${rel_id} not found in main_ancestry`)
 
@@ -245,6 +288,7 @@ export function getKinshipsDataStash(main_id, rel_id, data_stash, kinships) {
   })
 
   if (kinship_data_stash.length > 0 && !same_ancestors.is_ancestor && !same_ancestors.is_half_kin) addRootSpouse(kinship_data_stash)
+  if (in_law_id) addInLawConnection(kinship_data_stash)
 
   return kinship_data_stash
 
@@ -306,7 +350,100 @@ export function getKinshipsDataStash(main_id, rel_id, data_stash, kinships) {
       kinship_child.rels.mother = child.rels.mother
     })
   }
+
+  function addInLawConnection(kinship_data_stash) {
+    if (kinship.includes('sister') || kinship.includes('brother')) {
+      addInLawSibling(kinship_data_stash)
+    } else {
+      addInLawSpouse(kinship_data_stash)
+    }
+  }
+
+  function addInLawSpouse(kinship_data_stash) {
+    const datum = kinship_data_stash.find(d => d.id === rel_id)
+    const spouse_id = in_law_id
+    datum.rels.spouses = [spouse_id]
+
+    const spouse = data_stash.find(d => d.id === spouse_id)
+    const spouse_datum = {
+      id: spouse.id,
+      data: JSON.parse(JSON.stringify(spouse.data)),
+      kinship: kinships[spouse.id],
+      rels: {
+        spouses: [datum.id],
+        children: []
+      }
+    }
+    kinship_data_stash.push(spouse_datum);
+  }
+
+  function addInLawSibling(kinship_data_stash) {
+    const datum = kinship_data_stash.find(d => d.id === rel_id)
+    const in_law_datum = getD(in_law_id)
+
+    kinship_data_stash.push({
+      id: in_law_id,
+      data: JSON.parse(JSON.stringify(in_law_datum.data)),
+      kinship: kinships[in_law_id],
+      rels: {
+        spouses: [],
+        children: []
+      }
+    })
+
+    const siblings = []
+    if (in_law_datum.rels.mother) (getD(in_law_datum.rels.mother).rels.children || []).forEach(d_id => siblings.push(d_id))
+    if (in_law_datum.rels.father) (getD(in_law_datum.rels.father).rels.children || []).forEach(d_id => siblings.push(d_id))
     
+    const spouse_id = getD(rel_id).rels.spouses.find(d_id => siblings.includes(d_id))
+    datum.rels.spouses = [spouse_id]
+    const spouse = getD(spouse_id)
+    const spouse_datum = {
+      id: spouse.id,
+      data: JSON.parse(JSON.stringify(spouse.data)),
+      kinship: kinships[spouse.id],
+      rels: {
+        spouses: [datum.id],
+        children: []
+      }
+    }
+    kinship_data_stash.push(spouse_datum);
+
+    if (in_law_datum.rels.father) {
+      const father_id = in_law_datum.rels.father
+      const father = getD(father_id)
+      const father_datum = {
+        id: father.id,
+        data: JSON.parse(JSON.stringify(father.data)),
+        kinship: 'Father-in-law',
+        rels: {
+          spouses: [],
+          children: [spouse_id, in_law_id]
+        }
+      }
+      if (in_law_datum.rels.mother) {father_datum.rels.spouses.push(in_law_datum.rels.mother)}
+      kinship_data_stash.unshift(father_datum);
+    }
+    if (in_law_datum.rels.mother) {
+      const mother_id = in_law_datum.rels.mother
+      const mother = getD(mother_id)
+      const mother_datum = {
+        id: mother.id,
+        data: JSON.parse(JSON.stringify(mother.data)),
+        kinship: 'Mother-in-law',
+        rels: {
+          spouses: [],
+          children: [spouse_id, in_law_id]
+        }
+      }
+      if (in_law_datum.rels.father) {mother_datum.rels.spouses.push(in_law_datum.rels.father)}
+      kinship_data_stash.unshift(mother_datum);
+    }
+  }
+
+  function getD(d_id) {
+    return data_stash.find(d => d.id === d_id)
+  } 
 }
 
 function getOrdinal(n) {
