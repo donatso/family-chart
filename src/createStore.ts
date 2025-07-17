@@ -1,7 +1,8 @@
-import CalculateTree from "./CalculateTree/CalculateTree.js"
+import CalculateTree from "./CalculateTree/CalculateTree"
 import { Datum, Data } from "./types/data"
 import { TreeDatum } from "./types/treeData"
 import { Store, StoreState, UpdateTreeProps } from "./types/store"
+import { CalculateTreeOptions, CalculateTreeResult } from "./CalculateTree/CalculateTree"
 
 export default function createStore(initial_state: StoreState): Store {
   let onUpdate: (props?: any) => void | undefined;
@@ -36,8 +37,8 @@ export default function createStore(initial_state: StoreState): Store {
 
   return store
 
-  function calcTree() {
-    const args: any = {
+  function calcTree(): CalculateTreeResult {
+    const args: CalculateTreeOptions = {
       data: state.data, 
       main_id: state.main_id as any,
     };

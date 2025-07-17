@@ -1,4 +1,4 @@
-import CalculateTree from "./CalculateTree/CalculateTree.js"
+import CalculateTree from "./CalculateTree/CalculateTree"
 import createStore from "./createStore"
 import view from "./view/view.js"
 import createSvg from "./view/view.svg.js"

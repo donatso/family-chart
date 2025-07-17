@@ -1,8 +1,8 @@
 export function createLinks({d, tree, is_horizontal=false}) {
   const links = [];
   // d.spouses is always added to non-ancestry side for main blodline nodes
-  // d._spouse is added to ancestry side
-  if (d.spouses || d._spouse) handleSpouse({d})
+  // d.coparent is added to ancestry side
+  if (d.spouses || d.coparent) handleSpouse({d})
   handleAncestrySide({d})
   handleProgenySide({d})
 
@@ -57,8 +57,8 @@ export function createLinks({d, tree, is_horizontal=false}) {
   function handleSpouse({d}) {
     if (d.spouses) {
       d.spouses.forEach(spouse => links.push(createSpouseLink(d, spouse)))
-    } else if (d._spouse) {
-      links.push(createSpouseLink(d, d._spouse))
+    } else if (d.coparent) {
+      links.push(createSpouseLink(d, d.coparent))
     }
 
     function createSpouseLink(d, spouse) {

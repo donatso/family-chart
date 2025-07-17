@@ -7,7 +7,7 @@ export interface Datum {
   rels: {
     father?: string;
     mother?: string;
-    spouse?: string[];
+    spouses?: string[];
     children?: string[];
   };
   [key: string]: any;

@@ -28,7 +28,7 @@ export function CardHtml(props) {
       d.__node = this.querySelector('.card')
       d.__label = d.data.data['first name']
       if (d.data.to_add) {
-        const spouse = d.spouse || d._spouse || null
+        const spouse = d.spouse || d.coparent || null
         if (spouse) d3.select(this).select('.card').attr('data-to-add', spouse.data.data['first name'])
       }
     }

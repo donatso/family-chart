@@ -6,7 +6,7 @@ import {calculateDelay} from "../view.js"
 export default function linkSpouseText(svg, tree, props={}) {
   const links_data = []
   tree.data.forEach(d => {
-    if (d._spouse && d.data.data.gender === 'F') links_data.push({nodes: [d, d._spouse], id: `${d.data.id}--${d._spouse.data.id}`})
+    if (d.coparent && d.data.data.gender === 'F') links_data.push({nodes: [d, d.coparent], id: `${d.data.id}--${d.coparent.data.id}`})
     if (d.spouses) d.spouses.forEach(sp => links_data.push({nodes: [sp, d], id: `${sp.data.id}--${d.data.id}`}))
   })
 

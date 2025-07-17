@@ -1,5 +1,6 @@
 import { Datum, Data } from './data';
 import { TreeData, TreeDatum } from './treeData';
+import { CalculateTreeOptions } from '../CalculateTree/CalculateTree';
 
 export interface StoreState {
   data: Data;
@@ -13,21 +14,9 @@ export interface StoreState {
     is_horizontal: boolean;
     [key: string]: any;
   };
-  node_separation?: number;
-  level_separation?: number;
-  single_parent_empty_card?: boolean;
-  is_horizontal?: boolean;
-  one_level_rels?: boolean;
-  sortChildrenFunction?: (a: Datum, b: Datum) => number;
-  sortSpousesFunction?: (a: Datum, b: Datum) => number;
-  ancestry_depth?: number;
-  progeny_depth?: number;
-  show_siblings_of_main?: boolean;
-  modifyTreeHierarchy?: (tree: any) => any;
-  private_cards_config?: any;
-  duplicate_branch_toggle?: boolean;
-  [key: string]: any;
 }
+
+export interface StoreState extends CalculateTreeOptions {}
 
 export interface Store {
   state: StoreState;
