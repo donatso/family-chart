@@ -1,36 +1,81 @@
 import { Datum } from './data';
 
+/**
+ * Represents a node in the family tree.
+ */
 export interface TreeDatum {
+  /** The underlying data for this node. */
   data: Datum;
+
+  /** X position in the tree layout. */
   x: number;
+
+  /** Y position in the tree layout. */
   y: number;
+
+  /** Depth of the node in the tree. */
   depth: number;
-  parent?: TreeDatum;  // d3 hierarchy parent
 
-  tid?: string;  // tree node unique id
+  /** Reference to the parent node (d3 hierarchy parent). */
+  parent?: TreeDatum;
 
-  _x?: number; // previous x position
-  _y?: number; // previous y position
-  sx?: number; // spouse x position
-  sy?: number; // spouse y position
-  psx?: number; // parent spouse x position
-  psy?: number; // parent spouse y position
+  /** Unique tree node ID. */
+  tid?: string;
 
-  exiting?: boolean; // is person card in transition out of tree? That happens when tree view is being changed.
+  /** Previous X position (for transitions/animations). */
+  _x?: number;
+
+  /** Previous Y position (for transitions/animations). */
+  _y?: number;
+
+  /** Spouse X position. */
+  sx?: number;
+
+  /** Spouse Y position. */
+  sy?: number;
+
+  /** Parent spouse X position. */
+  psx?: number;
+
+  /** Parent spouse Y position. */
+  psy?: number;
+
+  /** True if the card is transitioning out of the tree (e.g., during view change). */
+  exiting?: boolean;
+
+  /** True if the node was just added. */
   added?: boolean;
 
-  all_rels_displayed?: boolean;  // are there relatives of this person that are not displayed in current tree view?
+  /** True if not all relatives of this person are displayed in the current tree view. */
+  all_rels_displayed?: boolean;
 
-  children?: TreeDatum[];  // progeny will have this property if they have children
-  parents?: TreeDatum[];  // main person and ancestors will have this property if there are more than one parent
+  /** Children of this node (main person and progeny). */
+  children?: TreeDatum[];
 
-  spouses?: TreeDatum[];  // spouses of this person, available only in progeny and main person
-  spouse?: TreeDatum;  // if person is added to tree because if it is a spouse of progeny or main person will have this property
-  coparent?: TreeDatum;  // all ancestry nodes will have this property as a way to connect to spouse
+  /** Parents of this node (main person and ancestry). */
+  parents?: TreeDatum[];
 
-  duplicate?: number;  // if person is a duplicate of another person, this property will be set to the number of duplicates
-  is_ancestry?: boolean;  // if person is an ancestor, this property will be set to true, if person is a progeny, it will not have this property
-  sibling?: boolean;  // setShowSiblingsOfMain is true then main person siblings will be added and have this property
+  /** Spouses of this person (progeny and main person only). */
+  spouses?: TreeDatum[];
+
+  /** If this person is added as a spouse of progeny or main person, this property is set. */
+  spouse?: TreeDatum;
+
+  /** For ancestry nodes, connects to spouse. */
+  coparent?: TreeDatum;
+
+  /** If this person is a duplicate, this is the number of duplicates. */
+  duplicate?: number;
+
+  /** True if this person is an ancestor. */
+  is_ancestry?: boolean;
+
+  /** True if this node is a sibling (setShowSiblingsOfMain is true). */
+  sibling?: boolean;
+
+  /** True if this card is private and should be treated differently. */
+  is_private?: boolean;
 }
 
-export type TreeData = TreeDatum[]; 
+/** An array of tree nodes. */
+export type TreeData = TreeDatum[];
