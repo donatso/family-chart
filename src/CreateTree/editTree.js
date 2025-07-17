@@ -54,9 +54,9 @@ EditTree.prototype.init = function() {
 
 EditTree.prototype.open = function(datum) {
   if (datum.data.data && typeof datum.data.data === 'object') datum = datum.data
-  const tree_datum = this.store.getTreeDatum(datum.id)
+
   if (this.addRelativeInstance.is_active) handleAddRelative.call(this, datum)
-  else if (this.removeRelativeInstance.is_active) handleRemoveRelative.call(this, tree_datum)
+  else if (this.removeRelativeInstance.is_active) handleRemoveRelative.call(this, this.store.getTreeDatum(datum.id))
   else {
     this.cardEditForm(datum)
   }
@@ -72,7 +72,7 @@ EditTree.prototype.open = function(datum) {
     }
   }
 
-  function handleRemoveRelative() {
+  function handleRemoveRelative(tree_datum) {
     if (datum.id === this.removeRelativeInstance.datum.id) {
       this.removeRelativeInstance.onCancel()
       this.cardEditForm(datum)

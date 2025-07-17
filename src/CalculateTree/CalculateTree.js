@@ -22,10 +22,15 @@ export default function CalculateTree({
     duplicate_branch_toggle=false,
     on_toggle_one_close_others=true
   }) {
-  if (!data || !data.length) return {data: [], data_stash: [], dim: {width: 0, height: 0}, main_id: null}
+  if (!data || !data.length) throw new Error('No data')
+
   if (is_horizontal) [node_separation, level_separation] = [level_separation, node_separation]
   const data_stash = single_parent_empty_card ? createRelsToAdd(data) : data
-  const main = (main_id !== null && data_stash.find(d => d.id === main_id)) || data_stash[0]
+
+  if (!main_id || !data_stash.find(d => d.id === main_id)) main_id = data_stash[0].id
+  const main = data_stash.find(d => d.id === main_id)
+  if (!main) throw new Error('Main not found')
+
   const tree_children = calculateTreePositions(main, 'children', false)
   const tree_parents = calculateTreePositions(main, 'parents', true)
 
