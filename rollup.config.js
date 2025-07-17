@@ -1,5 +1,10 @@
-import {terser} from "rollup-plugin-terser";
-import * as meta from "./package.json";
+import fs from 'fs';
+import terser from "@rollup/plugin-terser";
+import typescript from "@rollup/plugin-typescript";
+import {nodeResolve} from "@rollup/plugin-node-resolve";
+import commonjs from "@rollup/plugin-commonjs";
+
+const meta = JSON.parse(fs.readFileSync("./package.json", "utf8"));
 
 const config = {
   input: "src/index.js",
@@ -24,7 +29,16 @@ const config = {
       globals: Object.assign({}, ...Object.keys(meta.dependencies || {}).map(key => ({[key]: "f3"})))
     }
   ],
-  plugins: []
+  plugins: [
+    nodeResolve(),
+    commonjs(),
+    typescript({
+      tsconfig: "./tsconfig.json",
+      declaration: true,
+      declarationDir: "./dist/types",
+      exclude: ["tests/**/*", "examples/**/*"]
+    })
+  ]
 };
 
 export default [
