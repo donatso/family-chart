@@ -1,6 +1,6 @@
 import { tree as d3Tree, hierarchy as d3Hierarchy } from "d3-hierarchy";
 import { extent as d3Extent } from "d3-array";
-import { sortChildrenWithSpouses, sortAddNewChildren, setupSiblings, handlePrivateCards } from "./CalculateTree.handlers.js";
+import { sortChildrenWithSpouses, sortAddNewChildren, setupSiblings, handlePrivateCards } from "./CalculateTree.handlers";
 import { createNewPerson } from "../CreateTree/newPerson.js";
 import { isAllRelativeDisplayed } from "../handlers/general.js";
 import { handleDuplicateSpouseToggle, handleDuplicateHierarchyProgeny } from "./CalculateTree.duplicatesProgeny.js";
@@ -14,7 +14,6 @@ interface HN extends HierarchyNode<Datum> {
 }
 
 export interface CalculateTreeOptions {
-  data: Data;
   main_id?: string | null;
   node_separation?: number;
   level_separation?: number;
@@ -26,7 +25,6 @@ export interface CalculateTreeOptions {
   ancestry_depth?: number | undefined;
   progeny_depth?: number | undefined;
   show_siblings_of_main?: boolean;
-  modifyTreeHierarchy?: ((root: HN, is_ancestry: boolean) => void) | undefined;
   private_cards_config?: any;
   duplicate_branch_toggle?: boolean;
   on_toggle_one_close_others?: boolean;
@@ -41,8 +39,7 @@ export interface CalculateTreeResult {
 }
 
 
-export default function CalculateTree({
-  data,
+export default function CalculateTree(data: Data, {
   main_id = null,
   node_separation = 250,
   level_separation = 150,
@@ -54,7 +51,6 @@ export default function CalculateTree({
   ancestry_depth = undefined,
   progeny_depth = undefined,
   show_siblings_of_main = false,
-  modifyTreeHierarchy = undefined,
   private_cards_config = undefined,
   duplicate_branch_toggle = false,
   on_toggle_one_close_others = true,
@@ -97,7 +93,6 @@ export default function CalculateTree({
 
     trimTree(root, is_ancestry)
     if (duplicate_branch_toggle) handleDuplicateHierarchy(root, data_stash, is_ancestry)
-    if (modifyTreeHierarchy) modifyTreeHierarchy(root, is_ancestry)
     d3_tree(root);
     const tree = root.descendants()
     tree.forEach(d => {

@@ -1,4 +1,5 @@
-import d3 from "d3"
+import {extent as d3Extent} from "d3-array"
+import { hierarchy as d3Hierarchy } from "d3-hierarchy"
 import { TreeDatum } from "../types/treeData"
 import { Data, Datum } from "../types/data"
 import { CalculateTreeOptions } from "./CalculateTree"
@@ -160,16 +161,16 @@ export function setupSiblings({
 
     const main_x = main.x
     const spouses_x = (main.spouses || []).map(d => d.x)
-    const x_range = d3.extent([main_x, ...spouses_x])
+    const x_range = d3Extent([main_x, ...spouses_x])
 
     const main_sorted_index = sorted_siblings.findIndex(d => d.data.id === main.data.id)
     for (let i = 0; i < sorted_siblings.length; i++) {
       if (i === main_sorted_index) continue
       const sib = sorted_siblings[i]
       if (i < main_sorted_index) {
-        sib.x = x_range[0] - node_separation*(main_sorted_index - i)
+        sib.x = (x_range[0] ?? 0) - node_separation*(main_sorted_index - i)
       } else {
-        sib.x = x_range[1] + node_separation*(i - main_sorted_index)
+        sib.x = (x_range[1] ?? 0) + node_separation*(i - main_sorted_index)
       }
     }
   }
@@ -182,7 +183,9 @@ export function handlePrivateCards({
 }: {
   tree: TreeDatum[],
   data_stash: Data,
-  private_cards_config: any
+  private_cards_config: {
+    condition: (d: Datum) => boolean;
+  }
 }) {
   const private_persons: Record<Datum['id'], boolean> = {}
   const condition = private_cards_config.condition
@@ -228,8 +231,9 @@ export function handlePrivateCards({
 
 export function getMaxDepth(d_id: Datum['id'], data_stash: Data) {
   const datum = data_stash.find(d => d.id === d_id)
-  const root_ancestry = d3.hierarchy(datum, hierarchyGetterParents)
-  const root_progeny = d3.hierarchy(datum, hierarchyGetterChildren)
+  if (!datum) throw new Error('no datum')
+  const root_ancestry = d3Hierarchy(datum, d => hierarchyGetterParents(d) as Iterable<Datum>)
+  const root_progeny = d3Hierarchy(datum, d => hierarchyGetterChildren(d) as Iterable<Datum>)
 
   return {
     ancestry: root_ancestry.height,

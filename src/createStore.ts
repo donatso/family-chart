@@ -39,8 +39,7 @@ export default function createStore(initial_state: StoreState): Store {
 
   function calcTree(): CalculateTreeResult {
     const args: CalculateTreeOptions = {
-      data: state.data, 
-      main_id: state.main_id as any,
+      main_id: state.main_id,
     };
     
     if (state.node_separation !== undefined) args.node_separation = state.node_separation;
@@ -53,11 +52,10 @@ export default function createStore(initial_state: StoreState): Store {
     if (state.ancestry_depth !== undefined) args.ancestry_depth = state.ancestry_depth;
     if (state.progeny_depth !== undefined) args.progeny_depth = state.progeny_depth;
     if (state.show_siblings_of_main !== undefined) args.show_siblings_of_main = state.show_siblings_of_main;
-    if (state.modifyTreeHierarchy !== undefined) args.modifyTreeHierarchy = state.modifyTreeHierarchy;
     if (state.private_cards_config !== undefined) args.private_cards_config = state.private_cards_config;
     if (state.duplicate_branch_toggle !== undefined) args.duplicate_branch_toggle = state.duplicate_branch_toggle;
     
-    return CalculateTree(args);
+    return CalculateTree(state.data, args);
   }
 
   function getMainDatum(): Datum {
@@ -88,7 +86,7 @@ export default function createStore(initial_state: StoreState): Store {
 
   function updateMainId(id: Datum['id']) {
     if (id === state.main_id) return
-    state.main_id_history = state.main_id_history.filter(d => d !== id).slice(-10)
+    state.main_id_history = state.main_id_history!.filter(d => d !== id).slice(-10)
     state.main_id_history.push(id)
     state.main_id = id
   }
@@ -109,7 +107,7 @@ export default function createStore(initial_state: StoreState): Store {
 
   // if main_id is deleted, get the last available main_id
   function getLastAvailableMainDatum(): Datum | undefined {
-    let main_id = state.main_id_history.slice(0).reverse().find(id => getDatum(id));
+    let main_id = state.main_id_history!.slice(0).reverse().find(id => getDatum(id));
     if (!main_id && state.data.length > 0) main_id = state.data[0].id;
     if (!main_id) return undefined;
     if (main_id !== state.main_id) updateMainId(main_id);

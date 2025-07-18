@@ -2,10 +2,10 @@ import { Datum, Data } from './data';
 import { TreeData, TreeDatum } from './treeData';
 import { CalculateTreeOptions } from '../CalculateTree/CalculateTree';
 
-export interface StoreState {
+export interface StoreState extends CalculateTreeOptions {
   data: Data;
   main_id: Datum['id'];
-  main_id_history: Datum['id'][];
+  main_id_history?: Datum['id'][];
   tree?: {
     data: TreeData;
     data_stash: Data;
@@ -14,9 +14,9 @@ export interface StoreState {
     is_horizontal: boolean;
     [key: string]: any;
   };
-}
 
-export interface StoreState extends CalculateTreeOptions {}
+  transition_time?: number;
+}
 
 export interface Store {
   state: StoreState;

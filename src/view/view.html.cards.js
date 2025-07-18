@@ -1,5 +1,5 @@
 import d3 from "../d3.js"
-import {calculateEnterAndExitPositions} from "../CalculateTree/CalculateTree.handlers.js"
+import {calculateEnterAndExitPositions} from "../CalculateTree/CalculateTree.handlers"
 import {calculateDelay} from "./view.js"
 
 export default function updateCardsHtml(div, tree, Card, props={}) {
