@@ -1,5 +1,5 @@
 import * as d3 from "d3"
-import {calculateDelay} from "../handlers/view-handlers"
+import {calculateDelay} from "../handlers/general"
 
 export default function linkSpouseText(svg, tree, props={}) {
   const links_data = []

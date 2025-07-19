@@ -4,7 +4,7 @@ import { infoSvgIcon } from '../../renderers/icons'
 import createInfoPopup from '../info-popup'
 import createChart from '../../core/chart'
 import CardHtml from '../../core/cards/card-html'
-import { getCurrentZoom, zoomTo } from '../../handlers/general'
+import { getCurrentZoom, zoomTo } from '../../handlers/view-handlers'
 
 export function kinshipInfo(kinship_info_config, rel_id, data_stash) {
   const {self_id, getLabel, title} = kinship_info_config

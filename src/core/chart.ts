@@ -1,7 +1,7 @@
 import * as d3 from "d3"
 import createSvg from '../renderers/svg'
 import { onZoomSetup, createHtmlSvg } from '../handlers/view-html-handlers'
-import { removeToAddFromData } from "./form"
+import { removeToAddFromData } from "../store/edit"
 import createStore from "../store/store"
 import view from "../renderers/view"
 import editTree from "./edit"

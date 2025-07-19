@@ -1,4 +1,4 @@
-import {removeToAdd} from "../core/form"
+import {removeToAdd} from "./edit"
 
 export function handleRelsOfNewDatum({datum, data_stash, rel_type, rel_datum}) {
   if (rel_type === "daughter" || rel_type === "son") addChild(datum)

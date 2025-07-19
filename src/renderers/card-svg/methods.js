@@ -1,5 +1,5 @@
 import {toggleAllRels, toggleRels} from "../../layout/handlers"
-import {deletePerson, moveToAddToAdded} from "../../core/form"
+import {deletePerson, moveToAddToAdded} from "../../store/edit"
 
 export function cardChangeMain(store, {d}) {
   toggleAllRels(store.getTree().data, false)

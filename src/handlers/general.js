@@ -1,26 +1,17 @@
-import * as d3 from "d3"
-
-export function manualZoom({amount, svg, transition_time=500}) {
-  const el_listener = svg.__zoomObj ? svg : svg.parentNode  // if we need listener for svg and html, we will use parent node
-  const zoom = el_listener.__zoomObj
-  d3.select(el_listener).transition().duration(transition_time || 0).delay(transition_time ? 100 : 0)  // delay 100 because of weird error of undefined something in d3 zoom
-    .call(zoom.scaleBy, amount)
-}
-
-export function getCurrentZoom(svg) {
-  const el_listener = svg.__zoomObj ? svg : svg.parentNode
-  const currentTransform = d3.zoomTransform(el_listener)
-  return currentTransform
-}
-
-export function zoomTo(svg, zoom_level) {
-  const el_listener = svg.__zoomObj ? svg : svg.parentNode
-  const currentTransform = d3.zoomTransform(el_listener)
-  manualZoom({amount: zoom_level / currentTransform.k, svg})
-}
-
 export function isAllRelativeDisplayed(d, data) {
   const r = d.data.rels,
     all_rels = [r.father, r.mother, ...(r.spouses || []), ...(r.children || [])].filter(v => v)
   return all_rels.every(rel_id => data.some(d => d.data.id === rel_id))
+}
+
+export function calculateDelay(tree, d, transition_time) {  // todo: view-handlers.js
+  const delay_level = transition_time*.4,
+    ancestry_levels = Math.max(...tree.data.map(d=>d.is_ancestry ? d.depth : 0))
+  let delay = d.depth*delay_level;
+  if ((d.depth !== 0 || !!d.spouse) && !d.is_ancestry) {
+    delay+=(ancestry_levels)*delay_level  // after ancestry
+    if (d.spouse) delay+=delay_level  // spouse after bloodline
+    delay+=(d.depth)*delay_level  // double the delay for each level because of additional spouse delay
+  }
+  return delay
 }

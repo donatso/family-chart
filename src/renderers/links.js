@@ -1,7 +1,7 @@
 import * as d3 from "d3"
 
 import {createLinks} from "../layout/create-links"
-import {calculateDelay} from "../handlers/view-handlers"
+import {calculateDelay} from "../handlers/general"
 
 export default function updateLinks(svg, tree, props={}) {
   const links_data_dct = tree.data.reduce((acc, d) => {

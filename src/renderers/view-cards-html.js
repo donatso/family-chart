@@ -1,6 +1,6 @@
 import * as d3 from "d3"
 import {calculateEnterAndExitPositions} from "../layout/handlers"
-import {calculateDelay} from "../handlers/view-handlers"
+import {calculateDelay} from "../handlers/general"
 
 export default function updateCardsHtml(div, tree, Card, props={}) {
   const card = d3.select(div).select(".cards_view").selectAll("div.card_cont").data(tree.data, d => d.tid),

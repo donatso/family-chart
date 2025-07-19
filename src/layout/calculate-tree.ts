@@ -9,9 +9,7 @@ import type { Datum, Data } from "../types/data";
 import type { TreeDatum, TreeData } from "../types/treeData";
 import { HierarchyNode } from "d3-hierarchy";
 
-interface HN extends HierarchyNode<Datum> {
-  _spouse?: HN;
-}
+interface HN extends HierarchyNode<Datum> {}
 
 export interface CalculateTreeOptions {
   main_id?: string | null;
