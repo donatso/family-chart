@@ -30,12 +30,12 @@ const config = {
     }
   ],
   plugins: [
-    nodeResolve(),
-    commonjs(),
+    // nodeResolve(),
+    // commonjs(),
     typescript({
       tsconfig: "./tsconfig.json",
-      declaration: true,
-      declarationDir: "./dist/types",
+      // declaration: true,
+      // declarationDir: "./dist/types",
       exclude: ["tests/**/*", "examples/**/*"]
     })
   ]

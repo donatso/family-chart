@@ -1,6 +1,6 @@
 import { Datum, Data } from './data';
 import { TreeData, TreeDatum } from './treeData';
-import { CalculateTreeOptions } from '../CalculateTree/CalculateTree';
+import { CalculateTreeOptions } from '../layout/calculate-tree';
 
 export interface StoreState extends CalculateTreeOptions {
   data: Data;
