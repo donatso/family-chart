@@ -6,9 +6,16 @@ import commonjs from "@rollup/plugin-commonjs";
 
 const meta = JSON.parse(fs.readFileSync("./package.json", "utf8"));
 
-const config = {
+const globals = {
+  "d3": "d3",
+  "d3-array": "d3",
+  "d3-hierarchy": "d3"
+}
+const banner = `// ${meta.homepage} v${meta.version} Copyright ${(new Date).getFullYear()} ${meta.author.name}`
+
+export default {
   input: "src/index.js",
-  external: Object.keys(meta.dependencies || {}),
+  external: ["d3", "d3-array", "d3-hierarchy"],
   output: [
     // UMD build
     {
@@ -17,45 +24,39 @@ const config = {
       format: "umd",
       indent: false,
       extend: true,
-      banner: `// ${meta.homepage} v${meta.version} Copyright ${(new Date).getFullYear()} ${meta.author.name}`,
-      globals: Object.assign({}, ...Object.keys(meta.dependencies || {}).map(key => ({[key]: "f3"})))
+      banner: banner,
+      globals: globals
+    },
+    // minified UMD build
+    {
+      file: `dist/${meta.name}.min.js`,
+      name: "f3",
+      format: "umd",
+      indent: false,
+      extend: true,
+      banner: banner,
+      globals: globals
     },
     // ESM build
     {
       file: `dist/${meta.name}.esm.js`,
       format: 'es',
       indent: false,
-      banner: `// ${meta.homepage} v${meta.version} Copyright ${(new Date).getFullYear()} ${meta.author.name}`,
-      globals: Object.assign({}, ...Object.keys(meta.dependencies || {}).map(key => ({[key]: "f3"})))
+      banner: banner,
+      globals: globals
     }
   ],
   plugins: [
-    // nodeResolve(),
-    // commonjs(),
     typescript({
       tsconfig: "./tsconfig.json",
-      // declaration: true,
-      // declarationDir: "./dist/types",
+      declaration: true,
+      declarationDir: "./dist/types",
       exclude: ["tests/**/*", "examples/**/*"]
+    }),
+    terser({
+      output: {
+        preamble: banner
+      }
     })
   ]
 };
-
-export default [
-  config,
-  {
-    ...config,
-    output: {
-      ...config.output[0], // Use the UMD output config as base
-      file: `dist/${meta.name}.min.js`
-    },
-    plugins: [
-      ...config.plugins,
-      terser({
-        output: {
-          preamble: config.output[0].banner
-        }
-      })
-    ]
-  }
-];
