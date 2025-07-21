@@ -2,7 +2,7 @@ import * as d3 from "d3"
 import {calculateEnterAndExitPositions} from "../layout/handlers"
 import {calculateDelay} from "../handlers/general"
 
-export default function updateCards(svg, tree, Card, props={}) {
+export default function updateCardsSvg(svg, tree, Card, props={}) {
   const card = d3.select(svg).select(".cards_view").selectAll("g.card_cont").data(tree.data, d => d.data.id),
     card_exit = card.exit(),
     card_enter = card.enter().append("g").attr("class", "card_cont"),

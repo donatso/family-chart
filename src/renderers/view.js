@@ -1,6 +1,6 @@
 import * as d3 from "d3"
 import {cardToMiddle, treeFit} from "../handlers/view-handlers"
-import updateLinks from "./links"
+import updateLinks from "./view-links"
 import updateCardsSvg from "./view-cards-svg"
 import updateCardsHtml from "./view-cards-html"
 import updateCardsComponent from "../features/card-component"
