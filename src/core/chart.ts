@@ -1,6 +1,5 @@
 import * as d3 from "d3"
-import createSvg from '../renderers/svg'
-import { onZoomSetup, createHtmlSvg } from '../handlers/view-html-handlers'
+import htmlContSetup from "../renderers/html"
 import { removeToAddFromData } from "../store/edit"
 import createStore from "../store/store"
 import view from "../renderers/view"
@@ -65,12 +64,8 @@ class CreateChart {
   init(cont: HTMLElement | string, data: Data) {
     cont = setCont(cont)
     this.cont = cont
-    const getSvgView = () => cont.querySelector('svg .view')
-    const getHtmlSvg = () => cont.querySelector('#htmlSvg')
-    const getHtmlView = () => cont.querySelector('#htmlSvg .cards_view')
-  
-    this.svg = createSvg(cont, {onZoom: onZoomSetup(getSvgView, getHtmlView)})
-    createHtmlSvg(cont)
+    const {svg} = htmlContSetup(this.cont)
+    this.svg = svg
     createNavCont(this.cont)
 
     const main_id = data[0].id
@@ -87,7 +82,7 @@ class CreateChart {
     this.store.setOnUpdate((props: Object) => {
       if (this.beforeUpdate) this.beforeUpdate(props)
       props = Object.assign({transition_time: this.store.state.transition_time}, props || {})
-      if (this.is_card_html) props = Object.assign({}, props || {}, {cardHtml: getHtmlSvg()})
+      if (this.is_card_html) props = Object.assign({}, props || {}, {cardHtml: true})
       view(this.store.getTree(), this.svg, this.getCard(), props || {})
       if (this.linkSpouseText) linkSpouseText(this.svg, this.store.getTree(), Object.assign({}, props || {}, {linkSpouseText: this.linkSpouseText, node_separation: this.store.state.node_separation}))
       if (this.afterUpdate) this.afterUpdate(props)

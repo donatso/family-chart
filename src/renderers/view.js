@@ -3,14 +3,14 @@ import {cardToMiddle, treeFit} from "../handlers/view-handlers"
 import updateLinks from "./view-links"
 import updateCardsSvg from "./view-cards-svg"
 import updateCardsHtml from "./view-cards-html"
-import updateCardsComponent from "../features/card-component"
+import updateCardsComponent from "../features/card-component/card-component"
 
 export default function(tree, svg, Card, props={}) {
 
   props.initial = props.hasOwnProperty('initial') ? props.initial : !d3.select(svg.parentNode).select('.card_cont').node()
-  props.transition_time = props.hasOwnProperty('transition_time') ? props.transition_time : 2000;
-  if (props.cardComponent) updateCardsComponent(props.cardComponent, tree, Card, props);
-  else if (props.cardHtml) updateCardsHtml(props.cardHtml, tree, Card, props);
+  props.transition_time = props.hasOwnProperty('transition_time') ? props.transition_time : 1000;
+  if (props.cardComponent) updateCardsComponent(svg, tree, Card, props);
+  else if (props.cardHtml) updateCardsHtml(svg, tree, Card, props);
   else updateCardsSvg(svg, tree, Card, props);
   updateLinks(svg, tree, props);
 

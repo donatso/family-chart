@@ -4,7 +4,7 @@ import view from "./renderers/view"
 import createSvg from "./renderers/svg"
 import * as handlers from './handlers'
 import * as elements from './elements'
-import * as htmlHandlers from './handlers/view-html-handlers'
+import * as htmlHandlers from './renderers/html'
 import * as icons from './renderers/icons'
 import createChart from './core/chart'
 

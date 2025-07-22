@@ -1,13 +1,14 @@
 import * as d3 from "d3"
-import {calculateEnterAndExitPositions} from "../layout/handlers"
-import {calculateDelay} from "../handlers/general"
-import {getCardsViewFake} from "../handlers/view-html-handlers"
+import {calculateEnterAndExitPositions} from "../../layout/handlers"
+import {calculateDelay} from "../../handlers/general"
+import {getCardsViewFake} from "./handlers"
 
-export default function updateCardsComponent(div, tree, Card, props={}) {
-  const card = d3.select(getCardsViewFake(() => div)).selectAll("div.card_cont_fake").data(tree.data, d => d.data.id),
-    card_exit = card.exit(),
-    card_enter = card.enter().append("div").attr("class", "card_cont_fake").style('display', 'none'),
-    card_update = card_enter.merge(card)
+export default function updateCardsComponent(svg, tree, Card, props={}) {
+  const div = props.cardHtmlDiv ? props.cardHtmlDiv : svg.closest('#f3Canvas').querySelector('#htmlSvg')
+  const card = d3.select(getCardsViewFake(() => div)).selectAll("div.card_cont_fake").data(tree.data, d => d.data.id)
+  const card_exit = card.exit()
+  const card_enter = card.enter().append("div").attr("class", "card_cont_fake").style('display', 'none')
+  const card_update = card_enter.merge(card)
 
   card_exit.each(d => calculateEnterAndExitPositions(d, false, true))
   card_enter.each(d => calculateEnterAndExitPositions(d, true, false))
