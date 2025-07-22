@@ -16,6 +16,7 @@ export interface StoreState extends CalculateTreeOptions {
   };
 
   transition_time?: number;
+  single_parent_empty_card_label?: string;
 }
 
 export interface Store {

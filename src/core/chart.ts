@@ -10,7 +10,7 @@ import { getMaxDepth } from "../layout/handlers"
 import { calculateKinships, getKinshipsDataStash } from "../features/kinships/calculate-kinships"
 
 import { Data, Datum } from "../types/data"
-import { StoreState } from "../types/store"
+import { Store, StoreState } from "../types/store"
 import { TreeDatum } from "../types/treeData"
 
 type LinkSpouseText = ((sp1: TreeDatum, sp2: TreeDatum) => string) | null
@@ -27,25 +27,22 @@ interface UpdateTreeProps {
 export default (cont: HTMLElement, data: Data) => new CreateChart(cont, data)
 
 class CreateChart {
-  cont: HTMLElement | null = null
-  store: any = null
-  svg: any = null
-  getCard: any = null
-  is_card_html = false
+  cont: HTMLElement
+  store: Store
+  svg: HTMLElement
+  getCard: null | (() => any)
+  is_card_html: boolean
 
-  transition_time = 2000
-  linkSpouseText: LinkSpouseText | null = null
-  personSearch: any = null
-  beforeUpdate: Function | null = null
-  afterUpdate: Function | null = null
+  transition_time: number
+  linkSpouseText: LinkSpouseText | null
+  personSearch: any
+  beforeUpdate: Function | null
+  afterUpdate: Function | null
 
-  editTreeInstance: any = null
+  editTreeInstance: any
 
 
   constructor(cont: HTMLElement, data: Data) {
-    this.cont = null
-    this.store = null
-    this.svg = null
     this.getCard = null
     this.transition_time = 2000
     this.linkSpouseText = null
@@ -56,21 +53,20 @@ class CreateChart {
     this.beforeUpdate = null
     this.afterUpdate = null
     
-    this.init(cont, data)
+
+    this.cont = setCont(cont)
+    const {svg} = htmlContSetup(this.cont)
+    this.svg = svg
+    createNavCont(this.cont)
+    const main_id = data[0].id
+    this.store = this.createStore(data, main_id)
+    this.setOnUpdate()
 
     return this
   }
 
-  init(cont: HTMLElement | string, data: Data) {
-    cont = setCont(cont)
-    this.cont = cont
-    const {svg} = htmlContSetup(this.cont)
-    this.svg = svg
-    createNavCont(this.cont)
-
-    const main_id = data[0].id
-  
-    this.store = createStore({
+  private createStore(data: Data, main_id: Datum['id']) {
+    return createStore({
       data,
       main_id,
       node_separation: 250,
@@ -78,12 +74,14 @@ class CreateChart {
       single_parent_empty_card: true,
       is_horizontal: false,
     })
-  
+  }
+
+  private setOnUpdate() {
     this.store.setOnUpdate((props: Object) => {
       if (this.beforeUpdate) this.beforeUpdate(props)
       props = Object.assign({transition_time: this.store.state.transition_time}, props || {})
       if (this.is_card_html) props = Object.assign({}, props || {}, {cardHtml: true})
-      view(this.store.getTree(), this.svg, this.getCard(), props || {})
+      view(this.store.getTree(), this.svg, this.getCard!(), props || {})
       if (this.linkSpouseText) linkSpouseText(this.svg, this.store.getTree(), Object.assign({}, props || {}, {linkSpouseText: this.linkSpouseText, node_separation: this.store.state.node_separation}))
       if (this.afterUpdate) this.afterUpdate(props)
     })
