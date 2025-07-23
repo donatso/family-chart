@@ -32,7 +32,7 @@ export interface Store {
   getDatum: (id: Datum['id']) => Datum | undefined;
   getTreeMainDatum: () => TreeDatum;
   getTreeDatum: (id: Datum['id']) => TreeDatum | undefined;
-  getLastAvailableMainDatum: () => Datum | undefined;
+  getLastAvailableMainDatum: () => Datum;
   methods: { [key: string]: (...args: any[]) => any };
 }
 

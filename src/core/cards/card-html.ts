@@ -4,11 +4,12 @@ import {processCardDisplay} from "./utils"
 import {pathToMain} from "../../layout/create-links"
 import { Store } from "../../types/store"
 import { Datum } from "../../types/data"
+import { TreeDatum } from "../../types/treeData"
 
 CardHtmlWrapper.is_html = true
 export default function CardHtmlWrapper(cont: HTMLElement, store: Store) { return new CardHtml(cont, store) }
 
-class CardHtml {
+export class CardHtml {
   cont: HTMLElement
   svg: HTMLElement
   store: Store
@@ -46,7 +47,7 @@ class CardHtml {
     return this
   }
 
-  getCard() {  
+  getCard(): (d:TreeDatum) => void {  
     return cardHtmlRenderer({
       store: this.store,
       card_display: this.card_display,
@@ -86,7 +87,7 @@ class CardHtml {
     return this
   }
   
-  onCardClickDefault(e:MouseEvent, d:Datum) {
+  onCardClickDefault(e:MouseEvent, d:TreeDatum) {
     this.store.updateMainId(d.data.id)
     this.store.updateTree({})
   }

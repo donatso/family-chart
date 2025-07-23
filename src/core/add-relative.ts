@@ -3,9 +3,9 @@ import { addDatumRelsPlaceholders, cleanUp, updateGendersForNewRelatives } from 
 import { Data, Datum } from "../types/data"
 import { Store } from "../types/store"
 
-export default (store: Store, onActivate: () => void, cancelCallback: () => void) => { return new AddRelative(store, onActivate, cancelCallback) }
+export default (store: Store, onActivate: () => void, cancelCallback: (datum: Datum) => void) => { return new AddRelative(store, onActivate, cancelCallback) }
 
-class AddRelative {
+export class AddRelative {
   store: Store
   onActivate: () => void
   cancelCallback: (datum: Datum) => void

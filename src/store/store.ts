@@ -106,11 +106,13 @@ export default function createStore(initial_state: StoreState): Store {
   }
 
   // if main_id is deleted, get the last available main_id
-  function getLastAvailableMainDatum(): Datum | undefined {
+  function getLastAvailableMainDatum(): Datum {
     let main_id = state.main_id_history!.slice(0).reverse().find(id => getDatum(id));
     if (!main_id && state.data.length > 0) main_id = state.data[0].id;
-    if (!main_id) return undefined;
+    if (!main_id) throw new Error("No main id");
     if (main_id !== state.main_id) updateMainId(main_id);
-    return getDatum(main_id);
+    const main_datum = getDatum(main_id);
+    if (!main_datum) throw new Error("Main datum not found");
+    return main_datum;
   }
 }

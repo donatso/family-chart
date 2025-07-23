@@ -1,8 +1,33 @@
 import * as d3 from "d3"
 import * as icons from "../renderers/icons"
+import { Store } from "../types/store"
+import { Data } from "../types/data"
 
-export function createHistory(store, getStoreDataCopy, onUpdate) {
-  let history = []
+interface HistoryData extends Data {
+  main_id: string
+}
+
+export interface History {
+  changed: () => void
+  back: () => void
+  forward: () => void
+  canForward: () => boolean
+  canBack: () => boolean
+}
+
+export interface HistoryControls {
+  back_btn: HTMLElement
+  forward_btn: HTMLElement
+  updateButtons: () => void
+  destroy: () => void
+}
+
+export interface HistoryWithControls extends History {
+  controls: HistoryControls
+}
+
+export function createHistory(store: Store, getStoreDataCopy: () => Data, onUpdate: () => void): History {
+  let history: HistoryData[] = []
   let history_index = -1
   
   return {
@@ -15,7 +40,7 @@ export function createHistory(store, getStoreDataCopy, onUpdate) {
 
   function changed() {
     if (history_index < history.length - 1) history = history.slice(0, history_index+1)
-    const clean_data = getStoreDataCopy()
+    const clean_data = getStoreDataCopy() as HistoryData
     clean_data.main_id = store.getMainId()
     history.push(clean_data)
     history_index++
@@ -41,7 +66,7 @@ export function createHistory(store, getStoreDataCopy, onUpdate) {
     return history_index > 0
   }
 
-  function updateData(data) {
+  function updateData(data: HistoryData) {
     const current_main_id = store.getMainId()
     data = JSON.parse(JSON.stringify(data))
     if (!data.find(d => d.id === current_main_id)) store.updateMainId(data.main_id)
@@ -50,9 +75,9 @@ export function createHistory(store, getStoreDataCopy, onUpdate) {
   }
 }
 
-export function createHistoryControls(cont, history) {
+export function createHistoryControls(cont: HTMLElement, history: History): HistoryControls {
   const history_controls = d3.select(cont).append("div").attr("class", "f3-history-controls")
-  cont.insertBefore(history_controls.node(), cont.firstChild)
+  cont.insertBefore(history_controls.node()!, cont.firstChild)
   const back_btn = history_controls.append("button").attr("class", "f3-back-button").on("click", () => {
     history.back()
     updateButtons()
@@ -66,8 +91,8 @@ export function createHistoryControls(cont, history) {
   forward_btn.html(icons.historyForwardSvgIcon())
 
   return {
-    back_btn: back_btn.node(),
-    forward_btn: forward_btn.node(),
+    back_btn: back_btn.node()!,
+    forward_btn: forward_btn.node()!,
     updateButtons,
     destroy
   }
@@ -83,7 +108,6 @@ export function createHistoryControls(cont, history) {
   }
 
   function destroy() {
-    history = null
     d3.select(cont).select('.f3-history-controls').remove()
   }
 }

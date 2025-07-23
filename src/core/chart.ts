@@ -3,7 +3,7 @@ import htmlContSetup from "../renderers/html"
 import { removeToAddFromData } from "../store/edit"
 import createStore from "../store/store"
 import view from "../renderers/view"
-import editTree from "./edit"
+import editTree, { EditTree } from "./edit"
 import linkSpouseText from "../features/link-spouse-text"
 import autocomplete from "../features/autocomplete"
 import { getMaxDepth } from "../layout/handlers"
@@ -30,7 +30,7 @@ class CreateChart {
   cont: HTMLElement
   store: Store
   svg: HTMLElement
-  getCard: null | (() => any)
+  getCard: null | (() => (d:TreeDatum) => void)
   is_card_html: boolean
 
   transition_time: number
@@ -39,7 +39,7 @@ class CreateChart {
   beforeUpdate: Function | null
   afterUpdate: Function | null
 
-  editTreeInstance: any
+  editTreeInstance: EditTree | null
 
 
   constructor(cont: HTMLElement, data: Data) {
@@ -61,6 +61,8 @@ class CreateChart {
     const main_id = data[0].id
     this.store = this.createStore(data, main_id)
     this.setOnUpdate()
+
+    this.editTreeInstance = null
 
     return this
   }
@@ -207,7 +209,7 @@ class CreateChart {
   setSingleParentEmptyCard(single_parent_empty_card: boolean, {label='Unknown'} = {}) {
     this.store.state.single_parent_empty_card = single_parent_empty_card
     this.store.state.single_parent_empty_card_label = label
-    if (this.editTreeInstance && this.editTreeInstance.addRelativeInstance.is_active) this.editTreeInstance.addRelativeInstance.onCancel()
+    if (this.editTreeInstance && this.editTreeInstance.addRelativeInstance.is_active) this.editTreeInstance.addRelativeInstance.onCancel!()
     removeToAddFromData(this.store.getData() || [])
 
     return this
@@ -420,7 +422,9 @@ class CreateChart {
     this.personSearch.setOptionsGetterPerson(this.store.getData, getLabel)
 
     function onSelect(this: CreateChart, value: Datum['id']) {
-      if (this.editTreeInstance) this.editTreeInstance.open(this.store.getDatum(value))
+      const datum = this.store.getDatum(value)
+      if (!datum) throw new Error('Datum not found')
+      if (this.editTreeInstance) this.editTreeInstance.open(datum)
       this.updateMainId(value)
       this.updateTree({initial: false})
     }
