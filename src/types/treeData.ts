@@ -75,6 +75,12 @@ export interface TreeDatum {
 
   /** True if this card is private and should be treated differently. */
   is_private?: boolean;
+
+  /** Reference to the DOM node for this tree datum. (for debugging) */
+  __node?: HTMLElement;
+
+  /** Reference to the label for this tree datum. (for debugging) */
+  __label?: string;
 }
 
 /** An array of tree nodes. */

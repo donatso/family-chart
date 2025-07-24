@@ -1,8 +1,34 @@
 import * as d3 from "d3"
 import {personSvgIcon, miniTreeSvgIcon, plusSvgIcon} from "./icons"
 import {handleCardDuplicateToggle} from "../features/duplicates-toggle/duplicates-toggle-renderer"
+import { Store } from "../types/store";
+import { TreeDatum } from "../types/treeData";
 
-export default function CardHtml(props) {
+export default function CardHtml(props: {
+  style: 'default' | 'imageCircleRect' | 'imageCircle' | 'imageRect' | 'rect';
+  cardInnerHtmlCreator?: (d: TreeDatum) => string;
+  onCardClick: (e: Event, d: TreeDatum) => void;
+  onCardUpdate: (d: TreeDatum) => void;
+  onCardMouseenter: (e: Event, d: TreeDatum) => void;
+  onCardMouseleave: (e: Event, d: TreeDatum) => void;
+  mini_tree: boolean;
+  card_dim: {
+    w: number;
+    h: number;
+    height_auto: boolean;
+    img_w: number;
+    img_h: number;
+    img_x: number;
+    img_y: number;
+  };
+  defaultPersonIcon: (d: TreeDatum) => string;
+  empty_card_label: string;
+  unknown_card_label: string;
+  cardImageField: string;
+  card_display: ((d: TreeDatum['data']) => string)[];
+  duplicate_branch_toggle: boolean;
+  store: Store;
+}) {
   const cardInner = props.style === 'default' ? cardInnerDefault 
   : props.style === 'imageCircleRect' ? cardInnerImageCircleRect
   : props.style === 'imageCircle' ? cardInnerImageCircle 
@@ -10,14 +36,14 @@ export default function CardHtml(props) {
   : props.style === 'rect' ? cardInnerRect
   : cardInnerDefault
 
-  return function (d) {
+  return function (this: HTMLElement, d: TreeDatum) {
     this.innerHTML = (`
     <div class="card ${getClassList(d).join(' ')}" data-id="${d.tid}" style="transform: translate(-50%, -50%); pointer-events: auto;">
       ${props.mini_tree ? getMiniTree(d) : ''}
       ${(props.cardInnerHtmlCreator && !d.data._new_rel_data) ? props.cardInnerHtmlCreator(d) : cardInner(d)}
     </div>
     `)
-    this.querySelector('.card').addEventListener('click', e => props.onCardClick(e, d))
+    this.querySelector('.card')!.addEventListener('click', (e: Event) => props.onCardClick(e, d))
     if (props.onCardUpdate) props.onCardUpdate.call(this, d)
 
     if (props.onCardMouseenter) d3.select(this).select('.card').on('mouseenter', e => props.onCardMouseenter(e, d))
@@ -25,7 +51,7 @@ export default function CardHtml(props) {
     if (d.duplicate) handleCardDuplicateHover(this, d)
     if (props.duplicate_branch_toggle) handleCardDuplicateToggle(this, d, props.store.state.is_horizontal, props.store.updateTree)
     if (location.origin.includes('localhost')) {
-      d.__node = this.querySelector('.card')
+      d.__node = this.querySelector('.card') as HTMLElement
       d.__label = d.data.data['first name']
       if (d.data.to_add) {
         const spouse = d.spouse || d.coparent || null
@@ -34,7 +60,7 @@ export default function CardHtml(props) {
     }
   }
 
-  function getCardInnerImageCircle(d) {
+  function getCardInnerImageCircle(d: TreeDatum) {
     return (`
     <div class="card-inner card-image-circle" ${getCardStyle()}>
       ${d.data.data[props.cardImageField] ? `<img src="${d.data.data[props.cardImageField]}" ${getCardImageStyle()}>` : noImageIcon(d)}
@@ -44,7 +70,7 @@ export default function CardHtml(props) {
     `)
   }
 
-  function getCardInnerImageRect(d) {
+  function getCardInnerImageRect(d: TreeDatum) {
     return (`
     <div class="card-inner card-image-rect" ${getCardStyle()}>
       ${d.data.data[props.cardImageField] ? `<img src="${d.data.data[props.cardImageField]}" ${getCardImageStyle()}>` : noImageIcon(d)}
@@ -54,7 +80,7 @@ export default function CardHtml(props) {
     `)
   }
 
-  function getCardInnerRect(d) {
+  function getCardInnerRect(d: TreeDatum) {
     return (`
     <div class="card-inner card-rect" ${getCardStyle()}>
       ${textDisplay(d)}
@@ -63,7 +89,7 @@ export default function CardHtml(props) {
     `)
   }
 
-  function textDisplay(d) {
+  function textDisplay(d: TreeDatum) {
     if (d.data._new_rel_data) return newRelDataDisplay(d)
     if (d.data.to_add) return `<div>${props.empty_card_label || 'ADD'}</div>`
     if (d.data.unknown) return `<div>${props.unknown_card_label || 'UNKNOWN'}</div>`
@@ -72,14 +98,14 @@ export default function CardHtml(props) {
     `)
   }
 
-  function newRelDataDisplay(d) {
+  function newRelDataDisplay(d: TreeDatum) {
     const attr_list = []
     attr_list.push(`data-rel-type="${d.data._new_rel_data.rel_type}"`)
     if (['son', 'daughter'].includes(d.data._new_rel_data.rel_type)) attr_list.push(`data-other-parent-id="${d.data._new_rel_data.other_parent_id}"`)
     return `<div ${attr_list.join(' ')}>${d.data._new_rel_data.label}</div>`
   }
 
-  function getMiniTree(d) {
+  function getMiniTree(d: TreeDatum) {
     if (!props.mini_tree) return ''
     if (d.data.to_add) return ''
     if (d.data._new_rel_data) return ''
@@ -87,27 +113,27 @@ export default function CardHtml(props) {
     return `<div class="mini-tree">${miniTreeSvgIcon()}</div>`
   }
 
-  function cardInnerImageCircleRect(d) {
+  function cardInnerImageCircleRect(d: TreeDatum) {
     return d.data.data[props.cardImageField] ? cardInnerImageCircle(d) : cardInnerRect(d)
   }
 
-  function cardInnerDefault(d) {
+  function cardInnerDefault(d: TreeDatum) {
     return getCardInnerImageRect(d)
   }
 
-  function cardInnerImageCircle(d) {
+  function cardInnerImageCircle(d: TreeDatum) {
     return getCardInnerImageCircle(d)
   }
 
-  function cardInnerImageRect(d) {
+  function cardInnerImageRect(d: TreeDatum) {
     return getCardInnerImageRect(d)
   }
 
-  function cardInnerRect(d) {
+  function cardInnerRect(d: TreeDatum) {
     return getCardInnerRect(d)
   }
 
-  function getClassList(d) {
+  function getClassList(d: TreeDatum) {
     const class_list = []
     if (d.data.data.gender === 'M') class_list.push('card-male')
     else if (d.data.data.gender === 'F') class_list.push('card-female')
@@ -151,18 +177,18 @@ export default function CardHtml(props) {
     return style
   }
 
-  function noImageIcon(d) {
+  function noImageIcon(d: TreeDatum) {
     if (d.data._new_rel_data) return `<div class="person-icon" ${getCardImageStyle()}>${plusSvgIcon()}</div>`
     return `<div class="person-icon" ${getCardImageStyle()}>${props.defaultPersonIcon ? props.defaultPersonIcon(d) : personSvgIcon()}</div>`
   }
 
-  function getCardDuplicateTag(d) {
+  function getCardDuplicateTag(d: TreeDatum) {
     return `<div class="f3-card-duplicate-tag">x${d.duplicate}</div>`
   }
 
-  function handleCardDuplicateHover(node, d) {
+  function handleCardDuplicateHover(node: HTMLElement, d: TreeDatum) {
     d3.select(node).on('mouseenter', e => {
-      d3.select(node.closest('.cards_view')).selectAll('.card_cont').select('.card').classed('f3-card-duplicate-hover', d0 => d0.data.id === d.data.id)
+      d3.select(node.closest('.cards_view')).selectAll('.card_cont').select('.card').classed('f3-card-duplicate-hover', d0 => (d0 as TreeDatum).data.id === d.data.id)
     })
     d3.select(node).on('mouseleave', e => {
       d3.select(node.closest('.cards_view')).selectAll('.card_cont').select('.card').classed('f3-card-duplicate-hover', false)
