@@ -26,6 +26,7 @@ interface BaseFormCreator {
   datum_id: string;
   fields: any[];
   onSubmit: (e: any) => void;
+  onCancel: () => void;
   getKinshipInfo: () => any;
   onFormCreation: CreateFormProps['onFormCreation']
   no_edit: boolean;
@@ -40,7 +41,7 @@ interface BaseFormCreator {
   linkExistingRelative?: any;
 }
 
-interface ExistingDatumFormCreator extends BaseFormCreator {
+export interface ExistingDatumFormCreator extends BaseFormCreator {
   onDelete: () => void;
   addRelative: () => void;
   addRelativeCancel: () => void;
@@ -53,12 +54,13 @@ interface ExistingDatumFormCreator extends BaseFormCreator {
 
 }
 
-interface NewRelFormCreator extends BaseFormCreator {
+export interface NewRelFormCreator extends BaseFormCreator {
   title: string;
   new_rel: boolean;
   editable: boolean;
-  onCancel: () => void;
 }
+
+export type FormCreator = ExistingDatumFormCreator | NewRelFormCreator;
 
 interface Field {
   id: string;
@@ -95,8 +97,6 @@ interface SelectFieldCreator {
   optionCreator?: (datum: Datum) => {value: string; label: string}[];
 }
 
-export type FormCreator = ExistingDatumFormCreator | NewRelFormCreator;
-
 export function createForm({
   datum,
   store,
@@ -117,6 +117,7 @@ export function createForm({
     datum_id: datum.id,
     fields: [],
     onSubmit: submitFormChanges,
+    onCancel: onCancel,
     getKinshipInfo: getKinshipInfo,
     onFormCreation: onFormCreation,
     no_edit: no_edit,
@@ -147,8 +148,7 @@ export function createForm({
       ...base_form_creator,
       title: datum._new_rel_data.label,
       new_rel: true,
-      editable: true,
-      onCancel: onCancel,
+      editable: true
     }
   }
   if (datum._new_rel_data || datum.to_add || datum.unknown) {

@@ -1,7 +1,7 @@
 import * as d3 from "d3"
 import { createForm } from "./form"
 import { createHistory, createHistoryControls, HistoryWithControls } from "../features/history"
-import { formInfoSetup } from "../renderers/form"
+import { formInfoSetupExisting, formInfoSetupNew } from "../renderers/form"
 import addRelative from "./add-relative"
 import { deletePerson, cleanupDataJson } from "../store/edit"
 import { handleLinkRel } from "../store/add-existing-rel"
@@ -213,7 +213,7 @@ export class EditTree {
       ...props
     })
   
-    const form_cont = formInfoSetup(form_creator, this.closeForm.bind(this))
+    const form_cont = is_new_rel ? formInfoSetupNew(form_creator, this.closeForm.bind(this)) : formInfoSetupExisting(form_creator, this.closeForm.bind(this))
   
     this.form_cont.innerHTML = ''
     this.form_cont.appendChild(form_cont)

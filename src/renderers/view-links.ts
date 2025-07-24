@@ -13,7 +13,7 @@ export default function updateLinks(svg: HTMLElement, tree: Tree, props: ViewPro
     return acc
   }, {})
   const links_data: Link[] = Object.values(links_data_dct)
-  const link: Selection<SVGPathElement, Link, BaseType, unknown> = d3
+  const link = d3
     .select(svg)
     .select(".links_view")
     .selectAll<SVGPathElement, Link>("path.link")

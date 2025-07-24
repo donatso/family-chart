@@ -1,9 +1,9 @@
 import * as d3 from "d3"
 import createSvg from "./svg"
 
-export default function htmlContSetup(cont) {
-  const getSvgView = () => cont.querySelector('svg .view')
-  const getHtmlView = () => cont.querySelector('#htmlSvg .cards_view')
+export default function htmlContSetup(cont: HTMLElement) {
+  const getSvgView = () => cont.querySelector('svg .view') as HTMLElement
+  const getHtmlView = () => cont.querySelector('#htmlSvg .cards_view') as HTMLElement
 
   createSvg(cont, {onZoom: onZoomSetup(getSvgView, getHtmlView)})
   createHtmlSvg(cont)
@@ -16,7 +16,7 @@ export default function htmlContSetup(cont) {
   }
 }
 
-function createHtmlSvg(cont) {
+function createHtmlSvg(cont: HTMLElement) {
   const f3Canvas = d3.select(cont).select('#f3Canvas')
   const cardHtml = f3Canvas.append('div').attr('id', 'htmlSvg')
     .attr('style', 'position: absolute; width: 100%; height: 100%; z-index: 2; top: 0; left: 0')
@@ -25,8 +25,8 @@ function createHtmlSvg(cont) {
   return cardHtml.node()
 }
 
-export function onZoomSetup(getSvgView, getHtmlView) {
-  return function onZoom(e) {
+export function onZoomSetup(getSvgView: () => HTMLElement, getHtmlView: () => HTMLElement) {
+  return function onZoom(e: any) {
     const t = e.transform
   
     d3.select(getSvgView()).style('transform', `translate(${t.x}px, ${t.y}px) scale(${t.k}) `)

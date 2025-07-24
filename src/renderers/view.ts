@@ -11,6 +11,7 @@ export interface ViewProps {
   transition_time?: number
   cardComponent?: boolean
   cardHtml?: boolean
+  cardHtmlDiv?: HTMLElement
   tree_position?: 'fit' | 'main_to_middle' | 'inherit'
   scale?: number
 }

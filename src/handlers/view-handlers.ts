@@ -2,7 +2,7 @@ import * as d3 from "d3"
 import { TreeDatum } from "../types/treeData"
 
 interface ZoomEl extends HTMLElement {
-  __zoomObj: any
+  __zoomObj: any // ZoomBehavior<Element, unknown>
 }
 
 function positionTree({t, svg, transition_time=2000}: {t: {k: number, x: number, y: number}, svg: HTMLElement, transition_time?: number}) {
@@ -80,4 +80,34 @@ function getZoomListener(svg: HTMLElement) {
   const el_listener = (svg as ZoomEl).__zoomObj ? svg : (svg.parentNode as ZoomEl)
   if (!(el_listener as ZoomEl).__zoomObj) throw new Error('Zoom object not found')
   return el_listener as ZoomEl
+}
+
+export interface ZoomProps {
+  onZoom?: (e: any) => void
+  zoom_polite?: boolean
+}
+
+
+export function setupZoom(el: any, props: ZoomProps = {}) {
+  if (el.__zoom) {
+    console.log('zoom already setup')
+    return
+  }
+  const view = el.querySelector('.view')!
+  const zoom = d3.zoom().on("zoom", (props.onZoom || zoomed))
+
+  d3.select(el).call(zoom)
+  el.__zoomObj = zoom
+
+  if (props.zoom_polite) zoom.filter(zoomFilter)
+
+  function zoomed(e: any) {
+    d3.select(view).attr("transform", e.transform);
+  }
+
+  function zoomFilter(e: any) {
+    if (e.type === "wheel" && !e.ctrlKey) return false
+    else if (e.touches && e.touches.length < 2) return false
+    else return true
+  }
 }

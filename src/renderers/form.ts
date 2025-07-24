@@ -1,0 +1,113 @@
+import { ExistingDatumFormCreator, NewRelFormCreator } from '../core/form'
+import { getHtmlExisting, getHtmlNew } from './form-html'
+
+
+export function formInfoSetupNew(form_creator: NewRelFormCreator, closeCallback: () => void) {
+  const formContainer = document.createElement('div')
+  reload()
+  return formContainer
+
+  function reload() {
+    const formHtml = getHtmlNew(form_creator)
+    formContainer.innerHTML = formHtml;
+    setupEventListenersBase(formContainer, form_creator, closeCallback, reload)
+    setupEventListenersNew(formContainer, form_creator)
+    if (form_creator.onFormCreation) {
+      form_creator.onFormCreation({
+        cont: formContainer,
+        form_creator: form_creator
+      })
+    }
+  }
+}
+
+export function formInfoSetupExisting(form_creator: ExistingDatumFormCreator, closeCallback: () => void) {
+  const formContainer = document.createElement('div')
+  reload()
+  return formContainer
+
+  function reload() {
+    const formHtml = getHtmlExisting(form_creator)
+    formContainer.innerHTML = formHtml;
+    setupEventListenersBase(formContainer, form_creator, closeCallback, reload)
+    setupEventListenersExisting(formContainer, form_creator, reload)
+    if (form_creator.onFormCreation) {
+      form_creator.onFormCreation({
+        cont: formContainer,
+        form_creator: form_creator
+      })
+    }
+  }
+}
+
+function setupEventListenersBase(formContainer: HTMLElement, form_creator: ExistingDatumFormCreator | NewRelFormCreator, closeCallback: () => void, reload: () => void) {
+  const form = formContainer.querySelector('form')!;
+  form.addEventListener('submit', form_creator.onSubmit);
+
+  const cancel_btn = form.querySelector('.f3-cancel-btn')!;
+  cancel_btn.addEventListener('click', onCancel)
+
+  const close_btn = form.querySelector('.f3-close-btn')!;
+  close_btn.addEventListener('click', closeCallback)
+
+  if (form_creator.getKinshipInfo) {
+    const kinship_info = form_creator.getKinshipInfo()
+    if (kinship_info) formContainer.appendChild(kinship_info)
+  }
+
+  function onCancel() {
+    form_creator.editable = false
+    if (form_creator.onCancel) form_creator.onCancel()
+    reload()
+  }
+}
+
+function setupEventListenersNew(formContainer: HTMLElement, form_creator: NewRelFormCreator) {
+  const form = formContainer.querySelector('form')!;
+  const link_existing_relative_select = form.querySelector('.f3-link-existing-relative select')!;
+  if (link_existing_relative_select) {
+    link_existing_relative_select.addEventListener('change', form_creator.linkExistingRelative.onSelect);
+  }
+}
+
+function setupEventListenersExisting(formContainer: HTMLElement, form_creator: ExistingDatumFormCreator, reload: () => void) {
+  const form = formContainer.querySelector('form')!;
+
+  const edit_btn = form.querySelector('.f3-edit-btn');
+  if (edit_btn) edit_btn.addEventListener('click', onEdit)
+
+  const delete_btn = form.querySelector('.f3-delete-btn');
+  if (delete_btn && form_creator.onDelete) {
+    delete_btn.addEventListener('click', form_creator.onDelete);
+  }
+
+  const add_relative_btn = form.querySelector('.f3-add-relative-btn');
+  if (add_relative_btn && form_creator.addRelative) {
+    add_relative_btn.addEventListener('click', () => {
+      if (form_creator.addRelativeActive) form_creator.addRelativeCancel()
+      else form_creator.addRelative()
+      form_creator.addRelativeActive = !form_creator.addRelativeActive
+      reload()
+    });
+  }
+
+  const remove_relative_btn = form.querySelector('.f3-remove-relative-btn');
+  if (remove_relative_btn && form_creator.removeRelative) {
+    remove_relative_btn.addEventListener('click', () => {
+      if (form_creator.removeRelativeActive) form_creator.removeRelativeCancel()
+      else form_creator.removeRelative()
+      form_creator.removeRelativeActive = !form_creator.removeRelativeActive
+      reload()
+    });
+  }
+
+  const link_existing_relative_select = form.querySelector('.f3-link-existing-relative select');
+  if (link_existing_relative_select) {
+    link_existing_relative_select.addEventListener('change', form_creator.linkExistingRelative.onSelect);
+  }
+
+  function onEdit() {
+    form_creator.editable = !form_creator.editable
+    reload()
+  }
+}

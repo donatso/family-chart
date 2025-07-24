@@ -193,7 +193,7 @@ export function chevronUpSvgIcon() { return svgWrapper(chevronUpIcon()) }
 export function linkOffSvgIcon() { return svgWrapper(linkOffIcon()) }
 export function infoSvgIcon() { return svgWrapper(infoIcon()) }
 
-function svgWrapper(icon, viewBox='0 0 24 24') {
+function svgWrapper(icon: string, viewBox='0 0 24 24') {
   const match = icon.match(/data-icon="([^"]+)"/);
   const dataIcon = match ? `data-icon="${match[1]}"` : '';
   
