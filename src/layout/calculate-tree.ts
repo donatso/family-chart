@@ -28,7 +28,7 @@ export interface CalculateTreeOptions {
   on_toggle_one_close_others?: boolean;
 }
 
-export interface CalculateTreeResult {
+export interface Tree {
   data: TreeData;
   data_stash: Data;
   dim: { width: number; height: number; x_off: number; y_off: number };
@@ -52,7 +52,7 @@ export default function CalculateTree(data: Data, {
   private_cards_config = undefined,
   duplicate_branch_toggle = false,
   on_toggle_one_close_others = true,
-}: CalculateTreeOptions): CalculateTreeResult {
+}: CalculateTreeOptions): Tree {
   if (!data || !data.length) throw new Error('No data')
 
   if (is_horizontal) [node_separation, level_separation] = [level_separation, node_separation]

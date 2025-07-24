@@ -12,16 +12,11 @@ import { calculateKinships, getKinshipsDataStash } from "../features/kinships/ca
 import { Data, Datum } from "../types/data"
 import { Store, StoreState } from "../types/store"
 import { TreeDatum } from "../types/treeData"
+import { ViewProps } from "../renderers/view"
 
 type LinkSpouseText = ((sp1: TreeDatum, sp2: TreeDatum) => string) | null
 interface KinshipsConfig {
   show_in_law?: boolean,  // show in law relations
-}
-
-interface UpdateTreeProps {
-  initial?: boolean;
-  tree_position?: 'fit' | 'main_to_middle' | 'inherit';
-  transition_time?: number;
 }
 
 export default (cont: HTMLElement, data: Data) => new CreateChart(cont, data)
@@ -79,11 +74,11 @@ class CreateChart {
   }
 
   private setOnUpdate() {
-    this.store.setOnUpdate((props: Object) => {
+    this.store.setOnUpdate((props?: ViewProps) => {
       if (this.beforeUpdate) this.beforeUpdate(props)
       props = Object.assign({transition_time: this.store.state.transition_time}, props || {})
       if (this.is_card_html) props = Object.assign({}, props || {}, {cardHtml: true})
-      view(this.store.getTree(), this.svg, this.getCard!(), props || {})
+      view(this.store.getTree()!, this.svg, this.getCard!(), props || {})
       if (this.linkSpouseText) linkSpouseText(this.svg, this.store.getTree(), Object.assign({}, props || {}, {linkSpouseText: this.linkSpouseText, node_separation: this.store.state.node_separation}))
       if (this.afterUpdate) this.afterUpdate(props)
     })
@@ -100,7 +95,7 @@ class CreateChart {
    * @param props.transition_time - The transition time.
    * @returns The CreateChart instance
    */
-  updateTree(props: UpdateTreeProps = {initial: false}) {
+  updateTree(props: ViewProps = {initial: false}) {
     this.store.updateTree(props)
     return this
   }

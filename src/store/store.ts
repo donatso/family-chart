@@ -1,8 +1,9 @@
 import CalculateTree from "../layout/calculate-tree"
 import { Datum, Data } from "../types/data"
 import { TreeDatum } from "../types/treeData"
-import { Store, StoreState, UpdateTreeProps } from "../types/store"
-import { CalculateTreeOptions, CalculateTreeResult } from "../layout/calculate-tree"
+import { Store, StoreState } from "../types/store"
+import { CalculateTreeOptions, Tree } from "../layout/calculate-tree"
+import { ViewProps } from "../renderers/view"
 
 export default function createStore(initial_state: StoreState): Store {
   let onUpdate: (props?: any) => void | undefined;
@@ -11,7 +12,7 @@ export default function createStore(initial_state: StoreState): Store {
 
   const store = {
     state,
-    updateTree: (props: Object) => {
+    updateTree: (props?: ViewProps) => {
       state.tree = calcTree();
       if (!state.main_id && state.tree) updateMainId(state.tree.main_id)
       if (onUpdate) onUpdate(props)
@@ -24,7 +25,7 @@ export default function createStore(initial_state: StoreState): Store {
     getMainId: () => state.main_id,
     getData: () => state.data,
     getTree: () => state.tree,
-    setOnUpdate: (f: (props?: any) => void) => onUpdate = f,
+    setOnUpdate: (f: (props?: ViewProps) => void) => onUpdate = f,
 
     getMainDatum,
     getDatum,
@@ -37,7 +38,7 @@ export default function createStore(initial_state: StoreState): Store {
 
   return store
 
-  function calcTree(): CalculateTreeResult {
+  function calcTree(): Tree {
     const args: CalculateTreeOptions = {
       main_id: state.main_id,
     };

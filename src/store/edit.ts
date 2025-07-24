@@ -1,14 +1,15 @@
 import {checkIfRelativesConnectedWithoutPerson} from "../handlers/check-person-connection"
-import {createTreeDataWithMainNode} from "./new-person"
+import { Data, Datum } from "../types/data"
+import {createNewPerson} from "./new-person"
 
-export function submitFormData(datum, data_stash, form_data) {
+export function submitFormData(datum: Datum, data_stash: Data, form_data: FormData) {
   form_data.forEach((v, k) => datum.data[k] = v)
   syncRelReference(datum, data_stash)
   if (datum.to_add) delete datum.to_add
   if (datum.unknown) delete datum.unknown
 }
 
-export function syncRelReference(datum, data_stash) {
+export function syncRelReference(datum: Datum, data_stash: Data) {
   Object.keys(datum.data).forEach(k => {
     if (k.includes('__ref__')) {
       const rel_id = k.split('__ref__')[1]
@@ -20,7 +21,7 @@ export function syncRelReference(datum, data_stash) {
   })
 }
 
-export function onDeleteSyncRelReference(datum, data_stash) {
+export function onDeleteSyncRelReference(datum: Datum, data_stash: Data) {
   Object.keys(datum.data).forEach(k => {
     if (k.includes('__ref__')) {
       const rel_id = k.split('__ref__')[1]
@@ -32,17 +33,17 @@ export function onDeleteSyncRelReference(datum, data_stash) {
   })
 }
 
-export function moveToAddToAdded(datum, data_stash) {
+export function moveToAddToAdded(datum: Datum, data_stash: Data) {
   delete datum.to_add
   return datum
 }
 
-export function removeToAdd(datum, data_stash) {
+export function removeToAdd(datum: Datum, data_stash: Data) {
   deletePerson(datum, data_stash)
   return false
 }
 
-export function deletePerson(datum, data_stash) {
+export function deletePerson(datum: Datum, data_stash: Data) {
   if (!checkIfRelativesConnectedWithoutPerson(datum, data_stash)) {
     changeToUnknown()
     return {success: true}
@@ -55,17 +56,18 @@ export function deletePerson(datum, data_stash) {
     data_stash.forEach(d => {
       for (let k in d.rels) {
         if (!d.rels.hasOwnProperty(k)) continue
-        if (d.rels[k] === datum.id) {
-          delete d.rels[k]
-        } else if (Array.isArray(d.rels[k]) && d.rels[k].includes(datum.id)) {
-          d.rels[k].splice(d.rels[k].findIndex(did => did === datum.id), 1)
+        const key = k as keyof Datum['rels'];
+        if (d.rels[key] === datum.id) {
+          delete d.rels[key]
+        } else if (Array.isArray(d.rels[key]) && d.rels[key].includes(datum.id)) {
+          d.rels[key].splice(d.rels[key].findIndex(did => did === datum.id), 1)
         }
       }
     })
     onDeleteSyncRelReference(datum, data_stash)
     data_stash.splice(data_stash.findIndex(d => d.id === datum.id), 1)
     data_stash.forEach(d => {if (d.to_add) deletePerson(d, data_stash)})  // full update of tree
-    if (data_stash.length === 0) data_stash.push(createTreeDataWithMainNode({}).data[0])
+    if (data_stash.length === 0) data_stash.push(createNewPerson({data: {gender: 'M'}}))
   }
 
   function changeToUnknown() {
@@ -77,7 +79,7 @@ export function deletePerson(datum, data_stash) {
   }
 }
 
-export function cleanupDataJson(data) {
+export function cleanupDataJson(data: Data) {
   data.forEach(d => d.to_add ? removeToAdd(d, data) : d)
   data.forEach(d => {
     delete d.main
@@ -93,7 +95,7 @@ export function cleanupDataJson(data) {
   return data
 }
 
-export function removeToAddFromData(data) {
+export function removeToAddFromData(data: Data) {
   data.forEach(d => d.to_add ? removeToAdd(d, data) : d)
   return data
 }

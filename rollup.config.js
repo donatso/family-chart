@@ -10,7 +10,7 @@ const globals = {
   "d3-hierarchy": "d3"
 }
 const banner = `// ${meta.homepage} v${meta.version} Copyright ${(new Date).getFullYear()} ${meta.author.name}`
-const input = "src/index.js"
+const input = "src/index.ts"
 const external = ["d3", "d3-array", "d3-hierarchy"]
 const plugins = [
   typescript({

@@ -4,10 +4,19 @@ import updateLinks from "./view-links"
 import updateCardsSvg from "./view-cards-svg"
 import updateCardsHtml from "./view-cards-html"
 import updateCardsComponent from "../features/card-component/card-component"
+import { Tree } from "../layout/calculate-tree"
 
-export default function(tree, svg, Card, props={}) {
+export interface ViewProps {
+  initial?: boolean
+  transition_time?: number
+  cardComponent?: boolean
+  cardHtml?: boolean
+  tree_position?: 'fit' | 'main_to_middle' | 'inherit'
+  scale?: number
+}
 
-  props.initial = props.hasOwnProperty('initial') ? props.initial : !d3.select(svg.parentNode).select('.card_cont').node()
+export default function(tree: Tree, svg: HTMLElement, Card: any, props: ViewProps = {}) {
+  props.initial = props.hasOwnProperty('initial') ? props.initial : !d3.select(svg.parentNode as HTMLElement).select('.card_cont').node()
   props.transition_time = props.hasOwnProperty('transition_time') ? props.transition_time : 1000;
   if (props.cardComponent) updateCardsComponent(svg, tree, Card, props);
   else if (props.cardHtml) updateCardsHtml(svg, tree, Card, props);

@@ -1,7 +1,7 @@
 import * as d3 from "d3"
 import cardHtmlRenderer from "../../renderers/card-html"
 import {processCardDisplay} from "./utils"
-import {pathToMain} from "../../layout/create-links"
+import pathToMain from "../../layout/path-to-main"
 import { Store } from "../../types/store"
 import { Datum } from "../../types/data"
 import { TreeDatum } from "../../types/treeData"

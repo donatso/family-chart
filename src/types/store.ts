@@ -1,19 +1,13 @@
 import { Datum, Data } from './data';
 import { TreeData, TreeDatum } from './treeData';
-import { CalculateTreeOptions } from '../layout/calculate-tree';
+import { CalculateTreeOptions, Tree } from '../layout/calculate-tree';
+import { ViewProps } from '../renderers/view';
 
 export interface StoreState extends CalculateTreeOptions {
   data: Data;
   main_id: Datum['id'];
   main_id_history?: Datum['id'][];
-  tree?: {
-    data: TreeData;
-    data_stash: Data;
-    dim: { width: number; height: number; x_off: number; y_off: number; };
-    main_id: Datum['id'];
-    is_horizontal: boolean;
-    [key: string]: any;
-  };
+  tree?: Tree;
 
   transition_time?: number;
   single_parent_empty_card_label?: string;
@@ -21,13 +15,13 @@ export interface StoreState extends CalculateTreeOptions {
 
 export interface Store {
   state: StoreState;
-  updateTree: (props?: any) => void;
+  updateTree: (props?: ViewProps) => void;
   updateData: (data: Data) => void;
   updateMainId: (id: Datum['id']) => void;
   getMainId: () => Datum['id'];
   getData: () => Data;
   getTree: () => StoreState['tree'];
-  setOnUpdate: (f: (props?: any) => void) => void;
+  setOnUpdate: (f: (props?: ViewProps) => void) => void;
   getMainDatum: () => Datum;
   getDatum: (id: Datum['id']) => Datum | undefined;
   getTreeMainDatum: () => TreeDatum;
