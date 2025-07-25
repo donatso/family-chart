@@ -7,7 +7,7 @@ export function isAllRelativeDisplayed(d: TreeDatum, data: TreeDatum[]) {
   return all_rels.every(rel_id => data.some(d => d.data.id === rel_id))
 }
 
-export function calculateDelay(tree: Tree, d: TreeDatum, transition_time: number) {  // todo: view-handlers.js
+export function calculateDelay(tree: Tree, d: {depth: number, is_ancestry?: boolean, spouse?: boolean} | TreeDatum, transition_time: number) {  // todo: view-handlers.js
   const delay_level = transition_time*.4
   const ancestry_levels = Math.max(...tree.data.map(d=>d.is_ancestry ? d.depth : 0))
   let delay = d.depth*delay_level;

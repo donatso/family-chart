@@ -13,7 +13,7 @@ import { Store } from "../types/store"
 import { Data, Datum } from "../types/data"
 import { TreeDatum } from "../types/treeData"
 import { AddRelative } from "./add-relative"
-import { FormCreator } from "./form"
+import { ExistingDatumFormCreator, FormCreator, NewRelFormCreator } from "./form"
 import { CardHtml } from "./cards/card-html"
 import { CardSvg } from "./cards/card-svg"
 
@@ -213,7 +213,7 @@ export class EditTree {
       ...props
     })
   
-    const form_cont = is_new_rel ? formInfoSetupNew(form_creator, this.closeForm.bind(this)) : formInfoSetupExisting(form_creator, this.closeForm.bind(this))
+    const form_cont = is_new_rel ? formInfoSetupNew(form_creator as NewRelFormCreator, this.closeForm.bind(this)) : formInfoSetupExisting(form_creator as ExistingDatumFormCreator, this.closeForm.bind(this))
   
     this.form_cont.innerHTML = ''
     this.form_cont.appendChild(form_cont)

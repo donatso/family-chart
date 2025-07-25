@@ -5,13 +5,14 @@ import pathToMain from "../../layout/path-to-main"
 import { Store } from "../../types/store"
 import { Datum } from "../../types/data"
 import { TreeDatum } from "../../types/treeData"
+import { Link } from "../../layout/create-links"
 
 CardHtmlWrapper.is_html = true
 export default function CardHtmlWrapper(cont: HTMLElement, store: Store) { return new CardHtml(cont, store) }
 
 export class CardHtml {
   cont: HTMLElement
-  svg: HTMLElement
+  svg: SVGElement
   store: Store
   card_display: any
   cardImageField: string
@@ -20,17 +21,17 @@ export class CardHtml {
   mini_tree: boolean
   onCardUpdate: any
   card_dim: { [key: string]: number | boolean }
-  cardInnerHtmlCreator: null | ((d:Datum) => string)
-  defaultPersonIcon: null | ((d:Datum) => string)
-  onCardMouseenter: null | ((e:MouseEvent, d:Datum) => void)
-  onCardMouseleave: null | ((e:MouseEvent, d:Datum) => void)
-  to_transition: Datum['id'] | null | false
+  cardInnerHtmlCreator: undefined | ((d:TreeDatum) => string)
+  defaultPersonIcon: undefined | ((d:TreeDatum) => string)
+  onCardMouseenter: undefined | ((e:Event, d:TreeDatum) => void)
+  onCardMouseleave: undefined | ((e:Event, d:TreeDatum) => void)
+  to_transition: Datum['id'] | undefined | false
 
   static is_html = true
 
   constructor(cont: HTMLElement, store: Store) {
     this.cont = cont
-    this.svg = this.cont.querySelector('svg.main_svg') as HTMLElement
+    this.svg = this.cont.querySelector('svg.main_svg')!
     this.store = store
     this.card_display = [(d:Datum) => `${d.data["first name"]} ${d.data["last name"]}`]
     this.cardImageField = 'avatar'
@@ -38,11 +39,6 @@ export class CardHtml {
     this.style = 'default'
     this.mini_tree = false
     this.card_dim = {}
-    this.cardInnerHtmlCreator = null
-    this.defaultPersonIcon = null
-    this.onCardMouseenter = null
-    this.onCardMouseleave = null
-    this.to_transition = null
 
     return this
   }
@@ -58,11 +54,12 @@ export class CardHtml {
       mini_tree: this.mini_tree,
       onCardUpdate: this.onCardUpdate,
       card_dim: this.card_dim,
-      empty_card_label: this.store.state.single_parent_empty_card_label,
+      empty_card_label: this.store.state.single_parent_empty_card_label || '',
+      unknown_card_label: this.store.state.unknown_card_label || '',
       cardInnerHtmlCreator: this.cardInnerHtmlCreator,
       duplicate_branch_toggle: this.store.state.duplicate_branch_toggle,
-      onCardMouseenter: this.onCardMouseenter ? this.onCardMouseenter.bind(this) : null,
-      onCardMouseleave: this.onCardMouseleave ? this.onCardMouseleave.bind(this) : null
+      onCardMouseenter: this.onCardMouseenter ? this.onCardMouseenter.bind(this) : undefined,
+      onCardMouseleave: this.onCardMouseleave ? this.onCardMouseleave.bind(this) : undefined
     })
   }
 
@@ -149,16 +146,16 @@ export class CardHtml {
   }
   
   unsetOnHoverPathToMain() {
-    this.onCardMouseenter = null
-    this.onCardMouseleave = null
+    this.onCardMouseenter = undefined
+    this.onCardMouseleave = undefined
     return this
   }
   
-  onEnterPathToMain(e:MouseEvent, datum:Datum) {
+  onEnterPathToMain(e:Event, datum:TreeDatum) {
     this.to_transition = datum.data.id
     const main_datum = this.store.getTreeMainDatum()
-    const cards = d3.select(this.cont).select('div.cards_view').selectAll('.card_cont')
-    const links = d3.select(this.cont).select('svg.main_svg .links_view').selectAll('.link')
+    const cards = d3.select(this.cont).select('div.cards_view').selectAll<HTMLDivElement, TreeDatum>('.card_cont')
+    const links = d3.select(this.cont).select('svg.main_svg .links_view').selectAll<SVGPathElement, Link>('.link')
     const [cards_node_to_main, links_node_to_main] = pathToMain(cards, links, datum, main_datum)
     cards_node_to_main.forEach(d => {
       const delay = Math.abs(datum.depth - d.card.depth) * 200
@@ -176,7 +173,7 @@ export class CardHtml {
     return this
   }
   
-  onLeavePathToMain(e:MouseEvent, d:Datum) {
+  onLeavePathToMain(e:Event, d:TreeDatum) {
     this.to_transition = false
     d3.select(this.cont).select('div.cards_view').selectAll('div.card-inner').classed('f3-path-to-main', false)
     d3.select(this.cont).select('svg.main_svg .links_view').selectAll('.link').classed('f3-path-to-main', false)

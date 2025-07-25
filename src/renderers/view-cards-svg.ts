@@ -6,7 +6,7 @@ import { ViewProps } from "./view"
 import { TreeDatum } from "../types/treeData"
 import { Selection, BaseType } from "d3-selection"
 
-export default function updateCardsSvg(svg: HTMLElement, tree: Tree, Card: any, props: ViewProps = {}) {
+export default function updateCardsSvg(svg: SVGElement, tree: Tree, Card: any, props: ViewProps = {}) {
   const card = d3
     .select(svg)
     .select(".cards_view")
@@ -37,7 +37,7 @@ export default function updateCardsSvg(svg: HTMLElement, tree: Tree, Card: any, 
 
   function cardUpdate(this: SVGGElement, d: TreeDatum) {
     Card.call(this, d)
-    const delay = props.initial ? calculateDelay(tree, d, props.transition_time) : 0;
+    const delay = props.initial ? calculateDelay(tree, d, props.transition_time!) : 0;
     d3.select(this).transition().duration(props.transition_time!).delay(delay).attr("transform", `translate(${d.x}, ${d.y})`).style("opacity", 1)
   }
 

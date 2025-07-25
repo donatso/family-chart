@@ -5,7 +5,7 @@ import { Tree } from "../layout/calculate-tree"
 import { ViewProps } from "./view"
 import { TreeDatum } from "../types/treeData"
 
-export default function updateCardsHtml(svg: HTMLElement, tree: Tree, Card: any, props: ViewProps = {}) {
+export default function updateCardsHtml(svg: SVGElement, tree: Tree, Card: any, props: ViewProps = {}) {
   const div = getHtmlDiv(svg)
   const card = d3.select(div).select(".cards_view").selectAll<HTMLDivElement, TreeDatum>("div.card_cont").data(tree.data, d => (d as TreeDatum).tid!)
   const card_exit = card.exit()
@@ -34,7 +34,7 @@ export default function updateCardsHtml(svg: HTMLElement, tree: Tree, Card: any,
 
   function cardUpdate(this: HTMLDivElement, d: TreeDatum) {
     Card.call(this, d)
-    const delay = props.initial ? calculateDelay(tree, d, props.transition_time) : 0;
+    const delay = props.initial ? calculateDelay(tree, d, props.transition_time!) : 0;
     d3.select(this).transition().duration(props.transition_time!).delay(delay).style("transform", `translate(${d.x}px, ${d.y}px)`).style("opacity", 1)
   }
 
@@ -48,7 +48,7 @@ export default function updateCardsHtml(svg: HTMLElement, tree: Tree, Card: any,
       .on("end", () => g.remove())
   }
 
-  function getHtmlDiv(svg: HTMLElement) {
+  function getHtmlDiv(svg: SVGElement) {
     if (props.cardHtmlDiv) return props.cardHtmlDiv
     const canvas = svg.closest('#f3Canvas')
     if (!canvas) throw new Error('canvas not found')

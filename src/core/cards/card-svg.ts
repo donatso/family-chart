@@ -3,8 +3,8 @@ import cardSvgRenderer from "../../renderers/card-svg/card-svg"
 import {updateCardSvgDefs} from "../../renderers/card-svg/defs"
 import {processCardDisplay} from "./utils"
 import { Store } from "../../types/store"
-import { Datum } from "../../types/data"
 import { TreeDatum } from "../../types/treeData"
+import { CardDim } from "../../renderers/card-svg/templates"
 
 CardSvgWrapper.is_html = false
 export default function CardSvgWrapper(cont: HTMLElement, store: Store) { return new CardSvg(cont, store) }
@@ -12,24 +12,23 @@ export default function CardSvgWrapper(cont: HTMLElement, store: Store) { return
 export class CardSvg {
   cont: HTMLElement
   store: Store
-  svg: SVGElement | null
-  card_dim: {w?: number, h?: number, text_x?: number, text_y?: number, img_w?: number, img_h?: number, img_x?: number, img_y?: number}
+  svg: SVGElement
+  card_dim: CardDim
   card_display: any
   mini_tree: boolean
   link_break: boolean
   onCardClick: (e: MouseEvent, d: TreeDatum) => void
-  onCardUpdate: ((d: Datum) => void) | null
+  onCardUpdate: ((d: TreeDatum) => void) | undefined
 
   constructor(cont: HTMLElement, store: Store) {
     this.cont = cont
     this.store = store
-    this.svg = this.cont.querySelector('svg.main_svg')
+    this.svg = this.cont.querySelector('svg.main_svg')!
     this.card_dim = {w:220,h:70,text_x:75,text_y:15,img_w:60,img_h:60,img_x:5,img_y:5}
     this.card_display = []
     this.mini_tree = true
     this.link_break = false
     this.onCardClick = this.onCardClickDefault.bind(this)
-    this.onCardUpdate = null
     
     return this
   }

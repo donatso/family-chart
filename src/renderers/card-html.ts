@@ -3,30 +3,23 @@ import {personSvgIcon, miniTreeSvgIcon, plusSvgIcon} from "./icons"
 import {handleCardDuplicateToggle} from "../features/duplicates-toggle/duplicates-toggle-renderer"
 import { Store } from "../types/store";
 import { TreeDatum } from "../types/treeData";
+import { CardDim } from "../types/card";
 
 export default function CardHtml(props: {
   style: 'default' | 'imageCircleRect' | 'imageCircle' | 'imageRect' | 'rect';
   cardInnerHtmlCreator?: (d: TreeDatum) => string;
   onCardClick: (e: Event, d: TreeDatum) => void;
   onCardUpdate: (d: TreeDatum) => void;
-  onCardMouseenter: (e: Event, d: TreeDatum) => void;
-  onCardMouseleave: (e: Event, d: TreeDatum) => void;
+  onCardMouseenter?: (e: Event, d: TreeDatum) => void;
+  onCardMouseleave?: (e: Event, d: TreeDatum) => void;
   mini_tree: boolean;
-  card_dim: {
-    w: number;
-    h: number;
-    height_auto: boolean;
-    img_w: number;
-    img_h: number;
-    img_x: number;
-    img_y: number;
-  };
-  defaultPersonIcon: (d: TreeDatum) => string;
+  card_dim: CardDim;
+  defaultPersonIcon?: (d: TreeDatum) => string;
   empty_card_label: string;
   unknown_card_label: string;
   cardImageField: string;
   card_display: ((d: TreeDatum['data']) => string)[];
-  duplicate_branch_toggle: boolean;
+  duplicate_branch_toggle?: boolean;
   store: Store;
 }) {
   const cardInner = props.style === 'default' ? cardInnerDefault 
@@ -46,8 +39,8 @@ export default function CardHtml(props: {
     this.querySelector('.card')!.addEventListener('click', (e: Event) => props.onCardClick(e, d))
     if (props.onCardUpdate) props.onCardUpdate.call(this, d)
 
-    if (props.onCardMouseenter) d3.select(this).select('.card').on('mouseenter', e => props.onCardMouseenter(e, d))
-    if (props.onCardMouseleave) d3.select(this).select('.card').on('mouseleave', e => props.onCardMouseleave(e, d))
+    if (props.onCardMouseenter) d3.select(this).select('.card').on('mouseenter', e => props.onCardMouseenter!(e, d))
+    if (props.onCardMouseleave) d3.select(this).select('.card').on('mouseleave', e => props.onCardMouseleave!(e, d))
     if (d.duplicate) handleCardDuplicateHover(this, d)
     if (props.duplicate_branch_toggle) handleCardDuplicateToggle(this, d, props.store.state.is_horizontal, props.store.updateTree)
     if (location.origin.includes('localhost')) {

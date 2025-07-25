@@ -9,7 +9,7 @@ export default function htmlContSetup(cont: HTMLElement) {
   createHtmlSvg(cont)
 
   return {
-    svg: cont.querySelector('svg.main_svg'),
+    svg: cont.querySelector('svg.main_svg') as SVGElement,
     svgView: cont.querySelector('svg .view'),
     htmlSvg: cont.querySelector('#htmlSvg'),
     htmlView: cont.querySelector('#htmlSvg .cards_view')

@@ -16,7 +16,7 @@ export interface ViewProps {
   scale?: number
 }
 
-export default function(tree: Tree, svg: HTMLElement, Card: any, props: ViewProps = {}) {
+export default function(tree: Tree, svg: SVGElement, Card: any, props: ViewProps = {}) {
   props.initial = props.hasOwnProperty('initial') ? props.initial : !d3.select(svg.parentNode as HTMLElement).select('.card_cont').node()
   props.transition_time = props.hasOwnProperty('transition_time') ? props.transition_time : 1000;
   if (props.cardComponent) updateCardsComponent(svg, tree, Card, props);

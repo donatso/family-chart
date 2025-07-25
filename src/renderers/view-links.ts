@@ -7,7 +7,7 @@ import { ViewProps } from "./view"
 import { Tree } from "../layout/calculate-tree"
 import { Link } from "../layout/create-links"
 
-export default function updateLinks(svg: HTMLElement, tree: Tree, props: ViewProps = {}) {
+export default function updateLinks(svg: SVGElement, tree: Tree, props: ViewProps = {}) {
   const links_data_dct = tree.data.reduce((acc: Record<string, Link>, d) => {
     createLinks(d, tree.is_horizontal).forEach(l => acc[l.id] = l)
     return acc
@@ -19,6 +19,7 @@ export default function updateLinks(svg: HTMLElement, tree: Tree, props: ViewPro
     .selectAll<SVGPathElement, Link>("path.link")
     .data(links_data, d => d.id)
 
+  if (props.transition_time === undefined) throw new Error('transition_time is undefined')
   const link_exit = link.exit();
   const link_enter = link.enter().append("path").attr("class", "link");
   const link_update = link_enter.merge(link);
@@ -34,14 +35,14 @@ export default function updateLinks(svg: HTMLElement, tree: Tree, props: ViewPro
 
   function linkUpdate(this: SVGPathElement, d: Link) {
     const path = d3.select(this);
-    const delay = props.initial ? calculateDelay(tree, d, props.transition_time) : 0
-    path.transition('path').duration(props.transition_time || 0).delay(delay).attr("d", createPath(d)).style("opacity", 1)
+    const delay = props.initial ? calculateDelay(tree, d, props.transition_time!) : 0
+    path.transition('path').duration(props.transition_time!).delay(delay).attr("d", createPath(d)).style("opacity", 1)
   }
 
   function linkExit(this: SVGPathElement, d: unknown | Link) {
     const path = d3.select(this);
     path.transition('op').duration(800).style("opacity", 0)
-    path.transition('path').duration(props.transition_time || 0).attr("d", createPath(d as Link, true))
+    path.transition('path').duration(props.transition_time!).attr("d", createPath(d as Link, true))
       .on("end", () => path.remove())
   }
 

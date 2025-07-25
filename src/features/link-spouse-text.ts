@@ -5,8 +5,8 @@ import { TreeDatum } from "../types/treeData"
 
 interface LinkSpouseTextProps {
   node_separation: number
-  initial: boolean
-  transition_time: number
+  initial?: boolean
+  transition_time?: number
   linkSpouseText: (sp1: TreeDatum, sp2: TreeDatum) => string
 }
 
@@ -15,7 +15,7 @@ interface LinkDatum {
   id: string
 }
 
-export default function linkSpouseText(svg: HTMLElement, tree: Tree, props: LinkSpouseTextProps) {
+export default function linkSpouseText(svg: SVGElement, tree: Tree, props: LinkSpouseTextProps) {
   const links_data: LinkDatum[] = []
   tree.data.forEach(d => {
     if (d.coparent && d.data.data.gender === 'F') links_data.push({nodes: [d, d.coparent], id: `${d.data.id}--${d.coparent.data.id}`})
@@ -52,11 +52,11 @@ export default function linkSpouseText(svg: HTMLElement, tree: Tree, props: Link
   function linkUpdate(this: SVGGElement, d: LinkDatum) {
     const [sp1, sp2] = d.nodes
     const text_g = d3.select(this)
-    const delay = props.initial ? calculateDelay(tree, sp1, props.transition_time) : 0
+    const delay = props.initial ? calculateDelay(tree, sp1, props.transition_time!) : 0
     text_g.select('text').text(props.linkSpouseText(sp1, sp2))
-    text_g.transition('text').duration(props.transition_time).delay(delay)
+    text_g.transition('text').duration(props.transition_time!).delay(delay)
     .attr('transform', `translate(${spouseLineX(sp1, sp2)}, ${sp1.y-3})`)
-    text_g.transition('text-op').duration(100).delay(delay + props.transition_time).style('opacity', 1)
+    text_g.transition('text-op').duration(100).delay(delay + props.transition_time!).style('opacity', 1)
   }
 
   function linkExit(this: SVGGElement, d: unknown) {

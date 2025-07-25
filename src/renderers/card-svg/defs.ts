@@ -1,6 +1,6 @@
 import { CardDim } from "./templates"
 
-export default function setupCardSvgDefs(svg: SVGSVGElement, card_dim: CardDim) {
+export default function setupCardSvgDefs(svg: SVGElement, card_dim: CardDim) {
   if (svg.querySelector("defs#f3CardDef")) return
   svg.insertAdjacentHTML('afterbegin', (`
       <defs id="f3CardDef">
@@ -31,7 +31,7 @@ export default function setupCardSvgDefs(svg: SVGSVGElement, card_dim: CardDim) 
   }
 }
 
-export function updateCardSvgDefs(svg: SVGSVGElement, card_dim: CardDim) {
+export function updateCardSvgDefs(svg: SVGElement, card_dim: CardDim) {
   if (svg.querySelector("defs#f3CardDef")) {
     svg.querySelector("defs#f3CardDef")!.remove()
   }

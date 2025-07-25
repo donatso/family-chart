@@ -9,16 +9,16 @@ import { Store } from "../../types/store"
 
 interface CardSvgProps {
   store: Store
-  svg: SVGSVGElement
+  svg: SVGElement
   card_dim: CardDim
   card_display: (data: TreeDatum['data']) => string
   onCardClick: (e: MouseEvent, d: TreeDatum) => void
-  onCardUpdate: (d: TreeDatum) => void
   img?: boolean
   mini_tree?: boolean
   link_break?: boolean
   onMiniTreeClick?: (e: MouseEvent, d: TreeDatum) => void
   onLineBreakClick?: (e: MouseEvent, d: TreeDatum) => void
+  onCardUpdate?: (d: TreeDatum) => void
 }
 
 export default function CardSvg(props: CardSvgProps) {

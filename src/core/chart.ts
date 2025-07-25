@@ -24,7 +24,7 @@ export default (cont: HTMLElement, data: Data) => new CreateChart(cont, data)
 class CreateChart {
   cont: HTMLElement
   store: Store
-  svg: HTMLElement
+  svg: SVGElement
   getCard: null | (() => (d:TreeDatum) => void)
   is_card_html: boolean
 
@@ -79,7 +79,7 @@ class CreateChart {
       props = Object.assign({transition_time: this.store.state.transition_time}, props || {})
       if (this.is_card_html) props = Object.assign({}, props || {}, {cardHtml: true})
       view(this.store.getTree()!, this.svg, this.getCard!(), props || {})
-      if (this.linkSpouseText) linkSpouseText(this.svg, this.store.getTree(), Object.assign({}, props || {}, {linkSpouseText: this.linkSpouseText, node_separation: this.store.state.node_separation}))
+      if (this.linkSpouseText) linkSpouseText(this.svg, this.store.getTree()!, Object.assign({}, props || {}, {linkSpouseText: this.linkSpouseText, node_separation: this.store.state.node_separation!}))
       if (this.afterUpdate) this.afterUpdate(props)
     })
   }

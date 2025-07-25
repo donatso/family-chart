@@ -5,7 +5,7 @@ interface ZoomEl extends HTMLElement {
   __zoomObj: any // ZoomBehavior<Element, unknown>
 }
 
-function positionTree({t, svg, transition_time=2000}: {t: {k: number, x: number, y: number}, svg: HTMLElement, transition_time?: number}) {
+function positionTree({t, svg, transition_time=2000}: {t: {k: number, x: number, y: number}, svg: SVGElement, transition_time?: number}) {
   const el_listener = getZoomListener(svg)
   const zoom = el_listener.__zoomObj
 
@@ -17,7 +17,7 @@ type SvgDim = {width: number, height: number}
 type TreeDim = {width: number, height: number, x_off: number, y_off: number}
 
 interface TreeFitProps {
-  svg: HTMLElement
+  svg: SVGElement
   svg_dim: SvgDim
   tree_dim: TreeDim
   transition_time?: number
@@ -39,7 +39,7 @@ export function calculateTreeFit(svg_dim: SvgDim, tree_dim: TreeDim) {
 
 type CardToMiddleProps = {
   datum: TreeDatum
-  svg: HTMLElement
+  svg: SVGElement
   svg_dim: SvgDim
   scale?: number
   transition_time?: number
@@ -53,7 +53,7 @@ export function cardToMiddle({datum, svg, svg_dim, scale, transition_time}: Card
 
 type ManualZoomProps = {
   amount: number
-  svg: HTMLElement
+  svg: SVGElement
   transition_time?: number
 }
 export function manualZoom({amount, svg, transition_time=500}: ManualZoomProps) {
@@ -64,20 +64,20 @@ export function manualZoom({amount, svg, transition_time=500}: ManualZoomProps) 
     .call(zoom.scaleBy, amount)
 }
 
-export function getCurrentZoom(svg: HTMLElement) {
+export function getCurrentZoom(svg: SVGElement) {
   const el_listener = getZoomListener(svg)
   const currentTransform = d3.zoomTransform(el_listener)
   return currentTransform
 }
 
-export function zoomTo(svg: HTMLElement, zoom_level: number) {
+export function zoomTo(svg: SVGElement, zoom_level: number) {
   const el_listener = getZoomListener(svg)
   const currentTransform = d3.zoomTransform(el_listener)
   manualZoom({amount: zoom_level / currentTransform.k, svg})
 }
 
-function getZoomListener(svg: HTMLElement) {
-  const el_listener = (svg as ZoomEl).__zoomObj ? svg : (svg.parentNode as ZoomEl)
+function getZoomListener(svg: SVGElement) {
+  const el_listener = (svg as any).__zoomObj ? svg : (svg.parentNode as ZoomEl)
   if (!(el_listener as ZoomEl).__zoomObj) throw new Error('Zoom object not found')
   return el_listener as ZoomEl
 }
