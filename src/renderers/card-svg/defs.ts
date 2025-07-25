@@ -1,4 +1,6 @@
-export default function setupCardSvgDefs(svg, card_dim) {
+import { CardDim } from "./templates"
+
+export default function setupCardSvgDefs(svg: SVGSVGElement, card_dim: CardDim) {
   if (svg.querySelector("defs#f3CardDef")) return
   svg.insertAdjacentHTML('afterbegin', (`
       <defs id="f3CardDef">
@@ -15,11 +17,11 @@ export default function setupCardSvgDefs(svg, card_dim) {
       </defs>
     `))
 
-  function curvedRectPath(dim, curve, no_curve_corners) {
+  function curvedRectPath(dim: {w: number, h: number}, curve: number, no_curve_corners?: string[]) {
     const {w,h} = dim,
       c = curve,
       ncc = no_curve_corners || [],
-      ncc_check = (corner) => ncc.includes(corner),
+      ncc_check = (corner: string) => ncc.includes(corner),
       lx = ncc_check('lx') ? `M0,0` : `M0,${c} Q 0,0 5,0`,
       rx = ncc_check('rx') ? `H${w}` : `H${w-c} Q ${w},0 ${w},5`,
       ry = ncc_check('ry') ? `V${h}` : `V${h-c} Q ${w},${h} ${w-c},${h}`,
@@ -29,9 +31,9 @@ export default function setupCardSvgDefs(svg, card_dim) {
   }
 }
 
-export function updateCardSvgDefs(svg, card_dim) {
+export function updateCardSvgDefs(svg: SVGSVGElement, card_dim: CardDim) {
   if (svg.querySelector("defs#f3CardDef")) {
-    svg.querySelector("defs#f3CardDef").remove()
+    svg.querySelector("defs#f3CardDef")!.remove()
   }
   setupCardSvgDefs(svg, card_dim)
 }

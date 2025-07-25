@@ -1,4 +1,17 @@
-export function CardBody({d,card_dim,card_display}) {
+import { TreeDatum } from "../../types/treeData"
+
+export interface CardDim {
+  w: number
+  h: number
+  text_x: number
+  text_y: number
+  img_w: number
+  img_h: number
+  img_x: number
+  img_y: number
+}
+
+export function CardBody({d,card_dim,card_display}: {d: TreeDatum, card_dim: CardDim, card_display: (data: TreeDatum['data']) => string}) {
   return {template: (`
     <g class="card-body">
       <rect width="${card_dim.w}" height="${card_dim.h}" class="card-body-rect" />
@@ -8,7 +21,20 @@ export function CardBody({d,card_dim,card_display}) {
   }
 }
 
-export function CardText({d,card_dim,card_display}) {
+
+export function CardBodyAddNewRel({d,card_dim,label}: {d: TreeDatum, card_dim: CardDim, label: string}) {
+  return {template: (`
+    <g class="card-body">
+      <rect class="card-body-rect" width="${card_dim.w}" height="${card_dim.h}" />
+      <text transform="translate(${card_dim.img_w+5}, ${card_dim.h/2})">
+        <tspan font-size="18" dy="${8}" pointer-events="none">${label}</tspan>
+      </text>
+    </g>
+  `)
+  }
+}
+
+export function CardText({d,card_dim,card_display}: {d: TreeDatum, card_dim: CardDim, card_display: (data: TreeDatum['data']) => string}) {
   return {template: (`
     <g>
       <g class="card-text" clip-path="url(#card_text_clip)">
@@ -24,67 +50,14 @@ export function CardText({d,card_dim,card_display}) {
   }
 }
 
-export function CardBodyAddNew({d,card_dim,card_add,label}) {
-  return {template: (`
-    <g class="card-body ${card_add ? 'card_add' : 'card-unknown'}">
-      <rect class="card-body-rect" width="${card_dim.w}" height="${card_dim.h}" fill="rgb(59, 85, 96)" />
-      <text transform="translate(${card_dim.w/2}, ${card_dim.h/2})" text-anchor="middle" fill="#fff">
-        <tspan font-size="18" dy="${8}">${label}</tspan>
-      </text>
-    </g>
-  `)
-  }
-}
-
-export function CardBodyAddNewRel({d,card_dim,label}) {
-  return {template: (`
-    <g class="card-body">
-      <rect class="card-body-rect" width="${card_dim.w}" height="${card_dim.h}" />
-      <text transform="translate(${card_dim.img_w+5}, ${card_dim.h/2})">
-        <tspan font-size="18" dy="${8}" pointer-events="none">${label}</tspan>
-      </text>
-    </g>
-  `)
-  }
-}
-
-export function CardBodyOutline({d,card_dim, is_new}) {
+export function CardBodyOutline({d,card_dim,is_new}: {d: TreeDatum, card_dim: CardDim, is_new: boolean}) {
   return {template: (`
     <rect width="${card_dim.w}" height="${card_dim.h}" rx="4" ry="4" class="card-outline ${(d.data.main && !is_new) ? 'card-main-outline' : ''} ${is_new ? 'card-new-outline' : ''}" />
   `)
   }
 }
 
-export function PencilIcon({d,card_dim,x,y}) {
-  return ({template: (`
-    <g transform="translate(${x || card_dim.w-20},${y || card_dim.h-20})scale(.6)" style="cursor: pointer" class="card_edit pencil_icon">
-      <circle fill="rgba(0,0,0,0)" r="17" cx="8.5" cy="8.5" />
-      <path fill="currentColor" transform="translate(-1.5, -1.5)"
-         d="M19.082,2.123L17.749,0.79c-1.052-1.052-2.766-1.054-3.819,0L1.925,12.794c-0.06,0.06-0.104,0.135-0.127,0.216
-          l-1.778,6.224c-0.05,0.175-0.001,0.363,0.127,0.491c0.095,0.095,0.223,0.146,0.354,0.146c0.046,0,0.092-0.006,0.137-0.02
-          l6.224-1.778c0.082-0.023,0.156-0.066,0.216-0.127L19.082,5.942C20.134,4.89,20.134,3.176,19.082,2.123z M3.076,13.057l9.428-9.428
-          l3.738,3.739l-9.428,9.428L3.076,13.057z M2.566,13.961l3.345,3.344l-4.683,1.339L2.566,13.961z M18.375,5.235L16.95,6.66
-          l-3.738-3.739l1.425-1.425c0.664-0.663,1.741-0.664,2.405,0l1.333,1.333C19.038,3.493,19.038,4.572,18.375,5.235z"/>
-    </g>
-  `)})
-}
-
-export function HideIcon({d,card_dim}) {
-  return ({template: (`
-    <g transform="translate(${card_dim.w-50},${card_dim.h-20})scale(.035)" style="cursor: pointer" class="card_hide_rels hide_rels_icon">
-      <circle fill="rgba(0,0,0,0)" r="256" cx="256" cy="256" />
-      <g fill="currentColor">
-        <path d="m34,256l26.2,26.2c108,108 283.7,108 391.7,0l26.1-26.2-26.2-26.2c-108-108-283.7-108-391.7,0l-26.1,
-          26.2zm222,126.2c-75.8,0-151.6-28.9-209.3-86.6l-32.9-32.9c-3.7-3.7-3.7-9.7 0-13.5l32.9-32.9c115.4-115.4 303.2-115.4 418.6,
-          0l32.9,32.9c3.7,3.7 3.7,9.7 0,13.5l-32.9,32.9c-57.7,57.7-133.5,86.6-209.3,86.6z"/>
-        <path d="m256,183.5c-40,0-72.5,32.5-72.5,72.5s32.5,72.5 72.5,72.5c40,0 72.5-32.5 72.5-72.5s-32.5-72.5-72.5-72.5zm0,
-          164c-50.5,0-91.5-41.1-91.5-91.5 0-50.5 41.1-91.5 91.5-91.5s91.5,41.1 91.5,91.5c0,50.5-41,91.5-91.5,91.5z"/>
-      </g>
-    </g>
-  `)})
-}
-
-export function MiniTree({d,card_dim}) {
+export function MiniTree({d,card_dim}: {d: TreeDatum, card_dim: CardDim}) {
   return ({template: (`
     <g class="card_family_tree" style="cursor: pointer">
       <rect x="-31" y="-25" width="72" height="15" fill="rgba(0,0,0,0)"></rect>
@@ -99,27 +72,7 @@ export function MiniTree({d,card_dim}) {
   `)})
 }
 
-export function PlusIcon({d,card_dim,x,y}) {
-  return ({template: (`
-    <g class="card_add_relative">
-      <g transform="translate(${x || card_dim.w/2},${y || card_dim.h})scale(.13)">
-        <circle r="80" cx="40" cy="40" fill="rgba(0,0,0,0)" />
-        <g transform="translate(-10, -8)">
-          <line
-            x1="10" x2="90" y1="50" y2="50"
-            stroke="currentColor" stroke-width="15" stroke-linecap="round"
-          />
-          <line
-            x1="50" x2="50" y1="10" y2="90"
-            stroke="currentColor" stroke-width="15" stroke-linecap="round"
-          />
-        </g>
-      </g>
-    </g>
-  `)})
-}
-
-export function LinkBreakIcon({x,y,rt,closed}) {
+export function LinkBreakIcon({x,y,rt,closed}: {x: number, y: number, rt: number, closed: boolean}) {
   return ({template: (`
     <g style="
           transform: translate(-12.2px, -.5px);
@@ -149,23 +102,23 @@ export function LinkBreakIcon({x,y,rt,closed}) {
   `)})
 }
 
-export function LinkBreakIconWrapper({d,card_dim}) {
+export function LinkBreakIconWrapper({d,card_dim}: {d: TreeDatum, card_dim: CardDim}) {
   let g = "",
     r = d.data.rels, _r = d.data._rels || {},
     closed = d.data.hide_rels,
-    areParents = r => r.father || r.mother,
-    areChildren = r => r.children && r.children.length > 0
+    areParents = (r: TreeDatum['data']['rels' ]) => r.father || r.mother,
+    areChildren = (r: TreeDatum['data']['rels']) => r.children && r.children.length > 0
   if ((d.is_ancestry || d.data.main) && (areParents(r) || areParents(_r))) {g+=LinkBreakIcon({x:card_dim.w/2,y:0, rt: -45, closed}).template}
   if (!d.is_ancestry && d.added) {
-    const sp = d.spouse, sp_r = sp.data.rels, _sp_r = sp.data._rels || {};
+    const sp = d.spouse!, sp_r = sp.data.rels, _sp_r = sp.data._rels || {};
     if ((areChildren(r) || areChildren(_r)) && (areChildren(sp_r) || areChildren(_sp_r))) {
-      g+=LinkBreakIcon({x:d.sx - d.x + card_dim.w/2 +24.4,y: (d.x !== d.sx ? card_dim.h/2 : card_dim.h)+1, rt: 135, closed}).template
+      g+=LinkBreakIcon({x:d.sx! - d.x + card_dim.w/2 +24.4,y: (d.x !== d.sx ? card_dim.h/2 : card_dim.h)+1, rt: 135, closed}).template
     }
   }
   return {template: g}
 }
 
-export function CardImage({d, image, card_dim, maleIcon, femaleIcon}) {
+export function CardImage({d, image, card_dim, maleIcon, femaleIcon}: {d: TreeDatum, image: string, card_dim: CardDim, maleIcon?: ({card_dim}: {card_dim: CardDim}) => string, femaleIcon?: ({card_dim}: {card_dim: CardDim}) => string}) {
   return ({template: (`
     <g style="transform: translate(${card_dim.img_x}px,${card_dim.img_y}px);" class="card_image" clip-path="url(#card_image_clip)">
       ${image 
@@ -191,7 +144,7 @@ export function CardImage({d, image, card_dim, maleIcon, femaleIcon}) {
   }
 }
 
-export function appendTemplate(template, parent, is_first) {
+export function appendTemplate(template: string, parent: Element, is_first: boolean) {
   const g = document.createElementNS("http://www.w3.org/2000/svg", 'g')
   g.innerHTML = template
 
