@@ -7,19 +7,18 @@ import editTree, { EditTree } from "./edit"
 import linkSpouseText from "../features/link-spouse-text"
 import autocomplete from "../features/autocomplete"
 import { getMaxDepth } from "../layout/handlers"
-import { calculateKinships, getKinshipsDataStash } from "../features/kinships/calculate-kinships"
+import { calculateKinships } from "../features/kinships/calculate-kinships"
+import { getKinshipsDataStash } from "../features/kinships/kinships-data"
 
 import { Data, Datum } from "../types/data"
 import { Store, StoreState } from "../types/store"
 import { TreeDatum } from "../types/treeData"
 import { ViewProps } from "../renderers/view"
 
+import { KinshipInfoConfig } from "../features/kinships/calculate-kinships"
 type LinkSpouseText = ((sp1: TreeDatum, sp2: TreeDatum) => string) | null
-interface KinshipsConfig {
-  show_in_law?: boolean,  // show in law relations
-}
 
-export default (cont: HTMLElement, data: Data) => new CreateChart(cont, data)
+export default (cont: HTMLElement | string, data: Data) => new CreateChart(cont, data)
 
 class CreateChart {
   cont: HTMLElement
@@ -37,7 +36,7 @@ class CreateChart {
   editTreeInstance: EditTree | null
 
 
-  constructor(cont: HTMLElement, data: Data) {
+  constructor(cont: HTMLElement | string, data: Data) {
     this.getCard = null
     this.transition_time = 2000
     this.linkSpouseText = null
@@ -318,7 +317,7 @@ class CreateChart {
    * @param config.show_in_law - Whether to show in law relations.
    * @returns The kinships of the person.
    */
-  calculateKinships(d_id: Datum['id'], config: KinshipsConfig = {}) {
+  calculateKinships(d_id: Datum['id'], config: KinshipInfoConfig = {}) {
     return calculateKinships(d_id, this.store.getData(), config)
   }
 

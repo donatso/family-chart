@@ -1,14 +1,14 @@
 import * as d3 from "d3"
 
-export default function(cont: HTMLElement, onClose: () => void) { return new InfoPopup(cont, onClose) }
+export default function(cont: HTMLElement, onClose?: () => void) { return new InfoPopup(cont, onClose) }
 
-class InfoPopup {
+export class InfoPopup {
   cont: HTMLElement
   popup_cont: HTMLElement
   active: boolean
-  onClose: () => void
+  onClose?: () => void
 
-  constructor(cont: HTMLElement, onClose: () => void) {
+  constructor(cont: HTMLElement, onClose?: () => void) {
     this.cont = cont
     this.active = false
     this.onClose = onClose
@@ -38,7 +38,7 @@ class InfoPopup {
     })
   }
 
-  activate(content: HTMLElement) {
+  activate(content?: HTMLElement) {
     const popup_content_inner = d3.select(this.popup_cont).select('.f3-popup-content-inner').node() as HTMLElement
     if (content) popup_content_inner.appendChild(content)
     this.open()

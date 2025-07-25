@@ -1,14 +1,19 @@
 import * as d3 from "d3"
-import { calculateKinships, getKinshipsDataStash } from './calculate-kinships'
+import { calculateKinships } from './calculate-kinships'
+import { getKinshipsDataStash } from './kinships-data'
 import { infoSvgIcon } from '../../renderers/icons'
-import createInfoPopup from '../info-popup'
+import createInfoPopup, { InfoPopup } from '../info-popup'
 import createChart from '../../core/chart'
 import CardHtml from '../../core/cards/card-html'
 import { getCurrentZoom, zoomTo } from '../../handlers/view-handlers'
+import { KinshipInfoConfig, Kinships } from './calculate-kinships'
+import { Datum, Data } from '../../types/data'
+import { DatumKinship } from './kinships-data'
+import { TreeDatum } from "../../types/treeData"
 
-export function kinshipInfo(kinship_info_config, rel_id, data_stash) {
+export function kinshipInfo(kinship_info_config: KinshipInfoConfig, rel_id: Datum['id'], data_stash: Data) {
   const {self_id, getLabel, title} = kinship_info_config
-  const relationships = calculateKinships(self_id, data_stash, kinship_info_config)
+  const relationships = calculateKinships(self_id!, data_stash, kinship_info_config)
   const relationship = relationships[rel_id]
   if (!relationship) return
   let label = relationship
@@ -25,12 +30,12 @@ export function kinshipInfo(kinship_info_config, rel_id, data_stash) {
       </div>
     </div>
   `)
-  const kinship_info_node = d3.create('div').html(html).select('div').node()
-  let popup;
+  const kinship_info_node = d3.create('div').html(html).select('div').node() as HTMLElement
+  let popup: InfoPopup | null = null;
   d3.select(kinship_info_node).select('.f3-kinship-info-icon').on('click', (e) => createPopup(e, kinship_info_node))
   return kinship_info_node
 
-  function createPopup(e, cont) {
+  function createPopup(e: MouseEvent, cont: HTMLElement) {
     const width = 250
     const height = 400
     let left = e.clientX - width - 10
@@ -54,27 +59,35 @@ export function kinshipInfo(kinship_info_config, rel_id, data_stash) {
       .style('left', `${left}px`)
       .style('top', `${top}px`)
 
-    const inner_cont = popup.popup_cont.querySelector('.f3-popup-content-inner')
+    const inner_cont = popup.popup_cont.querySelector('.f3-popup-content-inner') as HTMLElement
  
     popup.activate()
-    createSmallTree(self_id, rel_id, data_stash, relationships, inner_cont, getLabel)
+    createSmallTree(self_id!, rel_id, data_stash, relationships, inner_cont, getLabel!)
   }
 }
 
-function createSmallTree(self_id, rel_id, data_stash, relationships, parent_cont, getLabel) {
+interface TreeDatumKinship extends TreeDatum {
+  data: DatumKinship
+}
+
+function createSmallTree(
+  self_id: Datum['id'],
+  rel_id: Datum['id'],
+  data_stash: Data, relationships: Kinships, parent_cont: HTMLElement, getLabel: (d: DatumKinship) => string
+) {
   if (!d3.select(parent_cont).select('#SmallChart').node()) {
     d3.select(parent_cont).append('div').attr('id', 'SmallChart').attr('class', 'f3')
   }
   const small_chart = d3.select('#SmallChart')
   small_chart.selectAll('*').remove()
-  const small_chart_data = getKinshipsDataStash(self_id, rel_id, data_stash, relationships)
+  const small_chart_data = getKinshipsDataStash(self_id, rel_id, data_stash, relationships)!
 
   let kinship_label_toggle = true
   const kinship_label_toggle_cont = small_chart.append('div')
 
   create(small_chart_data)
 
-  function create(data) {
+  function create(data: DatumKinship[]) {
     const f3Chart = createChart('#SmallChart', data)
       .setTransitionTime(500)
       .setCardXSpacing(170)
@@ -83,15 +96,15 @@ function createSmallTree(self_id, rel_id, data_stash, relationships, parent_cont
   
     const f3Card = f3Chart.setCard(CardHtml)
       .setStyle('rect')
-      .setCardInnerHtmlCreator(d => {
+      .setCardInnerHtmlCreator((d: TreeDatumKinship) => {
         return getCardInnerRect(d)
       })
-      .setOnCardUpdate(function(d) {
+      .setOnCardUpdate(function(this: HTMLElement, d: TreeDatumKinship) {
         const card = d3.select(this).select('.card')
         card.classed('card-main', false)
       })
 
-    f3Card.onCardClick = ((e, d) => {})
+    f3Card.onCardClick = ((e: MouseEvent, d: TreeDatumKinship) => {})
   
     f3Chart.updateTree({initial: true})
 
@@ -99,7 +112,7 @@ function createSmallTree(self_id, rel_id, data_stash, relationships, parent_cont
 
     createKinshipLabelToggle()
 
-    function getCardInnerRect(d) {
+    function getCardInnerRect(d: TreeDatumKinship) {
       let label = d.data.kinship === 'self' ? 'You' : d.data.kinship
       label = capitalizeLabel(label)
       if (!kinship_label_toggle) label = getLabel(d.data)
@@ -136,8 +149,8 @@ function createSmallTree(self_id, rel_id, data_stash, relationships, parent_cont
           })
     }
 
-    function setupSameZoom(zoom_level) {
-      const svg = f3Chart.cont.querySelector('svg.main_svg')
+    function setupSameZoom(zoom_level: number) {
+      const svg = f3Chart.cont.querySelector('svg.main_svg') as SVGElement
       const current_zoom = getCurrentZoom(svg)
       if (current_zoom.k > zoom_level) {
         zoomTo(svg, zoom_level)
@@ -146,7 +159,7 @@ function createSmallTree(self_id, rel_id, data_stash, relationships, parent_cont
   }
 }
 
-function capitalizeLabel(label) {
+function capitalizeLabel(label: string) {
   label = label[0].toUpperCase() + label.slice(1)
   if (label.includes('great-')) label = label.replace('great-', 'Great-')
   return label
