@@ -6,6 +6,7 @@ import {calculateDelay} from "../handlers/general"
 import { ViewProps } from "./view"
 import { Tree } from "../layout/calculate-tree"
 import { Link } from "../layout/create-links"
+import { LinkSelection } from "../types/view"
 
 export default function updateLinks(svg: SVGElement, tree: Tree, props: ViewProps = {}) {
   const links_data_dct = tree.data.reduce((acc: Record<string, Link>, d) => {
@@ -13,7 +14,7 @@ export default function updateLinks(svg: SVGElement, tree: Tree, props: ViewProp
     return acc
   }, {})
   const links_data: Link[] = Object.values(links_data_dct)
-  const link = d3
+  const link: LinkSelection = d3
     .select(svg)
     .select(".links_view")
     .selectAll<SVGPathElement, Link>("path.link")

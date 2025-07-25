@@ -53,7 +53,7 @@ class CreateChart {
     const {svg} = htmlContSetup(this.cont)
     this.svg = svg
     createNavCont(this.cont)
-    const main_id = data[0].id
+    const main_id = data && data.length > 0 ? data[0].id : ''
     this.store = this.createStore(data, main_id)
     this.setOnUpdate()
 

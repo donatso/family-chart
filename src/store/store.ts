@@ -13,6 +13,7 @@ export default function createStore(initial_state: StoreState): Store {
   const store = {
     state,
     updateTree: (props?: ViewProps) => {
+      if (!state.data || state.data.length === 0) return
       state.tree = calcTree();
       if (!state.main_id && state.tree) updateMainId(state.tree.main_id)
       if (onUpdate) onUpdate(props)

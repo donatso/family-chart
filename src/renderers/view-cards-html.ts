@@ -4,10 +4,11 @@ import {calculateDelay} from "../handlers/general"
 import { Tree } from "../layout/calculate-tree"
 import { ViewProps } from "./view"
 import { TreeDatum } from "../types/treeData"
+import { CardHtmlSelection } from "../types/view"
 
 export default function updateCardsHtml(svg: SVGElement, tree: Tree, Card: any, props: ViewProps = {}) {
   const div = getHtmlDiv(svg)
-  const card = d3.select(div).select(".cards_view").selectAll<HTMLDivElement, TreeDatum>("div.card_cont").data(tree.data, d => (d as TreeDatum).tid!)
+  const card: CardHtmlSelection = d3.select(div).select(".cards_view").selectAll<HTMLDivElement, TreeDatum>("div.card_cont").data(tree.data, d => (d as TreeDatum).tid!)
   const card_exit = card.exit()
   const card_enter = card.enter().append("div").attr("class", "card_cont").style('pointer-events', 'none')
   const card_update = card_enter.merge(card)

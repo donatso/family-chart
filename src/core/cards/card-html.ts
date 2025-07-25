@@ -6,6 +6,7 @@ import { Store } from "../../types/store"
 import { Datum } from "../../types/data"
 import { TreeDatum } from "../../types/treeData"
 import { Link } from "../../layout/create-links"
+import { CardHtmlSelection, LinkSelection } from "../../types/view"
 
 CardHtmlWrapper.is_html = true
 export default function CardHtmlWrapper(cont: HTMLElement, store: Store) { return new CardHtml(cont, store) }
@@ -154,9 +155,9 @@ export class CardHtml {
   onEnterPathToMain(e:Event, datum:TreeDatum) {
     this.to_transition = datum.data.id
     const main_datum = this.store.getTreeMainDatum()
-    const cards = d3.select(this.cont).select('div.cards_view').selectAll<HTMLDivElement, TreeDatum>('.card_cont')
-    const links = d3.select(this.cont).select('svg.main_svg .links_view').selectAll<SVGPathElement, Link>('.link')
-    const [cards_node_to_main, links_node_to_main] = pathToMain(cards, links, datum, main_datum)
+    const cards: CardHtmlSelection = d3.select(this.cont).select('div.cards_view').selectAll('.card_cont')
+    const links: LinkSelection = d3.select(this.cont).select('svg.main_svg .links_view').selectAll('.link')
+    const {cards_node_to_main, links_node_to_main} = pathToMain(cards, links, datum, main_datum)
     cards_node_to_main.forEach(d => {
       const delay = Math.abs(datum.depth - d.card.depth) * 200
       d3.select(d.node.querySelector('div.card-inner'))
