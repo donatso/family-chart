@@ -66,7 +66,6 @@ export function deletePerson(datum: Datum, data_stash: Data) {
     })
     onDeleteSyncRelReference(datum, data_stash)
     data_stash.splice(data_stash.findIndex(d => d.id === datum.id), 1)
-    data_stash.forEach(d => {if (d.to_add) deletePerson(d, data_stash)})  // full update of tree
     if (data_stash.length === 0) data_stash.push(createNewPerson({data: {gender: 'M'}}))
   }
 
