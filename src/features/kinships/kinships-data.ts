@@ -1,4 +1,4 @@
-import { hierarchy as d3Hierarchy, HierarchyNode } from "d3-hierarchy"
+import * as d3 from "d3"
 import { Datum, Data } from "../../types/data"
 import { Kinships, findSameAncestor } from "./calculate-kinships";
 
@@ -25,7 +25,7 @@ export function getKinshipsDataStash(main_id: Datum['id'], rel_id: Datum['id'], 
   const same_ancestor_id = same_ancestors.is_ancestor ? same_ancestors.found : same_ancestors.found[0]
   const same_ancestor = data_stash.find(d => d.id === same_ancestor_id)!
   
-  const root = d3Hierarchy<Datum>(same_ancestor, hierarchyGetterChildren)
+  const root = d3.hierarchy<Datum>(same_ancestor, hierarchyGetterChildren)
   const same_ancestor_progeny = root.descendants().map(d => d.data.id)
   const main_ancestry = getCleanAncestry(main_id, same_ancestor_progeny)
   const rel_ancestry = getCleanAncestry(rel_id, same_ancestor_progeny)
@@ -51,7 +51,7 @@ export function getKinshipsDataStash(main_id: Datum['id'], rel_id: Datum['id'], 
   return kinship_data_stash
 
   
-  function loopClean(tree_datum: HierarchyNode<Datum>) {
+  function loopClean(tree_datum: d3.HierarchyNode<Datum>) {
     tree_datum.children = (tree_datum.children || []).filter(child => {
       if (main_ancestry.includes(child.data.id)) return true
       if (rel_ancestry.includes(child.data.id)) return true

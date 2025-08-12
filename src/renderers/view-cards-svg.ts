@@ -4,7 +4,6 @@ import {calculateDelay} from "../handlers/general"
 import { Tree } from "../layout/calculate-tree"
 import { ViewProps } from "./view"
 import { TreeDatum } from "../types/treeData"
-import { Selection, BaseType } from "d3-selection"
 
 export default function updateCardsSvg(svg: SVGElement, tree: Tree, Card: any, props: ViewProps = {}) {
   const card = d3

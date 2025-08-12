@@ -5,13 +5,11 @@ import typescript from "@rollup/plugin-typescript";
 const meta = JSON.parse(fs.readFileSync("./package.json", "utf8"));
 
 const globals = {
-  "d3": "d3",
-  "d3-array": "d3",
-  "d3-hierarchy": "d3"
+  "d3": "d3"
 }
 const banner = `// ${meta.homepage} v${meta.version} Copyright ${(new Date).getFullYear()} ${meta.author.name}`
 const input = "src/index.ts"
-const external = ["d3", "d3-array", "d3-hierarchy"]
+const external = ["d3"]
 const plugins = [
   typescript({
     tsconfig: "./tsconfig.json",

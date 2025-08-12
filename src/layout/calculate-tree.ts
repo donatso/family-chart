@@ -1,5 +1,4 @@
-import { tree as d3Tree, hierarchy as d3Hierarchy } from "d3-hierarchy";
-import { extent as d3Extent } from "d3-array";
+import * as d3 from "d3";
 import { sortChildrenWithSpouses, sortAddNewChildren, setupSiblings, handlePrivateCards } from "./handlers";
 import { createNewPerson } from "../store/new-person";
 import { isAllRelativeDisplayed } from "../handlers/general";
@@ -7,9 +6,8 @@ import { handleDuplicateSpouseToggle, handleDuplicateHierarchyProgeny } from "..
 import { handleDuplicateHierarchyAncestry } from "../features/duplicates-toggle/duplicates-ancestry";
 import type { Datum, Data } from "../types/data";
 import type { TreeDatum, TreeData } from "../types/treeData";
-import { HierarchyNode } from "d3-hierarchy";
 
-interface HN extends HierarchyNode<Datum> {}
+interface HN extends d3.HierarchyNode<Datum> {}
 
 export interface CalculateTreeOptions {
   main_id?: string | null;
@@ -84,8 +82,8 @@ export default function CalculateTree(data: Data, {
 
   function calculateTreePositions(datum:Datum, rt:'children' | 'parents', is_ancestry:boolean) {
     const hierarchyGetter = rt === "children" ? hierarchyGetterChildren : hierarchyGetterParents
-    const d3_tree = d3Tree<Datum>().nodeSize([node_separation, level_separation]).separation(separation)
-    const root = d3Hierarchy<Datum>(datum, hierarchyGetter)
+    const d3_tree = d3.tree<Datum>().nodeSize([node_separation, level_separation]).separation(separation)
+    const root = d3.hierarchy<Datum>(datum, hierarchyGetter)
 
     trimTree(root, is_ancestry)
     if (duplicate_branch_toggle) handleDuplicateHierarchy(root, data_stash, is_ancestry)
@@ -244,8 +242,8 @@ export default function CalculateTree(data: Data, {
 
   function calculateTreeDim(tree:TreeDatum[], node_separation:number, level_separation:number) {
     if (is_horizontal) [node_separation, level_separation] = [level_separation, node_separation]
-    const w_extent = d3Extent(tree, (d:TreeDatum) => d.x)
-    const h_extent = d3Extent(tree, (d:TreeDatum) => d.y)
+    const w_extent = d3.extent(tree, (d:TreeDatum) => d.x)
+    const h_extent = d3.extent(tree, (d:TreeDatum) => d.y)
     if (w_extent[0] === undefined || w_extent[1] === undefined || h_extent[0] === undefined || h_extent[1] === undefined) throw new Error('No extent')
     return {
       width: w_extent[1] - w_extent[0]+node_separation, height: h_extent[1] - h_extent[0]+level_separation, x_off: -w_extent[0]+node_separation/2, y_off: -h_extent[0]+level_separation/2

@@ -1,5 +1,4 @@
-import {extent as d3Extent} from "d3-array"
-import { hierarchy as d3Hierarchy } from "d3-hierarchy"
+import * as d3 from "d3"
 import { TreeDatum } from "../types/treeData"
 import { Data, Datum } from "../types/data"
 import { CalculateTreeOptions } from "./calculate-tree"
@@ -161,7 +160,7 @@ export function setupSiblings({
 
     const main_x = main.x
     const spouses_x = (main.spouses || []).map(d => d.x)
-    const x_range = d3Extent([main_x, ...spouses_x])
+    const x_range = d3.extent([main_x, ...spouses_x])
 
     const main_sorted_index = sorted_siblings.findIndex(d => d.data.id === main.data.id)
     for (let i = 0; i < sorted_siblings.length; i++) {
@@ -232,8 +231,8 @@ export function handlePrivateCards({
 export function getMaxDepth(d_id: Datum['id'], data_stash: Data) {
   const datum = data_stash.find(d => d.id === d_id)
   if (!datum) throw new Error('no datum')
-  const root_ancestry = d3Hierarchy(datum, d => hierarchyGetterParents(d) as Iterable<Datum>)
-  const root_progeny = d3Hierarchy(datum, d => hierarchyGetterChildren(d) as Iterable<Datum>)
+  const root_ancestry = d3.hierarchy(datum, d => hierarchyGetterParents(d) as Iterable<Datum>)
+  const root_progeny = d3.hierarchy(datum, d => hierarchyGetterChildren(d) as Iterable<Datum>)
 
   return {
     ancestry: root_ancestry.height,
