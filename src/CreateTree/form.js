@@ -213,7 +213,7 @@ export function deletePerson(datum, data_stash) {
 }
 
 export function cleanupDataJson(data) {
-  data.forEach(d => d.to_add ? removeToAdd(d, data) : d)
+  removeToAddFromData(data)
   data.forEach(d => {
     delete d.main
     delete d._tgdp
@@ -229,6 +229,7 @@ export function cleanupDataJson(data) {
 }
 
 export function removeToAddFromData(data) {
-  data.forEach(d => d.to_add ? removeToAdd(d, data) : d)
-  return data
+  for (let i = data.length - 1; i >= 0; i--) {
+    if (data[i].to_add) removeToAdd(data[i], data)
+  }
 }
