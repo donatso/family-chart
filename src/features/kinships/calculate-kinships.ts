@@ -142,6 +142,12 @@ export function calculateKinships(d_id: Datum['id'], data_stash: Data, kinship_i
         siblings.forEach(sibling_id => {if (!kinships[sibling_id]) kinships[sibling_id] = 'sibling-in-law'})  // gender label is added in setupKinshipsGender
       }
 
+      if (kinship === 'sibling') {
+        (datum.rels.spouses || []).forEach(spouse_id => {
+          if (!kinships[spouse_id]) kinships[spouse_id] = 'sibling-in-law'
+        })
+      }
+
       if (kinship === 'child') {
         (datum.rels.spouses || []).forEach(spouse_id => {if (!kinships[spouse_id]) kinships[spouse_id] = 'child-in-law'})  // gender label is added in setupKinshipsGender
       }

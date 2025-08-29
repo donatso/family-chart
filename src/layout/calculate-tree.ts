@@ -157,26 +157,30 @@ export default function CalculateTree(data: Data, {
   function setupSpouses(tree:TreeDatum[], node_separation:number) {
     for (let i = tree.length; i--;) {
       const d = tree[i]
-      if (!d.is_ancestry && d.data.rels.spouses && d.data.rels.spouses.length > 0){
-        if (one_level_rels && d.depth > 0) continue
-        const side = d.data.data.gender === "M" ? -1 : 1;  // female on right
-        d.x += d.data.rels.spouses.length/2*node_separation*side;
-        d.data.rels.spouses.forEach((sp_id, i) => {
-          const spouse:TreeDatum = {
-            data: data_stash.find(d0 => d0.id === sp_id) as Datum,
-            added: true,
-            depth: d.depth,
-            spouse: d,
-            x: d.x-(node_separation*(i+1))*side,
-            y: d.y,
-            tid: `${d.data.id}-spouse-${i}`,
-          }
-          spouse.sx = i > 0 ? spouse.x : spouse.x + (node_separation/2)*side
-          spouse.sy = i > 0 ? spouse.y : spouse.y + (node_separation/2)*side
-          if (!d.spouses) d.spouses = []
-          d.spouses.push(spouse)
-          tree.push(spouse)
-        })
+      if (!d.is_ancestry) {
+        let spouses = d.data.rels.spouses || []
+        if (d._ignore_spouses) spouses = spouses.filter(sp_id => !d._ignore_spouses!.includes(sp_id))
+        if (spouses.length > 0) {
+          if (one_level_rels && d.depth > 0) continue
+          const side = d.data.data.gender === "M" ? -1 : 1;  // female on right
+          d.x += spouses.length/2*node_separation*side;
+          spouses.forEach((sp_id, i) => {
+            const spouse:TreeDatum = {
+              data: data_stash.find(d0 => d0.id === sp_id) as Datum,
+              added: true,
+              depth: d.depth,
+              spouse: d,
+              x: d.x-(node_separation*(i+1))*side,
+              y: d.y,
+              tid: `${d.data.id}-spouse-${i}`,
+            }
+            spouse.sx = i > 0 ? spouse.x : spouse.x + (node_separation/2)*side
+            spouse.sy = i > 0 ? spouse.y : spouse.y + (node_separation/2)*side
+            if (!d.spouses) d.spouses = []
+            d.spouses.push(spouse)
+            tree.push(spouse)
+          })
+        }
       }
       if (d.parents && d.parents.length === 2) {
         const p1 = d.parents[0]

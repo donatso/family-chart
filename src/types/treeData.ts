@@ -76,6 +76,9 @@ export interface TreeDatum {
   /** True if this card is private and should be treated differently. */
   is_private?: boolean;
 
+  /** if we want to modify hierarchy of the tree, we can omit displaying some spouses */
+  _ignore_spouses?: Datum['id'][]
+
   /** Reference to the DOM node for this tree datum. (for debugging) */
   __node?: HTMLElement;
 
