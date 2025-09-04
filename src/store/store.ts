@@ -49,6 +49,7 @@ export default function createStore(initial_state: StoreState): Store {
     if (state.single_parent_empty_card !== undefined) args.single_parent_empty_card = state.single_parent_empty_card;
     if (state.is_horizontal !== undefined) args.is_horizontal = state.is_horizontal;
     if (state.one_level_rels !== undefined) args.one_level_rels = state.one_level_rels;
+    if (state.modifyTreeHierarchy !== undefined) args.modifyTreeHierarchy = state.modifyTreeHierarchy;
     if (state.sortChildrenFunction !== undefined) args.sortChildrenFunction = state.sortChildrenFunction;
     if (state.sortSpousesFunction !== undefined) args.sortSpousesFunction = state.sortSpousesFunction;
     if (state.ancestry_depth !== undefined) args.ancestry_depth = state.ancestry_depth;

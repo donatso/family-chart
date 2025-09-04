@@ -13,6 +13,7 @@ export type PrivateCardsConfig = {
   condition: (d: Datum) => boolean;
 };
 export type ShowSiblingsOfMain = boolean;
+export type ModifyTreeHierarchy = CalculateTreeOptions['modifyTreeHierarchy'];
 export type SortChildrenFunction = ((a: Datum, b: Datum) => number);
 export type SortSpousesFunction = ((d: Datum, data: Data) => void);
 export type AncestryDepth = number;

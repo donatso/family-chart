@@ -21,6 +21,7 @@ export interface CalculateTreeOptions {
   ancestry_depth?: number | undefined;
   progeny_depth?: number | undefined;
   show_siblings_of_main?: boolean;
+  modifyTreeHierarchy?: (tree: HN, is_ancestry: boolean) => void;
   private_cards_config?: any;
   duplicate_branch_toggle?: boolean;
   on_toggle_one_close_others?: boolean;
@@ -47,6 +48,7 @@ export default function calculateTree(data: Data, {
   ancestry_depth = undefined,
   progeny_depth = undefined,
   show_siblings_of_main = false,
+  modifyTreeHierarchy=undefined,
   private_cards_config = undefined,
   duplicate_branch_toggle = false,
   on_toggle_one_close_others = true,
@@ -87,6 +89,7 @@ export default function calculateTree(data: Data, {
 
     trimTree(root, is_ancestry)
     if (duplicate_branch_toggle) handleDuplicateHierarchy(root, data_stash, is_ancestry)
+    if (modifyTreeHierarchy) modifyTreeHierarchy(root, is_ancestry)
     d3_tree(root);
     const tree = root.descendants()
     tree.forEach(d => {

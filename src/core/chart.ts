@@ -171,6 +171,16 @@ export class Chart {
   
     return this
   }
+
+  /**
+   * set function that will modify the tree hierarchy. it can be used to delete or add cards in the tree.
+   * @param modifyTreeHierarchy - function that will modify the tree hierarchy.
+   * @returns The CreateChart instance
+   */
+  setModifyTreeHierarchy(modifyTreeHierarchy: ST.ModifyTreeHierarchy) {
+    this.store.state.modifyTreeHierarchy = modifyTreeHierarchy
+    return this
+  }
   
   /**
    * Set the private cards config
