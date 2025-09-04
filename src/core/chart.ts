@@ -11,16 +11,19 @@ import { calculateKinships } from "../features/kinships/calculate-kinships"
 import { getKinshipsDataStash } from "../features/kinships/kinships-data"
 
 import { Data, Datum } from "../types/data"
-import { Store, StoreState } from "../types/store"
+import { Store } from "../types/store"
+import * as ST from "../types/store"
+import cardHtml, { CardHtml } from "../core/cards/card-html"
+import cardSvg, { CardSvg } from "../core/cards/card-svg"
 import { TreeDatum } from "../types/treeData"
 import { ViewProps } from "../renderers/view"
 
 import { KinshipInfoConfig } from "../features/kinships/calculate-kinships"
 type LinkSpouseText = ((sp1: TreeDatum, sp2: TreeDatum) => string) | null
 
-export default (cont: HTMLElement | string, data: Data) => new CreateChart(cont, data)
+export default (cont: HTMLElement | string, data: Data) => new Chart(cont, data)
 
-class CreateChart {
+export class Chart {
   cont: HTMLElement
   store: Store
   svg: SVGElement
@@ -114,7 +117,7 @@ class CreateChart {
    * @param card_y_spacing - The card y spacing between the cards. Level separation.
    * @returns The CreateChart instance
    */
-  setCardYSpacing(card_y_spacing: StoreState['level_separation']) {
+  setCardYSpacing(card_y_spacing: ST.LevelSeparation) {
     if (typeof card_y_spacing !== 'number') {
       console.error('card_y_spacing must be a number')
       return this
@@ -130,7 +133,7 @@ class CreateChart {
    * @param card_x_spacing - The card x spacing between the cards. Node separation.
    * @returns The CreateChart instance
    */
-  setCardXSpacing(card_x_spacing: StoreState['node_separation']) {
+  setCardXSpacing(card_x_spacing: ST.NodeSeparation) {
     if (typeof card_x_spacing !== 'number') {
       console.error('card_x_spacing must be a number')
       return this
@@ -163,7 +166,7 @@ class CreateChart {
    * @param show_siblings_of_main - Whether to show the siblings of the main person.
    * @returns The CreateChart instance
    */
-  setShowSiblingsOfMain(show_siblings_of_main: StoreState['show_siblings_of_main']) {
+  setShowSiblingsOfMain(show_siblings_of_main: ST.ShowSiblingsOfMain) {
     this.store.state.show_siblings_of_main = show_siblings_of_main
   
     return this
@@ -176,7 +179,7 @@ class CreateChart {
    * - Example: (d: Datum) => d.data.living === true
    * @returns The CreateChart instance
    */
-  setPrivateCardsConfig(private_cards_config: StoreState['private_cards_config']) {
+  setPrivateCardsConfig(private_cards_config: ST.PrivateCardsConfig) {
     this.store.state.private_cards_config = private_cards_config
   
     return this
@@ -214,21 +217,34 @@ class CreateChart {
    * @param Card - The card function.
    * @returns The CreateChart instance
    */
-  setCard(Card: any) {  // todo: CardHtml or CardSvg
-    this.is_card_html = Card.is_html
+  setCard(card: (cont: HTMLElement, store: Store) => CardHtml | CardSvg) {
+    if (card === cardHtml) return this.setCardHtml()
+    else if (card === cardSvg) return this.setCardSvg()
+    else throw new Error('Card must be an instance of cardHtml or cardSvg')
+  }
 
+  setCardHtml() {
     const htmlSvg = this.cont!.querySelector('#htmlSvg') as HTMLElement
     if (!htmlSvg) throw new Error('htmlSvg not found')
+    this.is_card_html = true
+    this.svg.querySelector('.cards_view')!.innerHTML = ''
+    htmlSvg.style.display = 'block'
+  
+    const card = cardHtml(this.cont, this.store)
+    this.getCard = () => card.getCard()
 
-    if (this.is_card_html) {
-      this.svg.querySelector('.cards_view')!.innerHTML = ''
-      htmlSvg.style.display = 'block'
-    } else {
-      htmlSvg.querySelector('.cards_view')!.innerHTML = ''
-      htmlSvg.style.display = 'none'
-    }
+    return card
+  }
 
-    const card = Card(this.cont, this.store)
+
+  setCardSvg() {
+    const htmlSvg = this.cont!.querySelector('#htmlSvg') as HTMLElement
+    if (!htmlSvg) throw new Error('htmlSvg not found')
+    this.is_card_html = false
+    this.svg.querySelector('.cards_view')!.innerHTML = ''
+    htmlSvg.style.display = 'none'
+
+    const card = cardSvg(this.cont, this.store)
     this.getCard = () => card.getCard()
 
     return card
@@ -239,7 +255,7 @@ class CreateChart {
    * @param transition_time - The transition time in milliseconds
    * @returns The CreateChart instance
    */
-  setTransitionTime(transition_time: StoreState['transition_time']) {
+  setTransitionTime(transition_time: ST.TransitionTime) {
     this.store.state.transition_time = transition_time
 
     return this
@@ -251,7 +267,7 @@ class CreateChart {
    * - Example: (a, b) => a.data.birth_date - b.data.birth_date
    * @returns The CreateChart instance
    */
-  setSortChildrenFunction(sortChildrenFunction: StoreState['sortChildrenFunction']) {
+  setSortChildrenFunction(sortChildrenFunction: ST.SortChildrenFunction) {
     this.store.state.sortChildrenFunction = sortChildrenFunction
 
     return this
@@ -273,7 +289,7 @@ class CreateChart {
    * }
    * @returns The CreateChart instance
    */
-  setSortSpousesFunction(sortSpousesFunction: StoreState['sortSpousesFunction']) {
+  setSortSpousesFunction(sortSpousesFunction: ST.SortSpousesFunction) {
     this.store.state.sortSpousesFunction = sortSpousesFunction
 
     return this
@@ -284,7 +300,7 @@ class CreateChart {
    * @param ancestry_depth - The number of generations to show in the ancestry.
    * @returns The CreateChart instance
    */
-  setAncestryDepth(ancestry_depth: StoreState['ancestry_depth']) {
+  setAncestryDepth(ancestry_depth: ST.AncestryDepth) {
     this.store.state.ancestry_depth = ancestry_depth
 
     return this
@@ -295,7 +311,7 @@ class CreateChart {
    * @param progeny_depth - The number of generations to show in the progeny.
    * @returns The CreateChart instance
    */
-  setProgenyDepth(progeny_depth: StoreState['progeny_depth']) {
+  setProgenyDepth(progeny_depth: ST.ProgenyDepth) {
     this.store.state.progeny_depth = progeny_depth
 
     return this
@@ -336,7 +352,7 @@ class CreateChart {
    * @param duplicate_branch_toggle - Whether to show toggable tree branches are duplicated.
    * @returns The CreateChart instance
    */
-  setDuplicateBranchToggle(duplicate_branch_toggle: StoreState['duplicate_branch_toggle']) {
+  setDuplicateBranchToggle(duplicate_branch_toggle: ST.DuplicateBranchToggle) {
     this.store.state.duplicate_branch_toggle = duplicate_branch_toggle
 
     return this
@@ -415,7 +431,7 @@ class CreateChart {
 
     this.personSearch.setOptionsGetterPerson(this.store.getData, getLabel)
 
-    function onSelect(this: CreateChart, value: Datum['id']) {
+    function onSelect(this: Chart, value: Datum['id']) {
       const datum = this.store.getDatum(value)
       if (!datum) throw new Error('Datum not found')
       if (this.editTreeInstance) this.editTreeInstance.open(datum)

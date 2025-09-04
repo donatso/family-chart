@@ -94,7 +94,7 @@ function createSmallTree(
       .setCardYSpacing(70)
       .setSingleParentEmptyCard(false)
   
-    const f3Card = f3Chart.setCard(CardHtml)
+    const f3Card = f3Chart.setCardHtml()
       .setStyle('rect')
       .setCardInnerHtmlCreator((d: TreeDatumKinship) => {
         return getCardInnerRect(d)
@@ -113,7 +113,7 @@ function createSmallTree(
     createKinshipLabelToggle()
 
     function getCardInnerRect(d: TreeDatumKinship) {
-      let label = d.data.kinship === 'self' ? 'You' : d.data.kinship
+      let label = d.data.kinship === 'self' ? 'You' : d.data.kinship!
       label = capitalizeLabel(label)
       if (!kinship_label_toggle) label = getLabel(d.data)
       

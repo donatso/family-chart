@@ -9,3 +9,6 @@ export interface CardDim {
   img_y?: number
   height_auto?: boolean
 }
+
+export { CardHtml } from '../core/cards/card-html'
+export { CardSvg } from '../core/cards/card-svg'

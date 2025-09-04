@@ -6,7 +6,6 @@ import { Store } from "../../types/store"
 import { TreeDatum } from "../../types/treeData"
 import { CardDim } from "../../renderers/card-svg/templates"
 
-CardSvgWrapper.is_html = false
 export default function CardSvgWrapper(cont: HTMLElement, store: Store) { return new CardSvg(cont, store) }
 
 export class CardSvg {

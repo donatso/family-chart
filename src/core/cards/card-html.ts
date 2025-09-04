@@ -8,7 +8,6 @@ import { TreeDatum } from "../../types/treeData"
 import { Link } from "../../layout/create-links"
 import { CardHtmlSelection, LinkSelection } from "../../types/view"
 
-CardHtmlWrapper.is_html = true
 export default function CardHtmlWrapper(cont: HTMLElement, store: Store) { return new CardHtml(cont, store) }
 
 export class CardHtml {
@@ -18,7 +17,7 @@ export class CardHtml {
   card_display: any
   cardImageField: string
   onCardClick: any
-  style: any
+  style: 'default' | 'imageCircleRect' | 'imageCircle' | 'imageRect' | 'rect'
   mini_tree: boolean
   onCardUpdate: any
   card_dim: { [key: string]: number | boolean }
@@ -27,8 +26,6 @@ export class CardHtml {
   onCardMouseenter: undefined | ((e:Event, d:TreeDatum) => void)
   onCardMouseleave: undefined | ((e:Event, d:TreeDatum) => void)
   to_transition: Datum['id'] | undefined | false
-
-  static is_html = true
 
   constructor(cont: HTMLElement, store: Store) {
     this.cont = cont

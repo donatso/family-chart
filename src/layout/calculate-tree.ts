@@ -35,7 +35,7 @@ export interface Tree {
 }
 
 
-export default function CalculateTree(data: Data, {
+export default function calculateTree(data: Data, {
   main_id = null,
   node_separation = 250,
   level_separation = 150,

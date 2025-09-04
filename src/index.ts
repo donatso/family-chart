@@ -11,21 +11,7 @@ import createChart from './core/chart'
 import CardSvg from './core/cards/card-svg'
 import CardHtml from './core/cards/card-html'
 
-export interface FamilyChartAPI {
-  CalculateTree: typeof CalculateTree,
-  createStore: typeof createStore,
-  view: typeof view,
-  createSvg: typeof createSvg,
-  handlers: typeof handlers,
-  elements: typeof elements,
-  htmlHandlers: typeof htmlHandlers,
-  icons: typeof icons,
-  createChart: typeof createChart,
-  CardSvg: typeof CardSvg,
-  CardHtml: typeof CardHtml,
-}
-
-const api: FamilyChartAPI = {
+export default {
   CalculateTree,
   createStore,
   view,
@@ -36,7 +22,7 @@ const api: FamilyChartAPI = {
   icons,
   createChart,
   CardSvg,
-  CardHtml,
+  CardHtml
 }
 
-export default api
+export type * from './types/index'
