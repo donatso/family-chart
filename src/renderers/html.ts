@@ -36,6 +36,3 @@ export function onZoomSetup(getSvgView: () => HTMLElement, getHtmlView: () => HT
 
 /** @deprecated This export will be removed in a future version. Use htmlContSetup instead. */
 export { createHtmlSvg }
-
-/** @deprecated This exports will be removed in a future version. */
-export { setupHtmlSvg, setupReactiveTreeData, getUniqueId } from '../features/card-component/handlers'
