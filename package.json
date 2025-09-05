@@ -19,8 +19,14 @@
   "module": "dist/family-chart.esm.js",
   "exports": {
     ".": {
-      "import": "./dist/family-chart.esm.js",
-      "require": "./dist/family-chart.js"
+      "import": {
+        "types": "./dist/types/index.d.ts",
+        "default": "./dist/family-chart.esm.js"
+      },
+      "require": {
+        "types": "./dist/types/index.d.ts",
+        "default": "./dist/family-chart.js"
+      }
     },
     "./styles/*": "./dist/styles/*"
   },
@@ -30,7 +36,8 @@
   },
   "files": [
     "dist/**/*.js",
-    "dist/styles/**"
+    "dist/styles/**",
+    "dist/types/**"
   ],
   "scripts": {
     "build": "node build.js",
