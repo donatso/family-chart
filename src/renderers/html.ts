@@ -33,3 +33,9 @@ export function onZoomSetup(getSvgView: () => HTMLElement, getHtmlView: () => HT
     d3.select(getHtmlView()).style('transform', `translate(${t.x}px, ${t.y}px) scale(${t.k}) `)
   }
 }
+
+/** @deprecated This export will be removed in a future version. Use htmlContSetup instead. */
+export { createHtmlSvg }
+
+/** @deprecated This exports will be removed in a future version. */
+export { setupHtmlSvg, setupReactiveTreeData, getUniqueId } from '../features/card-component/handlers'

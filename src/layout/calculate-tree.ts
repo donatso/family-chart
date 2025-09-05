@@ -374,3 +374,15 @@ function setupTid(tree:TreeDatum[]) {
     }
   })
 }
+
+
+/** 
+ * Calculate the tree
+ * @param options - The options for the tree
+ * @param options.data - The data for the tree
+ * @returns The tree
+ * @deprecated Use f3.calculateTree instead
+ */
+export function CalculateTree(options: CalculateTreeOptions & {data: Data}) {
+  return calculateTree(options.data, options)
+}

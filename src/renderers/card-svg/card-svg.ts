@@ -7,6 +7,7 @@ import { TreeDatum } from "../../types/treeData"
 import { CardDim } from "./templates"
 import { Store } from "../../types/store"
 
+// todo: remove store from props
 interface CardSvgProps {
   store: Store
   svg: SVGElement
@@ -74,4 +75,15 @@ export default function CardSvg(props: CardSvgProps) {
     }
     return props
   }
+}
+
+/**
+ * @deprecated Use cardSvg instead. This export will be removed in a future version.
+ */
+export function Card(props: CardSvgProps & {store: Store}) {
+  if (props.onCardClick === undefined) props.onCardClick = (e, d) => {
+    props.store.updateMainId(d.data.id)
+    props.store.updateTree({})
+  }
+  return CardSvg(props)
 }

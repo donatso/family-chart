@@ -79,6 +79,7 @@ export class EditTree {
   }
 
   open(datum: Datum) {
+    if (datum.data && !datum.rels) datum = datum.data as unknown as Datum  // if TreeDatum is used, it will be converted to Datum. will be removed in a future version.
     if (this.addRelativeInstance.is_active) handleAddRelative(this)
     else if (this.removeRelativeInstance.is_active) handleRemoveRelative(this, this.store.getTreeDatum(datum.id))
     else {
