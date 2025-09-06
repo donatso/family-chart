@@ -6,7 +6,7 @@ import { AddRelative } from "./add-relative"
 import { EditTree } from "./edit"
 import { RemoveRelative } from "./remove-relative"
 
-interface CreateFormProps {
+interface FormCreatorSetupProps {
   datum: Datum
   store: Store
   fields: any[]  // todo: Field[]
@@ -28,7 +28,7 @@ interface BaseFormCreator {
   onSubmit: (e: any) => void;
   onCancel: () => void;
   getKinshipInfo: () => any;
-  onFormCreation: CreateFormProps['onFormCreation']
+  onFormCreation: FormCreatorSetupProps['onFormCreation']
   no_edit: boolean;
   gender_field: {
     id: 'gender';
@@ -41,7 +41,7 @@ interface BaseFormCreator {
   linkExistingRelative?: any;
 }
 
-export interface ExistingDatumFormCreator extends BaseFormCreator {
+export interface EditDatumFormCreator extends BaseFormCreator {
   onDelete: () => void;
   addRelative: () => void;
   addRelativeCancel: () => void;
@@ -51,7 +51,6 @@ export interface ExistingDatumFormCreator extends BaseFormCreator {
   removeRelativeActive: boolean;
   editable: boolean;
   can_delete: boolean;
-
 }
 
 export interface NewRelFormCreator extends BaseFormCreator {
@@ -60,7 +59,7 @@ export interface NewRelFormCreator extends BaseFormCreator {
   editable: boolean;
 }
 
-export type FormCreator = ExistingDatumFormCreator | NewRelFormCreator;
+export type FormCreator = EditDatumFormCreator | NewRelFormCreator;
 
 interface Field {
   id: string;
@@ -97,7 +96,7 @@ interface SelectFieldCreator {
   optionCreator?: (datum: Datum) => {value: string; label: string}[];
 }
 
-export function createForm({
+export function formCreatorSetup({
   datum,
   store,
   fields,
@@ -111,7 +110,7 @@ export function createForm({
   getKinshipInfo,
   onFormCreation,
   no_edit,
-}: CreateFormProps) {
+}: FormCreatorSetupProps) {
   let form_creator: FormCreator;
   const base_form_creator: BaseFormCreator = {
     datum_id: datum.id,

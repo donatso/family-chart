@@ -1,8 +1,8 @@
-import { ExistingDatumFormCreator, NewRelFormCreator } from '../core/form'
-import { getHtmlExisting, getHtmlNew } from './form-html'
+import { EditDatumFormCreator, NewRelFormCreator } from '../core/form'
+import { getHtmlEdit, getHtmlNew } from './form-html'
 
 
-export function formInfoSetupNew(form_creator: NewRelFormCreator, closeCallback: () => void) {
+export function createFormNew(form_creator: NewRelFormCreator, closeCallback: () => void) {
   const formContainer = document.createElement('div')
   reload()
   return formContainer
@@ -21,16 +21,16 @@ export function formInfoSetupNew(form_creator: NewRelFormCreator, closeCallback:
   }
 }
 
-export function formInfoSetupExisting(form_creator: ExistingDatumFormCreator, closeCallback: () => void) {
+export function createFormEdit(form_creator: EditDatumFormCreator, closeCallback: () => void) {
   const formContainer = document.createElement('div')
   reload()
   return formContainer
 
   function reload() {
-    const formHtml = getHtmlExisting(form_creator)
+    const formHtml = getHtmlEdit(form_creator)
     formContainer.innerHTML = formHtml;
     setupEventListenersBase(formContainer, form_creator, closeCallback, reload)
-    setupEventListenersExisting(formContainer, form_creator, reload)
+    setupEventListenersEdit(formContainer, form_creator, reload)
     if (form_creator.onFormCreation) {
       form_creator.onFormCreation({
         cont: formContainer,
@@ -40,7 +40,7 @@ export function formInfoSetupExisting(form_creator: ExistingDatumFormCreator, cl
   }
 }
 
-function setupEventListenersBase(formContainer: HTMLElement, form_creator: ExistingDatumFormCreator | NewRelFormCreator, closeCallback: () => void, reload: () => void) {
+function setupEventListenersBase(formContainer: HTMLElement, form_creator: EditDatumFormCreator | NewRelFormCreator, closeCallback: () => void, reload: () => void) {
   const form = formContainer.querySelector('form')!;
   form.addEventListener('submit', form_creator.onSubmit);
 
@@ -70,7 +70,7 @@ function setupEventListenersNew(formContainer: HTMLElement, form_creator: NewRel
   }
 }
 
-function setupEventListenersExisting(formContainer: HTMLElement, form_creator: ExistingDatumFormCreator, reload: () => void) {
+function setupEventListenersEdit(formContainer: HTMLElement, form_creator: EditDatumFormCreator, reload: () => void) {
   const form = formContainer.querySelector('form')!;
 
   const edit_btn = form.querySelector('.f3-edit-btn');

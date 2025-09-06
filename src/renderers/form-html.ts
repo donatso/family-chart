@@ -1,4 +1,4 @@
-import { ExistingDatumFormCreator, NewRelFormCreator } from '../core/form'
+import { EditDatumFormCreator, NewRelFormCreator } from '../core/form'
 import * as icons from './icons'
 
 
@@ -21,7 +21,7 @@ export function getHtmlNew(form_creator: NewRelFormCreator) {
   `)
 }
 
-export function getHtmlExisting(form_creator: ExistingDatumFormCreator) {
+export function getHtmlEdit(form_creator: EditDatumFormCreator) {
   return (` 
     <form id="familyForm" class="f3-form ${form_creator.editable ? '' : 'non-editable'}">
       ${closeBtn()}
@@ -51,7 +51,7 @@ export function getHtmlExisting(form_creator: ExistingDatumFormCreator) {
   
 }
 
-function deleteBtn(form_creator: ExistingDatumFormCreator) {
+function deleteBtn(form_creator: EditDatumFormCreator) {
   return (`
     <div>
       <button type="button" class="f3-delete-btn" ${form_creator.can_delete ? '' : 'disabled'}>
@@ -61,7 +61,7 @@ function deleteBtn(form_creator: ExistingDatumFormCreator) {
   `)
 }
 
-function removeRelativeBtn(form_creator: ExistingDatumFormCreator) {
+function removeRelativeBtn(form_creator: EditDatumFormCreator) {
   return (`
     <div>
       <button type="button" class="f3-remove-relative-btn${form_creator.removeRelativeActive ? ' active' : ''}">
@@ -71,7 +71,7 @@ function removeRelativeBtn(form_creator: ExistingDatumFormCreator) {
   `)
 }
 
-function addRelativeBtn(form_creator: ExistingDatumFormCreator) {
+function addRelativeBtn(form_creator: EditDatumFormCreator) {
   return (`
     <span class="f3-add-relative-btn">
       ${form_creator.addRelativeActive ? icons.userPlusCloseSvgIcon() : icons.userPlusSvgIcon()}
@@ -79,7 +79,7 @@ function addRelativeBtn(form_creator: ExistingDatumFormCreator) {
   `)
 }
 
-function editBtn(form_creator: ExistingDatumFormCreator) {
+function editBtn(form_creator: EditDatumFormCreator) {
   return (`
     <span class="f3-edit-btn">
       ${form_creator.editable ? icons.pencilOffSvgIcon() : icons.pencilSvgIcon()}
@@ -87,7 +87,7 @@ function editBtn(form_creator: ExistingDatumFormCreator) {
   `)
 }
 
-function genderRadio(form_creator: ExistingDatumFormCreator | NewRelFormCreator) {
+function genderRadio(form_creator: EditDatumFormCreator | NewRelFormCreator) {
   if (!form_creator.editable) return ''
   return (`
     <div class="f3-radio-group">
@@ -114,7 +114,7 @@ interface SelectField {
   options: {value: string, label: string}[];
 }
 
-function fields(form_creator: ExistingDatumFormCreator | NewRelFormCreator) {
+function fields(form_creator: EditDatumFormCreator | NewRelFormCreator) {
   if (!form_creator.editable) return infoField()
   let fields_html = ''
   form_creator.fields.forEach(field => {
@@ -187,7 +187,7 @@ function fields(form_creator: ExistingDatumFormCreator | NewRelFormCreator) {
   }
 }
 
-function addLinkExistingRelative(form_creator: ExistingDatumFormCreator | NewRelFormCreator) {
+function addLinkExistingRelative(form_creator: EditDatumFormCreator | NewRelFormCreator) {
   const title = form_creator.linkExistingRelative.hasOwnProperty('title') ? form_creator.linkExistingRelative.title : 'Profile already exists?'
   const select_placeholder = form_creator.linkExistingRelative.hasOwnProperty('select_placeholder') ? form_creator.linkExistingRelative.select_placeholder : 'Select profile'
   const options = form_creator.linkExistingRelative.options as SelectField['options']

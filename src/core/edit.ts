@@ -1,7 +1,7 @@
 import * as d3 from "d3"
-import { createForm } from "./form"
+import { formCreatorSetup } from "./form"
 import { createHistory, createHistoryControls, HistoryWithControls } from "../features/history"
-import { formInfoSetupExisting, formInfoSetupNew } from "../renderers/form"
+import { createFormEdit, createFormNew } from "../renderers/form"
 import addRelative from "./add-relative"
 import { deletePerson, cleanupDataJson } from "../store/edit"
 import { handleLinkRel } from "../store/add-existing-rel"
@@ -13,7 +13,7 @@ import { Store } from "../types/store"
 import { Data, Datum } from "../types/data"
 import { TreeDatum } from "../types/treeData"
 import { AddRelative } from "./add-relative"
-import { ExistingDatumFormCreator, FormCreator, NewRelFormCreator } from "./form"
+import { EditDatumFormCreator, FormCreator, NewRelFormCreator } from "./form"
 import { CardHtml } from "./cards/card-html"
 import { CardSvg } from "./cards/card-svg"
 
@@ -40,6 +40,9 @@ export class EditTree {
   removeRelativeInstance: RemoveRelative
   history: HistoryWithControls
   modal: Modal
+
+  createFormEdit: ((form_creator: FormCreator, closeCallback: () => void) => HTMLElement) | null
+  createFormNew: ((form_creator: FormCreator, closeCallback: () => void) => HTMLElement) | null
 
   
   constructor(cont: HTMLElement, store: Store) {
@@ -68,6 +71,9 @@ export class EditTree {
     this.onFormCreation = null
   
     this.kinship_info_config = null
+  
+    this.createFormEdit = null
+    this.createFormNew = null
   
     this.form_cont = d3.select(this.cont).append('div').classed('f3-form-cont', true).node()!
     this.modal = this.setupModal()
@@ -200,7 +206,7 @@ export class EditTree {
       }
     }
   
-    const form_creator = createForm({
+    const form_creator = formCreatorSetup({
       store: this.store, 
       datum, 
       postSubmit: (props: any) => postSubmit(this, props),
@@ -214,7 +220,9 @@ export class EditTree {
       ...props
     })
   
-    const form_cont = is_new_rel ? formInfoSetupNew(form_creator as NewRelFormCreator, this.closeForm.bind(this)) : formInfoSetupExisting(form_creator as ExistingDatumFormCreator, this.closeForm.bind(this))
+    const form_cont = is_new_rel
+      ? (this.createFormNew || createFormNew)(form_creator as NewRelFormCreator, this.closeForm.bind(this))
+      : (this.createFormEdit || createFormEdit)(form_creator as EditDatumFormCreator, this.closeForm.bind(this))
   
     this.form_cont.innerHTML = ''
     this.form_cont.appendChild(form_cont)
@@ -377,6 +385,16 @@ export class EditTree {
   setOnFormCreation(onFormCreation: EditTree['onFormCreation']) {
     this.onFormCreation = onFormCreation
   
+    return this
+  }
+  
+  setCreateFormEdit(createFormEdit: EditTree['createFormEdit']) {
+    this.createFormEdit = createFormEdit
+    return this
+  }
+  
+  setCreateFormNew(createFormNew: EditTree['createFormNew']) {
+    this.createFormNew = createFormNew
     return this
   }
   
