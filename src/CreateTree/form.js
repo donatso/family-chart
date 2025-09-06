@@ -6,7 +6,7 @@ export function createForm({
   datum,
   store,
   fields,
-  postSubmit,
+  postSubmitHandler,
   addRelative,
   removeRelative,
   deletePerson,
@@ -14,7 +14,9 @@ export function createForm({
   editFirst,
   link_existing_rel_config,
   getKinshipInfo,
-  onFormCreation
+  onFormCreation,
+  onSubmit,
+  onDelete,
 }) {
   const form_creator = {
     datum_id: datum.id,
@@ -89,6 +91,7 @@ export function createForm({
           rel_id: spouse_id,
           rel_label: field.getRelLabel(spouse),
           initial_value: datum.data[marriage_date_id],
+          rel_type: field.rel_type
         })
         
       })
@@ -124,23 +127,35 @@ export function createForm({
   }
 
   function submitFormChanges(e) {
-    e.preventDefault()
-    const form_data = new FormData(e.target)
-    form_data.forEach((v, k) => datum.data[k] = v)
-    syncRelReference(datum, store.getData())
-    if (datum.to_add) delete datum.to_add
-    if (datum.unknown) delete datum.unknown
-    postSubmit()
+    if (onSubmit) {
+      onSubmit(e, datum, applyChanges, () => postSubmitHandler())
+    } else {
+      e.preventDefault()
+      applyChanges()
+      postSubmitHandler()
+    }
+
+    function applyChanges() {
+      const form_data = new FormData(e.target)
+      form_data.forEach((v, k) => datum.data[k] = v)
+      syncRelReference(datum, store.getData())
+      if (datum.to_add) delete datum.to_add
+      if (datum.unknown) delete datum.unknown
+    }
   }
 
   function submitLinkExistingRelative(e) {
     const link_rel_id = e.target.value
-    postSubmit({link_rel_id: link_rel_id})
+    postSubmitHandler({link_rel_id: link_rel_id})
   }
 
   function deletePersonWithPostSubmit() {
-    deletePerson()
-    postSubmit({delete: true})
+    if (onDelete) {
+      onDelete(datum, () => deletePerson(), () => postSubmitHandler({delete: true}))
+    } else {
+      deletePerson()
+      postSubmitHandler({delete: true})
+    }
   }
 }
 

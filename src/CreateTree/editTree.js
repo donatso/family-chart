@@ -32,6 +32,8 @@ function EditTree(cont, store) {
   this.editFirst = false
 
   this.postSubmit = null
+  this.onSubmit = null
+  this.onDelete = null
 
   this.link_existing_rel_config = null
 
@@ -111,7 +113,7 @@ EditTree.prototype.cardEditForm = function(datum) {
   const form_creator = f3.handlers.createForm({
     store: this.store, 
     datum, 
-    postSubmit: postSubmit.bind(this),
+    postSubmitHandler: postSubmitHandler.bind(this),
     fields: this.fields, 
     addRelative: null,
     onCancel: () => {},
@@ -119,6 +121,8 @@ EditTree.prototype.cardEditForm = function(datum) {
     link_existing_rel_config: this.link_existing_rel_config,
     getKinshipInfo: this.kinship_info_config ? () => kinshipInfo(this.kinship_info_config, datum.id, this.store.getData()) : null,
     onFormCreation: this.onFormCreation,
+    onSubmit: this.onSubmit,
+    onDelete: this.onDelete,
     ...props
   })
 
@@ -131,7 +135,7 @@ EditTree.prototype.cardEditForm = function(datum) {
 
   this.openForm()
 
-  function postSubmit(props) {
+  function postSubmitHandler(props) {
     if (this.addRelativeInstance.is_active) {
       this.addRelativeInstance.onChange(datum, props)
       if (this.postSubmit) this.postSubmit(datum, this.store.getData())
@@ -363,6 +367,18 @@ EditTree.prototype.updateHistory = function() {
   }
 
   if (this.onChange) this.onChange()
+}
+
+EditTree.prototype.setOnSubmit = function(onSubmit) {
+  this.onSubmit = onSubmit
+
+  return this
+}
+
+EditTree.prototype.setOnDelete = function(onDelete) {
+  this.onDelete = onDelete
+
+  return this
 }
 
 EditTree.prototype.setPostSubmit = function(postSubmit) {
