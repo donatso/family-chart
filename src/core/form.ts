@@ -6,11 +6,11 @@ import { AddRelative } from "./add-relative"
 import { EditTree } from "./edit"
 import { RemoveRelative } from "./remove-relative"
 
-interface FormCreatorSetupProps {
+export interface FormCreatorSetupProps {
   datum: Datum
   store: Store
   fields: any[]  // todo: Field[]
-  postSubmit: (props: any) => void
+  postSubmitHandler: (props: any) => void
   onCancel: () => void
   editFirst: boolean
   no_edit: boolean
@@ -20,6 +20,8 @@ interface FormCreatorSetupProps {
   addRelative?: AddRelative
   removeRelative?: RemoveRelative
   deletePerson?: () => void
+  onSubmit?: (e: Event, datum: Datum, applyChanges: () => void, postSubmit: () => void) => void
+  onDelete?: (datum: Datum, deletePerson: () => void, postSubmit: (props: any) => void) => void
 }
 
 interface BaseFormCreator {
@@ -73,6 +75,7 @@ interface RelReferenceField extends Field {
   type: 'rel_reference';
   rel_id: string;
   rel_label: string;
+  rel_type: 'spouse';
 }
 
 interface RelReferenceFieldCreator {
@@ -100,7 +103,7 @@ export function formCreatorSetup({
   datum,
   store,
   fields,
-  postSubmit,
+  postSubmitHandler,
   addRelative,
   removeRelative,
   deletePerson,
@@ -110,6 +113,8 @@ export function formCreatorSetup({
   getKinshipInfo,
   onFormCreation,
   no_edit,
+  onSubmit,
+  onDelete,
 }: FormCreatorSetupProps) {
   let form_creator: FormCreator;
   const base_form_creator: BaseFormCreator = {
@@ -197,6 +202,7 @@ export function formCreatorSetup({
           rel_id: spouse_id,
           rel_label: field.getRelLabel(spouse),
           initial_value: datum.data[marriage_date_id],
+          rel_type: field.rel_type,
         }
         form_creator.fields.push(rel_reference_field)
       })
@@ -235,19 +241,31 @@ export function formCreatorSetup({
   }
 
   function submitFormChanges(e: Event) {
-    e.preventDefault()
-    const form_data = new FormData(e.target as HTMLFormElement)
-    submitFormData(datum, store.getData(), form_data)
-    postSubmit({})
+    if (onSubmit) {
+      onSubmit(e, datum, applyChanges, () => postSubmitHandler({}))
+    } else {
+      e.preventDefault()
+      applyChanges()
+      postSubmitHandler({})
+    }
+
+    function applyChanges() {
+      const form_data = new FormData(e.target as HTMLFormElement)
+      submitFormData(datum, store.getData(), form_data)
+    }
   }
 
   function submitLinkExistingRelative(e: Event) {
     const link_rel_id = (e.target as HTMLSelectElement).value
-    postSubmit({link_rel_id: link_rel_id})
+    postSubmitHandler({link_rel_id: link_rel_id})
   }
 
   function deletePersonWithPostSubmit() {
-    deletePerson!()
-    postSubmit({delete: true})
+    if (onDelete) {
+      onDelete(datum, () => deletePerson!(), () => postSubmitHandler({delete: true}))
+    } else {
+      deletePerson!()
+      postSubmitHandler({delete: true})
+    }
   }
 }

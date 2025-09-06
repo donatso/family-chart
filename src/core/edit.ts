@@ -13,7 +13,7 @@ import { Store } from "../types/store"
 import { Data, Datum } from "../types/data"
 import { TreeDatum } from "../types/treeData"
 import { AddRelative } from "./add-relative"
-import { EditDatumFormCreator, FormCreator, NewRelFormCreator } from "./form"
+import { EditDatumFormCreator, FormCreator, FormCreatorSetupProps, NewRelFormCreator } from "./form"
 import { CardHtml } from "./cards/card-html"
 import { CardSvg } from "./cards/card-svg"
 
@@ -43,6 +43,9 @@ export class EditTree {
 
   createFormEdit: ((form_creator: FormCreator, closeCallback: () => void) => HTMLElement) | null
   createFormNew: ((form_creator: FormCreator, closeCallback: () => void) => HTMLElement) | null
+
+  onSubmit: FormCreatorSetupProps['onSubmit']
+  onDelete: FormCreatorSetupProps['onDelete']
 
   
   constructor(cont: HTMLElement, store: Store) {
@@ -209,7 +212,7 @@ export class EditTree {
     const form_creator = formCreatorSetup({
       store: this.store, 
       datum, 
-      postSubmit: (props: any) => postSubmit(this, props),
+      postSubmitHandler: (props: any) => postSubmitHandler(this, props),
       fields: this.fields, 
       onCancel: () => {},
       editFirst: this.editFirst,
@@ -217,6 +220,8 @@ export class EditTree {
       link_existing_rel_config: this.link_existing_rel_config,
       getKinshipInfo: this.kinship_info_config ? () => kinshipInfo(this.kinship_info_config, datum.id, this.store.getData()) : null,
       onFormCreation: this.onFormCreation,
+      onSubmit: this.onSubmit,
+      onDelete: this.onDelete,
       ...props
     })
   
@@ -229,7 +234,7 @@ export class EditTree {
   
     this.openForm()
   
-    function postSubmit(self: EditTree, props: any) {
+    function postSubmitHandler(self: EditTree, props: any) {
       if (self.addRelativeInstance.is_active) {
         self.addRelativeInstance.onChange!(datum, props)
         if (self.postSubmit) self.postSubmit(datum, self.store.getData())
@@ -430,6 +435,16 @@ export class EditTree {
     return this
   }
   
+  setOnSubmit(onSubmit: EditTree['onSubmit']) {
+    this.onSubmit = onSubmit
+    return this
+  }
+  
+  setOnDelete(onDelete: EditTree['onDelete']) {
+    this.onDelete = onDelete
+    return this
+  }
+  
   destroy() {
     this.history.controls.destroy()
     this.history = null as any
@@ -439,6 +454,4 @@ export class EditTree {
   
     return this
   }
-  
-  
 }
