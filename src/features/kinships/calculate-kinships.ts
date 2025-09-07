@@ -26,7 +26,7 @@ export function calculateKinships(d_id: Datum['id'], data_stash: Data, kinship_i
 
   function loopCheck(d_id: Datum['id'], kinship: string, depth: number, prev_rel_id: Datum['id'] | undefined = undefined) {
     if (!d_id) return
-    if (kinships[d_id] && kinships[d_id] !== kinship) console.error('kinship mismatch, kinship 1: ', kinships[d_id], 'kinship 2: ', kinship)
+    // if (kinships[d_id] && kinships[d_id] !== kinship) console.error('kinship mismatch, kinship 1: ', kinships[d_id], 'kinship 2: ', kinship)
     if (kinships[d_id]) return
     if (kinship) kinships[d_id] = kinship
     const datum = data_stash.find(d => d.id === d_id)!
