@@ -1,17 +1,27 @@
-import { EditDatumFormCreator, NewRelFormCreator } from '../core/form'
+import { EditDatumFormCreator, NewRelFormCreator } from '../types/form'
 import { getHtmlEdit, getHtmlNew } from './form-html'
 
 
 export function createFormNew(form_creator: NewRelFormCreator, closeCallback: () => void) {
+  return createForm(form_creator, closeCallback)
+}
+
+export function createFormEdit(form_creator: EditDatumFormCreator, closeCallback: () => void) {
+  return createForm(form_creator, closeCallback)
+}
+
+function createForm(form_creator: EditDatumFormCreator | NewRelFormCreator, closeCallback: () => void) {
+  const is_new = isNewRelFormCreator(form_creator)
   const formContainer = document.createElement('div')
   reload()
   return formContainer
 
   function reload() {
-    const formHtml = getHtmlNew(form_creator)
+    const formHtml = is_new ? getHtmlNew(form_creator) : getHtmlEdit(form_creator)
     formContainer.innerHTML = formHtml;
     setupEventListenersBase(formContainer, form_creator, closeCallback, reload)
-    setupEventListenersNew(formContainer, form_creator)
+    if (is_new) setupEventListenersNew(formContainer, form_creator)
+    else setupEventListenersEdit(formContainer, form_creator, reload)
     if (form_creator.onFormCreation) {
       form_creator.onFormCreation({
         cont: formContainer,
@@ -19,24 +29,9 @@ export function createFormNew(form_creator: NewRelFormCreator, closeCallback: ()
       })
     }
   }
-}
 
-export function createFormEdit(form_creator: EditDatumFormCreator, closeCallback: () => void) {
-  const formContainer = document.createElement('div')
-  reload()
-  return formContainer
-
-  function reload() {
-    const formHtml = getHtmlEdit(form_creator)
-    formContainer.innerHTML = formHtml;
-    setupEventListenersBase(formContainer, form_creator, closeCallback, reload)
-    setupEventListenersEdit(formContainer, form_creator, reload)
-    if (form_creator.onFormCreation) {
-      form_creator.onFormCreation({
-        cont: formContainer,
-        form_creator: form_creator
-      })
-    }
+  function isNewRelFormCreator(form_creator: EditDatumFormCreator | NewRelFormCreator): form_creator is NewRelFormCreator {
+    return 'new_rel' in form_creator
   }
 }
 

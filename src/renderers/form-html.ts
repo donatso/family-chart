@@ -1,4 +1,4 @@
-import { EditDatumFormCreator, NewRelFormCreator } from '../core/form'
+import { EditDatumFormCreator, NewRelFormCreator, SelectField } from '../types/form'
 import * as icons from './icons'
 
 
@@ -103,15 +103,6 @@ function genderRadio(form_creator: EditDatumFormCreator | NewRelFormCreator) {
       `)).join('')}
     </div>
   `)
-}
-
-interface SelectField {
-  id: string;
-  type: 'select';
-  label: string;
-  initial_value?: string;
-  placeholder?: string;
-  options: {value: string, label: string}[];
 }
 
 function fields(form_creator: EditDatumFormCreator | NewRelFormCreator) {

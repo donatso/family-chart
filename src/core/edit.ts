@@ -13,7 +13,7 @@ import { Store } from "../types/store"
 import { Data, Datum } from "../types/data"
 import { TreeDatum } from "../types/treeData"
 import { AddRelative } from "./add-relative"
-import { EditDatumFormCreator, FormCreator, FormCreatorSetupProps, NewRelFormCreator } from "./form"
+import { EditDatumFormCreator, FormCreator, FormCreatorSetupProps, NewRelFormCreator } from "../types/form"
 import { CardHtml } from "./cards/card-html"
 import { CardSvg } from "./cards/card-svg"
 
@@ -26,7 +26,12 @@ export class EditTree {
   cont: HTMLElement
   store: Store
   fields: {type: string, label: string, id: string}[]
-  form_cont: HTMLElement
+  formCont: {
+    el?: HTMLElement,
+    populate: (form_element: HTMLElement) => void,
+    open: () => void,
+    close: () => void,
+  }
   is_fixed: boolean
   no_edit: boolean
   onChange: (() => void) | null
@@ -78,7 +83,7 @@ export class EditTree {
     this.createFormEdit = null
     this.createFormNew = null
   
-    this.form_cont = d3.select(this.cont).append('div').classed('f3-form-cont', true).node()!
+    this.formCont = this.getFormContDefault()
     this.modal = this.setupModal()
     this.addRelativeInstance = this.setupAddRelative()
     this.removeRelativeInstance = this.setupRemoveRelative()
@@ -187,6 +192,30 @@ export class EditTree {
   openWithoutRelCancel(datum: Datum) {
     this.cardEditForm(datum)
   }
+
+  private getFormContDefault() {
+    let form_cont = d3.select(this.cont).select('div.f3-form-cont').node() as HTMLElement
+    if (!form_cont) form_cont = d3.select(this.cont).append('div').classed('f3-form-cont', true).node()!
+
+    return {
+      el: form_cont,
+      populate(form_element: HTMLElement) {
+        form_cont.innerHTML = ''
+        form_cont.appendChild(form_element)
+      },
+      open() {
+        d3.select(form_cont).classed('opened', true)
+      },
+      close() {
+        d3.select(form_cont).classed('opened', false).html('')
+      },
+    }
+  }
+
+  setFormCont(formCont: EditTree['formCont']) {
+    this.formCont = formCont
+    return this
+  }
   
   cardEditForm(datum: Datum) {
     const props: {
@@ -229,8 +258,7 @@ export class EditTree {
       ? (this.createFormNew || createFormNew)(form_creator as NewRelFormCreator, this.closeForm.bind(this))
       : (this.createFormEdit || createFormEdit)(form_creator as EditDatumFormCreator, this.closeForm.bind(this))
   
-    this.form_cont.innerHTML = ''
-    this.form_cont.appendChild(form_cont)
+    this.formCont.populate(form_cont)
   
     this.openForm()
   
@@ -260,24 +288,24 @@ export class EditTree {
   }
   
   openForm() {
-    d3.select(this.form_cont).classed('opened', true)
+    this.formCont.open()
   }
   
   closeForm() {
-    d3.select(this.form_cont).classed('opened', false).html('')
+    this.formCont.close()
     this.store.updateTree({})
   }
   
   fixed() {
     this.is_fixed = true
-    d3.select(this.form_cont).style('position', 'relative')
+    if (this.formCont.el) d3.select(this.formCont.el).style('position', 'relative')
   
     return this
   }
   
   absolute() {
     this.is_fixed = false
-    d3.select(this.form_cont).style('position', 'absolute')
+    if (this.formCont.el) d3.select(this.formCont.el).style('position', 'absolute')
   
     return this
   }
@@ -448,7 +476,7 @@ export class EditTree {
   destroy() {
     this.history.controls.destroy()
     this.history = null as any
-    d3.select(this.cont).select('.f3-form-cont').remove()
+    if (this.formCont.el) d3.select(this.formCont.el).remove()
     if (this.addRelativeInstance.onCancel) this.addRelativeInstance.onCancel()
     this.store.updateTree({})
   
