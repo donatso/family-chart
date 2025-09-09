@@ -1,5 +1,5 @@
 import { EditDatumFormCreator, NewRelFormCreator } from '../types/form'
-import { getHtmlEdit, getHtmlNew } from './form-html'
+import { getHtmlEdit, getHtmlNew } from './create-form-html'
 
 
 export function createFormNew(form_creator: NewRelFormCreator, closeCallback: () => void) {
