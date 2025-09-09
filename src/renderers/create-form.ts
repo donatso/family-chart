@@ -45,11 +45,6 @@ function setupEventListenersBase(formContainer: HTMLElement, form_creator: EditD
   const close_btn = form.querySelector('.f3-close-btn')!;
   close_btn.addEventListener('click', closeCallback)
 
-  if (form_creator.getKinshipInfo) {
-    const kinship_info = form_creator.getKinshipInfo()
-    if (kinship_info) formContainer.appendChild(kinship_info)
-  }
-
   function onCancel() {
     form_creator.editable = false
     if (form_creator.onCancel) form_creator.onCancel()

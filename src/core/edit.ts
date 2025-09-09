@@ -7,7 +7,6 @@ import { deletePerson, cleanupDataJson } from "../store/edit"
 import { handleLinkRel } from "../store/add-existing-rel"
 import removeRelative, { RemoveRelative } from "./remove-relative"
 import modal, { Modal } from "../features/modal"
-import { kinshipInfo } from "../features/kinships/kinship-info"
 
 import { Store } from "../types/store"
 import { Data, Datum } from "../types/data"
@@ -39,7 +38,6 @@ export class EditTree {
   postSubmit: ((datum: Datum, data: Data) => void) | null
   link_existing_rel_config: any
   onFormCreation: null | ((props: {cont: HTMLElement, form_creator: FormCreator}) => void)
-  kinship_info_config: any
 
   addRelativeInstance: AddRelative
   removeRelativeInstance: RemoveRelative
@@ -77,9 +75,7 @@ export class EditTree {
     this.link_existing_rel_config = null
   
     this.onFormCreation = null
-  
-    this.kinship_info_config = null
-  
+    
     this.createFormEdit = null
     this.createFormNew = null
   
@@ -247,7 +243,6 @@ export class EditTree {
       editFirst: this.editFirst,
       no_edit: this.no_edit,
       link_existing_rel_config: this.link_existing_rel_config,
-      getKinshipInfo: this.kinship_info_config ? () => kinshipInfo(this.kinship_info_config, datum.id, this.store.getData()) : null,
       onFormCreation: this.onFormCreation,
       onSubmit: this.onSubmit,
       onDelete: this.onDelete,
@@ -428,12 +423,6 @@ export class EditTree {
   
   setCreateFormNew(createFormNew: EditTree['createFormNew']) {
     this.createFormNew = createFormNew
-    return this
-  }
-  
-  setKinshipInfo(kinship_info_config: EditTree['kinship_info_config']) {
-    this.kinship_info_config = kinship_info_config
-  
     return this
   }
   

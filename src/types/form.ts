@@ -15,7 +15,6 @@ export interface FormCreatorSetupProps {
   editFirst: boolean
   no_edit: boolean
   link_existing_rel_config: any  // todo: LinkExistingRelConfig
-  getKinshipInfo: any  // todo: KinshipInfo
   onFormCreation: EditTree['onFormCreation']
   addRelative?: AddRelative
   removeRelative?: RemoveRelative
@@ -29,7 +28,6 @@ export interface BaseFormCreator {
   fields: any[];
   onSubmit: (e: any) => void;
   onCancel: () => void;
-  getKinshipInfo: () => any;
   onFormCreation: FormCreatorSetupProps['onFormCreation']
   no_edit: boolean;
   gender_field: {
