@@ -28,7 +28,14 @@ export function formCreatorSetup({
   no_edit,
   onSubmit,
   onDelete,
+  canEdit,
 }: FormCreatorSetupProps) {
+  let can_delete = true
+  const can_edit = canEdit ? canEdit(datum) : true
+  if (!can_edit) {
+    no_edit = true
+    can_delete = false
+  }
   let form_creator: FormCreator;
   const base_form_creator: BaseFormCreator = {
     datum_id: datum.id,

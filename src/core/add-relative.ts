@@ -20,6 +20,7 @@ export class AddRelative {
     son: string
     daughter: string
   }
+  canAdd?: (datum: Datum) => {parent?: boolean, spouse?: boolean, child?: boolean}
   
   constructor(store: Store, onActivate: () => void, cancelCallback: (datum: Datum) => void) {
 
@@ -51,7 +52,7 @@ export class AddRelative {
     this.datum = datum
     let gender_stash = this.datum.data.gender
   
-    addDatumRelsPlaceholders(datum, this.getStoreData(), this.addRelLabels)
+    addDatumRelsPlaceholders(datum, this.getStoreData(), this.addRelLabels, this.canAdd)
     store.updateTree({})
   
     this.onChange = onChange
@@ -95,6 +96,11 @@ export class AddRelative {
       const key_str = key as keyof AddRelative['addRelLabels']
       this.addRelLabels[key_str] = add_rel_labels[key_str]
     }
+    return this
+  }
+
+  setCanAdd(canAdd: AddRelative['canAdd']) {
+    this.canAdd = canAdd
     return this
   }
   

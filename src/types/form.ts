@@ -21,6 +21,7 @@ export interface FormCreatorSetupProps {
   deletePerson?: () => void
   onSubmit?: (e: Event, datum: Datum, applyChanges: () => void, postSubmit: () => void) => void
   onDelete?: (datum: Datum, deletePerson: () => void, postSubmit: (props: any) => void) => void
+  canEdit?: (datum: Datum) => boolean
 }
 
 export interface BaseFormCreator {
