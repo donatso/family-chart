@@ -1,4 +1,4 @@
-import f3 from '../../src/index.js'
+import * as f3 from '../../src/index.js'
 
 fetch("./data.json").then(r => r.json()).then(data => {
   const store = f3.createStore({
