@@ -1,47 +1,68 @@
-import {terser} from "rollup-plugin-terser";
-import * as meta from "./package.json";
+import fs from 'fs';
+import terser from "@rollup/plugin-terser";
+import typescript from "@rollup/plugin-typescript";
 
-const config = {
-  input: "src/index.js",
-  external: Object.keys(meta.dependencies || {}),
-  output: [
-    // UMD build
-    {
+const meta = JSON.parse(fs.readFileSync("./package.json", "utf8"));
+
+const globals = {
+  "d3": "d3"
+}
+const banner = `// ${meta.homepage} v${meta.version} Copyright ${(new Date).getFullYear()} ${meta.author.name}`
+const input = "src/index.ts"
+const external = ["d3"]
+const plugins = [
+  typescript({
+    tsconfig: "./tsconfig.json",
+    declaration: true,
+    declarationDir: "./dist/types",
+    exclude: ["tests/**/*", "examples/**/*"]
+  })
+]
+
+export default [
+  // UMD build
+  {
+    input: input,
+    external: external,
+    output: {
       file: `dist/${meta.name}.js`,
       name: "f3",
       format: "umd",
-      indent: false,
-      extend: true,
-      banner: `// ${meta.homepage} v${meta.version} Copyright ${(new Date).getFullYear()} ${meta.author.name}`,
-      globals: Object.assign({}, ...Object.keys(meta.dependencies || {}).map(key => ({[key]: "f3"})))
+      banner: banner,
+      globals: globals
     },
-    // ESM build
-    {
+    plugins: plugins
+  },
+  // ESM build
+  {
+    input: input,
+    external: external,
+    output:     {
       file: `dist/${meta.name}.esm.js`,
       format: 'es',
-      indent: false,
-      banner: `// ${meta.homepage} v${meta.version} Copyright ${(new Date).getFullYear()} ${meta.author.name}`,
-      globals: Object.assign({}, ...Object.keys(meta.dependencies || {}).map(key => ({[key]: "f3"})))
-    }
-  ],
-  plugins: []
-};
-
-export default [
-  config,
+      banner: banner,
+      globals: globals
+    },
+    plugins: plugins
+  },
+  // minified UMD build
   {
-    ...config,
+    input: input,
+    external: external,
     output: {
-      ...config.output[0], // Use the UMD output config as base
-      file: `dist/${meta.name}.min.js`
+      file: `dist/${meta.name}.min.js`,
+      name: "f3",
+      format: "umd",
+      banner: banner,
+      globals: globals
     },
     plugins: [
-      ...config.plugins,
+      ...plugins,
       terser({
         output: {
-          preamble: config.output[0].banner
+          preamble: banner
         }
       })
     ]
   }
-];
+]

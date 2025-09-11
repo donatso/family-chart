@@ -14,12 +14,19 @@
     "name": "donatso"
   },
   "main": "dist/family-chart.js",
+  "types": "dist/types/index.d.ts",
   "unpkg": "dist/family-chart.min.js",
   "module": "dist/family-chart.esm.js",
   "exports": {
     ".": {
-      "import": "./dist/family-chart.esm.js",
-      "require": "./dist/family-chart.js"
+      "import": {
+        "types": "./dist/types/index.d.ts",
+        "default": "./dist/family-chart.esm.js"
+      },
+      "require": {
+        "types": "./dist/types/index.d.ts",
+        "default": "./dist/family-chart.js"
+      }
     },
     "./styles/*": "./dist/styles/*"
   },
@@ -29,7 +36,8 @@
   },
   "files": [
     "dist/**/*.js",
-    "dist/styles/**"
+    "dist/styles/**",
+    "dist/types/**"
   ],
   "scripts": {
     "build": "node build.js",
@@ -39,13 +47,16 @@
   },
   "sideEffects": false,
   "dependencies": {
-    "d3": "6"
+    "d3": "^7.9.0"
   },
   "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.4",
+    "@types/d3": "^7.4.3",
     "cypress": "^9.1.0",
     "http-server": "^14.1.1",
-    "rollup": "2",
-    "rollup-plugin-terser": "7",
+    "rollup": "^4.45.1",
+    "typescript": "^5.8.3",
     "vite": "^6.3.5"
   }
 }

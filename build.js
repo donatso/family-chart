@@ -3,6 +3,7 @@ const execSync = require('child_process').execSync;
 
 
 function beforeRollup() {
+  fs.rmSync('./dist', {recursive: true, force: true});
 }
 
 function rollup() {
