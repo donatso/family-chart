@@ -50,6 +50,7 @@ export class EditTree {
   onSubmit: FormCreatorSetupProps['onSubmit']
   onDelete: FormCreatorSetupProps['onDelete']
   canEdit: FormCreatorSetupProps['canEdit']
+  canDelete: FormCreatorSetupProps['canDelete']
   
   constructor(cont: HTMLElement, store: Store) {
     this.cont = cont
@@ -247,6 +248,7 @@ export class EditTree {
       onSubmit: this.onSubmit,
       onDelete: this.onDelete,
       canEdit: this.canEdit,
+      canDelete: this.canDelete,
       ...props
     })
   
@@ -377,6 +379,11 @@ export class EditTree {
 
   setCanEdit(canEdit: EditTree['canEdit']) {
     this.canEdit = canEdit
+    return this
+  }
+
+  setCanDelete(canDelete: EditTree['canDelete']) {
+    this.canDelete = canDelete
     return this
   }
 

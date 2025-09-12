@@ -29,8 +29,9 @@ export function formCreatorSetup({
   onSubmit,
   onDelete,
   canEdit,
+  canDelete,
 }: FormCreatorSetupProps) {
-  let can_delete = true
+  let can_delete = canDelete ? canDelete(datum) : true
   const can_edit = canEdit ? canEdit(datum) : true
   if (!can_edit) {
     no_edit = true
@@ -61,7 +62,7 @@ export function formCreatorSetup({
       removeRelativeCancel: () => removeRelative.onCancel!(),
       removeRelativeActive: removeRelative.is_active,
       editable: false,
-      can_delete: true,
+      can_delete: can_delete,
     }
   }
 
