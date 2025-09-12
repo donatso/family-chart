@@ -3,7 +3,7 @@ import {personSvgIcon, chevronDownSvgIcon, linkOffSvgIcon} from "../renderers/ic
 import { checkIfConnectedToFirstPerson } from "../handlers/check-person-connection"
 import { Datum } from "../types/data"
 
-export default function(cont: HTMLElement, onSelect: (value: string) => void) { return new Autocomplete(cont, onSelect) }
+export default function(cont: Autocomplete['cont'], onSelect: Autocomplete['onSelect'], config: Autocomplete['config'] = {}) { return new Autocomplete(cont, onSelect, config) }
 
 interface AutocompleteOption {
   label: string
@@ -18,13 +18,18 @@ class Autocomplete {
   autocomplete_cont: HTMLElement
   options: AutocompleteOption[]
   onSelect: (value: string) => void
+  config?: {
+    placeholder?: string
+  }
   getOptions?: () => Autocomplete['options']
 
-  constructor(cont: HTMLElement, onSelect: (value: string) => void) {
+  constructor(cont: HTMLElement, onSelect: (value: string) => void, config: {
+    placeholder?: string
+  } = {}) {
     this.cont = cont
     this.options = []
     this.onSelect = onSelect
-
+    this.config = config
     this.autocomplete_cont = d3.select(this.cont).append('div').attr('class', 'f3-autocomplete-cont').node() as HTMLElement
     this.create()
   }
@@ -34,7 +39,7 @@ class Autocomplete {
     d3.select(this.autocomplete_cont).html(`
       <div class="f3-autocomplete">
         <div class="f3-autocomplete-input-cont">
-          <input type="text" placeholder="Search">
+          <input type="text" placeholder="${this.config?.placeholder || 'Search'}">
           <span class="f3-autocomplete-toggle">${chevronDownSvgIcon()}</span>
         </div>
         <div class="f3-autocomplete-items" tabindex="0"></div>

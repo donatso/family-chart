@@ -433,19 +433,34 @@ export class Chart {
   /**
    * Set the person dropdown
    * @param getLabel - The function to get the label of the person to show in the dropdown.
-   * @param cont - The container to put the dropdown in.
+   * @param config - The config for the person dropdown.
+   * @param config.cont - The container to put the dropdown in. Default is the .f3-nav-cont element.
+   * @param config.onSelect - The function to call when a person is selected. Default is setting clicked person as main person and updating the tree.
+   * @param config.placeholder - The placeholder for the search input. Default is 'Search'.
    * @returns The CreateChart instance
    */
-  setPersonDropdown(getLabel: Function, cont=this.cont!.querySelector('.f3-nav-cont') as HTMLElement) {
-    this.personSearch = autocomplete(cont, onSelect.bind(this))
+  setPersonDropdown(
+    getLabel: Function,
+    {
+      cont=this.cont!.querySelector('.f3-nav-cont') as HTMLElement,
+      onSelect,
+      placeholder='Search'
+    } : {
+      cont?: HTMLElement,
+      onSelect?: (d_id: Datum['id']) => void,
+      placeholder?: string
+    } = {}
+  ) {
+    if (!onSelect) onSelect = onSelectDefault.bind(this)
+    this.personSearch = autocomplete(cont, onSelect, {placeholder})
 
     this.personSearch.setOptionsGetterPerson(this.store.getData, getLabel)
 
-    function onSelect(this: Chart, value: Datum['id']) {
-      const datum = this.store.getDatum(value)
+    function onSelectDefault(this: Chart, d_id: Datum['id']) {
+      const datum = this.store.getDatum(d_id)
       if (!datum) throw new Error('Datum not found')
       if (this.editTreeInstance) this.editTreeInstance.open(datum)
-      this.updateMainId(value)
+      this.updateMainId(d_id)
       this.updateTree({initial: false})
     }
     return this
