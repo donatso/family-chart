@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>7-custom-elements-and-actions</title>
+  <link rel="shortcut icon" type="image/svg" href="/examples/logo.svg">
+  <script src="https://unpkg.com/d3@7"></script>
+  <link rel="stylesheet" href="/src/styles/family-chart.css">
+  <style> body { font-family: 'Arial', sans-serif; } </style>
+</head>
+<body>
+<div id="FamilyChart" class="f3" style="width:100%;height:900px;margin:auto;background-color:rgb(33,33,33);color:#fff;"></div>
+<script type="module">
+import f3 from '../../src/index.js'
+
+// list of all example. delete this if not needed
+import sidebar from '../sidebar.js'
+sidebar()
+
+fetch('../data/data.json')
+  .then(res => res.json())
+  .then(data => create(data))
+  .catch(err => console.error(err))
+
+function create(data) {
+  let tree, main_id;
+
+  const cont = document.querySelector("#FamilyChart")
+  const svg = f3.createSvg(cont)
+
+  updateTree({initial: true})
+
+  function updateTree(props) {
+    tree = f3.calculateTree(data, { main_id })
+    f3.view(tree, svg, Card(tree, svg, onCardClick), props || {})
+  }
+
+  function updateMainId(_main_id) {
+    main_id = _main_id
+  }
+
+  function onCardClick(e, d) {
+    updateMainId(d.data.id)
+    updateTree()
+  }
+
+  function Card(tree, svg, onCardClick) {
+    const card_dim = {w:220,h:70,text_x:75,text_y:15,img_w:60,img_h:60,img_x:5,img_y:5}
+    return function (d) {
+      return f3.elements.CardSvg({
+        svg,
+        card_dim,
+        card_display: [d => `${d.data["first name"]} ${d.data["last name"]}`],
+
+        onCardClick,
+
+        img: true,
+        mini_tree: true,
+        onMiniTreeClick: onCardClick,
+
+        onCardUpdate
+      }).call(this, d)
+    }
+
+    function onCardUpdate(d) {
+      const g = d3.select(this).select('.card-inner').append('g')
+      g.on('click', () => {
+        console.log('custom element clicked', d)
+        // add some action here
+      })
+      g.html(customAddBtn(card_dim))
+    }
+  }
+
+
+  function customAddBtn(card_dim) {
+    return (`
+      <g class="customAddBtn" style="cursor: pointer">
+        <g transform="translate(${card_dim.w-12},${card_dim.h-12})scale(.08)">
+          <circle r="100" fill="#fff" />
+          <g transform="translate(-50,-45)">
+            <line
+              x1="10" x2="90" y1="50" y2="50"
+              stroke="currentColor" stroke-width="20" stroke-linecap="round"
+            />
+            <line
+              x1="50" x2="50" y1="10" y2="90"
+              stroke="currentColor" stroke-width="20" stroke-linecap="round"
+            />
+          </g>
+        </g>
+      </g>
+    `)
+  }
+
+}
+
+</script>
+
+</body>
+</html>

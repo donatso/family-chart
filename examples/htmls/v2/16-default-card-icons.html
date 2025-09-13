@@ -1,0 +1,70 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>v2/16-default-card-icons</title>
+  <link rel="shortcut icon" type="image/svg" href="/examples/logo.svg">
+  <script src="https://unpkg.com/d3@7"></script>
+  <link rel="stylesheet" href="/src/styles/family-chart.css">
+  <style> body { font-family: 'Arial', sans-serif; } </style>
+</head>
+<body>
+<div id="FamilyChart" class="f3" style="width:100%;height:900px;margin:auto;background-color:rgb(33,33,33);color:#fff;"></div>
+<script type="module">
+import f3 from '../../../src/index.js'
+
+// list of all example. delete this if not needed
+import sidebar from '../../sidebar.js'
+sidebar()
+
+fetch('../../data/data.json')
+  .then(res => res.json())
+  .then(data => create(data))
+  .catch(err => console.error(err))
+
+function create(data) {
+  const f3Chart = f3.createChart('#FamilyChart', data)
+    .setTransitionTime(1000)
+    .setCardXSpacing(250)
+    .setCardYSpacing(150)
+
+  f3Chart.setCard(f3.CardHtml)
+    .setCardDisplay([["first name","last name"],["birthday"]])
+    .setDefaultPersonIcon(d => {
+      if (d.data.data.gender === 'F') return femaleIcon()
+      else return maleIcon()
+    })
+
+  f3Chart.updateTree({initial: true})
+
+  function femaleIcon() {
+    return (`
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M13.75 13C13.75 12.31 14.31 11.75 15 11.75S16.25 12.31 16.25 13 15.69 14.25 15 14.25 13.75 13.69 13.75 
+        13M22 12V22H2V12C2 6.5 6.5 2 12 2S22 6.5 22 12M4 12C4 16.41 7.59 20 12 20S20 16.41 20 12C20 11.21 19.88 10.45 
+        19.67 9.74C18.95 9.91 18.2 10 17.42 10C14.05 10 11.07 8.33 9.26 5.77C8.28 8.16 6.41 10.09 4.05 11.14C4 11.42 4 
+        11.71 4 12M9 14.25C9.69 14.25 10.25 13.69 10.25 13S9.69 11.75 9 11.75 7.75 12.31 7.75 13 8.31 14.25 9 14.25Z" />
+      </svg>
+    `)
+  }
+
+  function maleIcon() {
+    return (`
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M9,11.75A1.25,1.25 0 0,0 7.75,13A1.25,1.25 0 0,0 9,14.25A1.25,1.25 0 0,0 
+        10.25,13A1.25,1.25 0 0,0 9,11.75M15,11.75A1.25,1.25 0 0,0 13.75,13A1.25,1.25 0 0,0 
+        15,14.25A1.25,1.25 0 0,0 16.25,13A1.25,1.25 0 0,0 15,11.75M12,2A10,10 0 0,0 2,12A10,10 0 0,0 
+        12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20C7.59,20 4,16.41 4,12C4,11.71 4,11.42 
+        4.05,11.14C6.41,10.09 8.28,8.16 9.26,5.77C11.07,8.33 14.05,10 17.42,10C18.2,10 18.95,9.91 
+        19.67,9.74C19.88,10.45 20,11.21 20,12C20,16.41 16.41,20 12,20Z" />
+      </svg>
+    `)
+  }
+}
+
+</script>
+
+</body>
+</html>

@@ -1,6 +1,7 @@
 {
   "name": "family-chart",
   "version": "0.8.0-beta.2",
+  "type": "module",
   "description": "family tree creator and viewer",
   "keywords": [
     "datafull",
@@ -41,9 +42,10 @@
   ],
   "scripts": {
     "build": "node build.js",
-    "test": "yarn run cypress open --project tests",
+    "test": "cypress open",
+    "test-run": "cypress run",
     "dev": "vite",
-    "prepublishOnly": "node build.js"
+    "prepublishOnly": "node prePublish.js"
   },
   "sideEffects": false,
   "dependencies": {
@@ -53,7 +55,7 @@
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.4",
     "@types/d3": "^7.4.3",
-    "cypress": "^9.1.0",
+    "cypress": "15.2.0",
     "http-server": "^14.1.1",
     "rollup": "^4.45.1",
     "typescript": "^5.8.3",

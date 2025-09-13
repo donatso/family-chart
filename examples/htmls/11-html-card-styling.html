@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>11-html-card-styling</title>
+  <link rel="shortcut icon" type="image/svg" href="/examples/logo.svg">
+  <script src="https://unpkg.com/d3@7"></script>
+  <link rel="stylesheet" href="/src/styles/family-chart.css">
+  <style> body { font-family: 'Arial', sans-serif; } </style>
+</head>
+<body>
+<div id="FamilyChart" class="f3" style="width:100%;height:900px;margin:auto;background-color:rgb(33,33,33);color:#fff;"></div>
+<script type="module">
+import f3 from '../../src/index.js'
+
+// list of all example. delete this if not needed
+import sidebar from '../sidebar.js'
+sidebar()
+
+fetch('https://donatso.github.io/family-chart-doc/data/wikidata-popular.json')
+  .then(res => res.json())
+  .then(data => create(data))
+  .catch(err => console.error(err))
+
+function create(data) {
+  const store = f3.createStore({
+    data,
+    node_separation: 150,
+    level_separation: 150
+  })
+
+  const cont = document.querySelector('#FamilyChart')
+  const {svg} = f3.handlers.htmlContSetup(cont)
+
+  store.setOnUpdate(props => {
+    const tree = store.getTree()
+
+    props = Object.assign({}, props || {}, {cardHtml: true})
+    f3.view(tree, svg, Card(), props || {})
+  })
+
+  store.updateMainId('Q43274')
+  store.updateTree({initial: true})
+
+
+  function Card() {
+    return function (d) {
+      this.innerHTML = (`
+      <div class="card" style="transform: translate(-50%, -50%)">
+        ${d.data.data.avatar ? getCardInnerImage(d) : getCardInnerText(d)}
+      </div>
+      `)
+      this.querySelector('.card').addEventListener('click', e => onCardClick(e, d))
+    }
+
+    function onCardClick(e, d) {
+      store.updateMainId(d.data.id)
+      store.updateTree({})
+    }
+
+    function getCardInnerImage(d) {
+      return (`
+      <div class="card-image ${getClassList(d).join(' ')}">
+        <img src="${d.data.data["avatar"]}">
+        <div class="card-label">${d.data.data["label"]}</div>
+      </div>
+      `)
+    }
+
+    function getCardInnerText(d) {
+      return (`
+      <div class="card-text ${getClassList(d).join(' ')}">
+        ${d.data.data["label"]}
+      </div>
+      `)
+    }
+
+  }
+
+  function getClassList(d) {
+    const class_list = []
+    if (d.data.data.gender === 'M') class_list.push('card-male')
+    else if (d.data.data.gender === 'F') class_list.push('card-female')
+    else class_list.push('card-genderless')
+
+    if (d.data.main) class_list.push('card-main')
+
+    return class_list
+  }
+}
+
+</script>
+<style>
+
+  .f3 div.card {
+    cursor: pointer;
+    color: #fff;
+    position: relative;
+  }
+
+  .f3 div.card-image {
+    border-radius: 50%;
+    padding: 5px;
+    width: 90px;
+    height: 90px;
+  }
+
+  .f3 div.card-image div.card-label {
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translate(-50%, 50%);
+    max-width: 150%;
+    height: 22px;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    border-radius: 3px;
+    padding: 0 5px;
+  }
+
+  .f3 div.card-image img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .f3 div.card-text {
+    padding: 5px;
+    border-radius: 3px;
+    width: 120px;
+    height: 70px;
+    overflow: hidden;
+    line-height: 1.2;
+  }
+
+  .f3 div.card > div {
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .f3 div.card:hover > div {
+    transform: scale(1.1);
+  }
+
+  .f3 div.card-main {
+    transform: scale(1.2)!important;
+  }
+
+  .f3 div.card-female {
+    background-color: rgb(196, 138, 146);
+  }
+  .f3 div.card-male {
+    background-color: rgb(120, 159, 172);
+  }
+  .f3 div.card-genderless {
+    background-color: lightgray;
+  }
+  .f3 div.card-main {
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.8);
+  }
+</style>
+</body>
+</html>

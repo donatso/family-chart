@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>v2/10-big-tree</title>
+  <link rel="shortcut icon" type="image/svg" href="/examples/logo.svg">
+  <script src="https://unpkg.com/d3@7"></script>
+  <link rel="stylesheet" href="/src/styles/family-chart.css">
+  <style> body { font-family: 'Arial', sans-serif; } </style>
+</head>
+<body>
+<div id="FamilyChart" class="f3" style="width:100%;height:900px;margin:auto;background-color:rgb(33,33,33);color:#fff;"></div>
+<script type="module">
+import f3 from '../../../src/index.js'
+
+// list of all example. delete this if not needed
+import sidebar from '../../sidebar.js'
+sidebar()
+
+fetch('https://donatso.github.io/family-chart-doc/data/wikidata-popular.json')
+  .then(res => res.json())
+  .then(data => create(data))
+  .catch(err => console.error(err))
+
+function create(data) {
+  const f3Chart = f3.createChart('#FamilyChart', data)
+    .setTransitionTime(1000)
+    .setCardXSpacing(250)
+    .setCardYSpacing(150)
+
+  f3Chart.setCard(f3.CardHtml)
+    .setCardDisplay([["label"]])
+    .setCardDim({h:70})
+
+  f3Chart.updateMainId('Q43274')  // Charles III
+
+  f3Chart.updateTree({initial: true})
+
+
+  // with person_id this function will update the tree
+  function updateTreeWithNewMainPerson(person_id, animation_initial = true) {
+    f3Chart.updateMainId(person_id)
+    f3Chart.updateTree({initial: animation_initial})
+  }
+
+  // random person
+
+  d3.select(document.querySelector("#FamilyChart"))
+    .append("button")
+    .text("Random Person")
+    .attr("style", "position: absolute; top: 10px; right: 10px; z-index: 1000;")
+    .on("click", () => {
+      const random_person = data[Math.floor(Math.random() * data.length)]
+      const person_id = random_person["id"]
+      updateTreeWithNewMainPerson(person_id, false)
+    })
+
+
+  // setup search dropdown
+  // this is basic showcase, please use some autocomplete component and style it as you want
+
+  const all_select_options = []
+  data.forEach(d => {
+    if (all_select_options.find(d0 => d0.value === d["id"])) return
+    all_select_options.push({label: `${d.data["label"]}`, value: d["id"]})
+  })
+  const search_cont = d3.select(document.querySelector("#FamilyChart")).append("div")
+    .attr("style", "position: absolute; top: 10px; left: 10px; width: 150px; z-index: 1000;")
+    .on("focusout", () => {
+      setTimeout(() => {
+        if (!search_cont.node().contains(document.activeElement)) {
+          updateDropdown([]);
+        }
+      }, 200);
+    })
+  const search_input = search_cont.append("input")
+    .attr("style", "width: 100%;")
+    .attr("type", "text")
+    .attr("placeholder", "Search")
+    .on("focus", activateDropdown)
+    .on("input", activateDropdown)
+
+  const dropdown = search_cont.append("div").attr("style", "overflow-y: auto; max-height: 300px; background-color: #000;")
+    .attr("tabindex", "0")
+    .on("wheel", (e) => {
+      e.stopPropagation()
+    })
+
+  function activateDropdown() {
+    const search_input_value = search_input.property("value")
+    const filtered_options = all_select_options.filter(d => d.label.toLowerCase().includes(search_input_value.toLowerCase()))
+    updateDropdown(filtered_options)
+  }
+
+  function updateDropdown(filtered_options) {
+    dropdown.selectAll("div").data(filtered_options).join("div")
+      .attr("style", "padding: 5px;cursor: pointer;border-bottom: .5px solid currentColor;")
+      .on("click", (e, d) => {
+        updateTreeWithNewMainPerson(d.value, true)
+      })
+      .text(d => d.label)
+  }
+}
+
+</script>
+
+</body>
+</html>

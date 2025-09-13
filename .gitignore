@@ -3,3 +3,4 @@
 /.idea/
 /.vscode/
 /tests/debugging/
+cypress/screenshots

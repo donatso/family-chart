@@ -1,0 +1,123 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>v2/8-custom-elements-and-actions</title>
+  <link rel="shortcut icon" type="image/svg" href="/examples/logo.svg">
+  <script src="https://unpkg.com/d3@7"></script>
+  <link rel="stylesheet" href="/src/styles/family-chart.css">
+  <style> body { font-family: 'Arial', sans-serif; } </style>
+</head>
+<body>
+<div id="FamilyChart" class="f3" style="width:100%;height:900px;margin:auto;background-color:rgb(33,33,33);color:#fff;"></div>
+<script type="module">
+import f3 from '../../../src/index.js'
+
+// list of all example. delete this if not needed
+import sidebar from '../../sidebar.js'
+sidebar()
+
+fetch('../../data/data.json')
+  .then(res => res.json())
+  .then(data => create(data))
+  .catch(err => console.error(err))
+
+function create(data) {
+  const f3Chart = f3.createChart('#FamilyChart', data)
+    .setTransitionTime(1000)
+    .setCardXSpacing(250)
+    .setCardYSpacing(150)
+
+  const f3Card = f3Chart.setCard(f3.CardHtml)
+    .setOnCardUpdate(function(d) {
+      if (d.data._new_rel_data) return
+      if (f3EditTree.isRemovingRelative()) return
+
+      d3.select(this).select('.card').style('cursor', 'default')
+      const card = this.querySelector('.card-inner')
+      d3.select(card)
+      .append('div')
+      .attr('class', 'f3-svg-circle-hover')
+      .attr('style', 'cursor: pointer; width: 20px; height: 20px;position: absolute; top: 0; right: 0;')
+      .html(f3.icons.userEditSvgIcon())
+      .select('svg')
+      .style('padding', '0')
+      .on('click', (e) => {
+        e.stopPropagation()
+        f3EditTree.open(d.data)
+        if (f3EditTree.isAddingRelative()) return
+        if (f3EditTree.isRemovingRelative()) return
+        f3Card.onCardClickDefault(e, d)
+      })
+      d3.select(card)
+      .append('div')
+      .attr('class', 'f3-svg-circle-hover')
+      .attr('style', 'cursor: pointer; width: 20px; height: 20px;position: absolute; top: 0; right: 23px;')
+      .html(f3.icons.userPlusSvgIcon())
+      .select('svg')
+      .style('padding', '0')
+      .on('click', (e) => {
+        e.stopPropagation()
+        if (f3EditTree.isAddingRelative()) {
+          if (f3Chart.store.getMainDatum().id === d.data.id) {
+            f3EditTree.addRelativeInstance.onCancel()
+          } else {
+            f3EditTree.addRelativeInstance.onCancel()
+            f3EditTree.open(d.data)
+            f3Card.onCardClickDefault(e, d)
+            document.querySelector('.f3-add-relative-btn').click()
+          }
+        } else {
+          f3EditTree.open(d.data)
+          f3Card.onCardClickDefault(e, d)
+          document.querySelector('.f3-add-relative-btn').click()
+        }
+      })
+    })
+
+  f3Card.setOnCardClick((e, d) => {
+    if (f3EditTree.isAddingRelative()) {
+      if (d.data._new_rel_data) {
+        f3EditTree.open(d.data)
+      } else {
+        f3EditTree.addRelativeInstance.onCancel()
+        f3EditTree.closeForm()
+        f3Card.onCardClickDefault(e, d)
+      }
+    } else if (f3EditTree.isRemovingRelative()) {
+      f3EditTree.open(d.data)
+    } else {
+      if (f3Chart.getMainDatum().id === d.data.id) {
+        f3EditTree.open(d.data)
+        f3Card.onCardClickDefault(e, d)
+      } else {
+        f3EditTree.closeForm()
+        f3Card.onCardClickDefault(e, d)
+      }
+    }
+  })
+
+  const f3EditTree = f3Chart.editTree()
+    .fixed(true)
+    .setFields(["first name","last name","birthday","avatar"])
+    .setEditFirst(true)
+  
+  f3EditTree.setEdit()
+  
+  f3Chart.updateTree({initial: true})
+}
+
+</script>
+<style>
+  .f3 .f3-svg-circle-hover circle {
+    transition: fill 0.2s ease-in-out;
+  }
+
+  .f3 .f3-svg-circle-hover:hover circle {
+    fill: rgba(0, 0, 0, 0.2) !important;
+  }
+</style>
+</body>
+</html>

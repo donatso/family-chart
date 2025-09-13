@@ -1,0 +1,66 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>6-html-cards</title>
+  <link rel="shortcut icon" type="image/svg" href="/examples/logo.svg">
+  <script src="https://unpkg.com/d3@7"></script>
+  <link rel="stylesheet" href="/src/styles/family-chart.css">
+  <style> body { font-family: 'Arial', sans-serif; } </style>
+</head>
+<body>
+<div id="FamilyChart" class="f3" style="width:100%;height:900px;margin:auto;background-color:rgb(33,33,33);color:#fff;"></div>
+<script type="module">
+import f3 from '../../src/index.js'
+
+// list of all example. delete this if not needed
+import sidebar from '../sidebar.js'
+sidebar()
+
+fetch('../data/data.json')
+  .then(res => res.json())
+  .then(data => create(data))
+  .catch(err => console.error(err))
+
+function create(data) {
+  let tree, main_id;
+
+  const cont = document.querySelector("#FamilyChart")
+  const {svg} = f3.handlers.htmlContSetup(cont)
+  updateTree({initial: true})
+
+  function updateTree(props) {
+    tree = f3.calculateTree(data, { main_id })
+    props = Object.assign({}, props || {}, {cardHtml: true})
+    f3.view(tree, svg, Card(), props || {})
+  }
+
+  function updateMainId(_main_id) {
+    main_id = _main_id
+  }
+
+  function Card() {
+    const card_dim = {w:220,h:70,text_x:75,text_y:15,img_w:60,img_h:60,img_x:5,img_y:5}
+    return function (d) {
+      this.innerHTML = ''
+      const div = d3.select(this).append('div').classed('card', true).style('transform', `translate(${-card_dim.w / 2}px, ${-card_dim.h / 2}px)`)
+      const div_inner = div.append('div')
+        .attr('style', `width: ${card_dim.w}px; height: ${card_dim.h}px; background-color: gray; color: #fff; border-radius: 3px; cursor: pointer; pointer-events: auto`)
+        .on('click', e => onCardClick(e, d))
+      div_inner.append('div').attr('style', 'padding: 10px 20px;').html(`${d.data.data["first name"]} ${d.data.data["last name"]}`)
+    }
+
+    function onCardClick(e, d) {
+      updateMainId(d.data.id)
+      updateTree()
+    }
+
+  }
+}
+
+</script>
+
+</body>
+</html>
