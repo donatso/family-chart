@@ -7,7 +7,10 @@ import { ViewProps } from "../renderers/view"
 
 export default function createStore(initial_state: StoreState): Store {
   let onUpdate: (props?: any) => void | undefined;
-  const state = initial_state;
+  const state = {
+    transition_time: 1000,
+    ...initial_state,
+  };
   state.main_id_history = []
 
   const store = {

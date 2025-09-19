@@ -30,7 +30,6 @@ const data = [
 
 // Create the chart
 const f3Chart = f3.createChart('#FamilyChart', data)
-  .setTransitionTime(1000);
 
 const f3Card = f3Chart.setCardHtml()
   .setCardDisplay([["first name","last name"],["birthday"]]);

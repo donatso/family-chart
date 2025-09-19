@@ -59,7 +59,6 @@ const data = [
 ]
 
 const f3Chart = f3.createChart('#FamilyChart', data)
-  .setTransitionTime(1000)
 
 f3Chart.setCardHtml()
   .setCardDisplay([["first name","last name"],["birthday"]])
@@ -101,7 +100,6 @@ const data = [
 
 // Create the chart
 const chart = f3.createChart('#FamilyChart', data)
-  .setTransitionTime(1000);
 
 chart.setCardHtml()
   .setCardDisplay([["first name","last name"],["birthday"]]);
@@ -143,7 +141,6 @@ export default {
       }
     ]
     const f3Chart = f3.createChart('#FamilyChart', data)
-      .setTransitionTime(1000);
 
     f3Chart.setCardHtml()
       .setCardDisplay([["first name","last name"],["birthday"]]);
@@ -185,7 +182,6 @@ const FamilyTree = () => {
       ];
 
       const f3Chart = f3.createChart('#FamilyChart', data)
-        .setTransitionTime(1000);
 
       f3Chart.setCardHtml()
         .setCardDisplay([["first name","last name"],["birthday"]]);
@@ -240,7 +236,6 @@ export class FamilyTreeComponent implements OnInit {
 
     const f3Chart = f3
       .createChart('#FamilyChart', data as f3.Data)
-      .setTransitionTime(1000);
 
     f3Chart
       .setCardHtml()
@@ -283,7 +278,6 @@ export class FamilyTreeComponent implements OnInit {
     ];
 
     const f3Chart = f3.createChart('#FamilyChart', data)
-      .setTransitionTime(1000);
 
     f3Chart.setCardHtml()
       .setCardDisplay([["first name","last name"],["birthday"]]);

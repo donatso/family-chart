@@ -36,8 +36,7 @@ export default function createChart(cont: HTMLElement | string, data: Data) {
  * 
  * @example
  * ```typescript
- * const f3Chart = createChart('#FamilyChart', data)  // returns a Chart instance
- *   .setTransitionTime(1000);
+ * const f3Chart = createChart('#FamilyChart', data)  // returns a Chart instance;
  * ```
  */
 export class Chart {

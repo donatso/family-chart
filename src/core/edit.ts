@@ -36,7 +36,6 @@ export default (cont: HTMLElement, store: Store) => new EditTree(cont, store)
  * ```typescript
  * import f3 from 'family-chart'
  * const f3Chart = f3.createChart('#FamilyChart', data)
- *   .setTransitionTime(1000);
  * const f3EditTree = f3Chart.editTree()  // returns an EditTree instance
  *   .setFields(["first name","last name","birthday"])
  *   .setOnChange(() => {
