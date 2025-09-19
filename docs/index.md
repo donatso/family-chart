@@ -6,7 +6,7 @@ Welcome to the **Family Chart API Documentation** - a powerful D3.js-based visua
 Here's a basic example showing how to create a family tree with the three main components:
 
 ```javascript
-import f3 from 'family-chart';
+import * as f3 from 'family-chart';
 import 'family-chart/dist/styles/family-chart.css';
 
 // Your family tree data

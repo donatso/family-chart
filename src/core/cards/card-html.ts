@@ -15,7 +15,7 @@ export default function CardHtmlWrapper(cont: HTMLElement, store: Store) { retur
  * 
  * @example
  * ```typescript
- * import f3 from 'family-chart'
+ * import * as f3 from 'family-chart'
  * const f3Chart = f3.createChart('#FamilyChart', data)
  * const f3Card = f3Chart.setCardHtml()  // returns a CardHtml instance
  *   .setCardDisplay([["first name","last name"],["birthday"]]);

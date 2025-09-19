@@ -76,7 +76,7 @@ f3Chart.updateTree({initial: true})
 If you're using a bundler or ES6 modules:
 
 ```javascript
-import f3 from 'family-chart';
+import * as f3 from 'family-chart';
 import 'family-chart/dist/styles/family-chart.css';
 
 // Your family tree data
@@ -117,7 +117,7 @@ chart.updateTree({initial: true});
 </template>
 
 <script>
-import f3 from 'family-chart';
+import * as f3 from 'family-chart';
 import 'family-chart/styles/family-chart.css';
 
 export default {
@@ -155,7 +155,7 @@ export default {
 
 ```jsx
 import React, { useEffect, useRef } from 'react';
-import f3 from 'family-chart';
+import * as f3 from 'family-chart';
 import 'family-chart/styles/family-chart.css';
 
 const FamilyTree = () => {
@@ -202,7 +202,7 @@ export default FamilyTree;
 
 ```typescript
 import { Component, ElementRef, OnInit } from '@angular/core';
-import f3 from 'family-chart';
+import * as f3 from 'family-chart';
 import 'family-chart/styles/family-chart.css';
 
 @Component({
@@ -251,7 +251,7 @@ export class FamilyTreeComponent implements OnInit {
 ```svelte
 <script>
   import { onMount } from 'svelte';
-  import f3 from 'family-chart';
+  import * as f3 from 'family-chart';
   import 'family-chart/styles/family-chart.css';
 
   let chartContainer;
