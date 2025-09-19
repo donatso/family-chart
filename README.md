@@ -4,120 +4,120 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
-
-
+[![TypeScript][typescript-shield]][typescript-url]
+[![Bundle Size][bundle-shield]][bundle-url]
 
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
   <a href="https://github.com/donatso/family-chart">
-    <img src="examples/logo.svg" alt="Logo" width="80" height="50">
+    <img src="examples/logo.svg" alt="Family Chart Logo" width="100" height="60">
   </a>
 
 <h3 align="center">Family Chart</h3>
 
   <p align="center">
-    Create beautiful, interactive family trees with this powerful D3.js-based visualization library
-    <br />
-    <a href="https://github.com/donatso/family-chart"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://donatso.github.io/family-chart-doc/wiki-tree?wiki_id=Q43274">View Demo</a>
-    ·
-    <a href="https://github.com/donatso/family-chart/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/donatso/family-chart/issues">Request Feature</a>
+    Family Chart is a powerful D3.js-based visualization library for creating beautiful, interactive family trees.
   </p>
+  
 </div>
 
+<table>
+  <tr>
+    <td width="50%">
+      <img src="https://github.com/user-attachments/assets/7e231e53-9230-49f9-ae93-8125096237dc" alt="Examples Preview" width="100%">
+    </td>
+    <td width="50%">
+      <h3>🎯 Start with Examples</h3>
+      <p>Browse pre-built examples and customize them to match your needs. Perfect for quick implementation and learning the library.</p>
+      <div style="text-align: right;">
+        <a href="https://donatso.github.io/family-chart-doc/examples/">
+          <img src="https://img.shields.io/badge/BROWSE_EXAMPLES-4CAF50?style=for-the-badge" alt="Browse Examples">
+        </a>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <h3>🛠️ Visual Builder</h3>
+      <p>Complete configuration panel to customize your family tree. Add fields, adjust styling, configure layout options, and generate code for React, Vue, HTML, and JSON.</p>
+      <a href="https://donatso.github.io/family-chart-doc/create-tree/">
+        <img src="https://img.shields.io/badge/START_CREATING-FF6B6B?style=for-the-badge" alt="Start Creating">
+      </a>
+    </td>
+    <td width="50%">
+      <img src="https://github.com/user-attachments/assets/ce5c4b33-48dd-441c-aa2f-f581b57ddcb7" alt="Visual Builder Preview" width="100%">
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <img src="https://github.com/user-attachments/assets/a4f8a9c0-c327-45fa-90bc-23d73578a304" alt="WikiData Integration Preview" width="100%">
+    </td>
+    <td width="50%">
+      <h3>🏛️ WikiData Integration</h3>
+      <p>See the library in action with real historical family trees. Explore the British Royal Family, Einstein, Leonardo da Vinci, and many other celebrity family trees.</p>
+      <div style="text-align: right;">
+        <a href="https://donatso.github.io/family-chart-doc/wiki-tree/">
+          <img src="https://img.shields.io/badge/VIEW_WIKIDATA_DEMO-9C27B0?style=for-the-badge" alt="View WikiData Demo">
+        </a>
+      </div>
+    </td>
+  </tr>
+</table>
+
+## 🚀 Framework Support
+
+Family Chart works seamlessly with all major JavaScript frameworks and vanilla JavaScript:
+
+<div align="center">
+
+[![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black&logoWidth=20)](https://codepen.io/donatso/pen/mdNgeQN?editors=0010) 
+[![Vue](https://img.shields.io/badge/Vue-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white&logoWidth=20)](https://codepen.io/donatso/pen/poMBjZe) 
+[![Angular](https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white&logoWidth=20)](https://codepen.io/donatso/pen/ExqJVEQ?editors=1000) 
+[![Svelte](https://img.shields.io/badge/Svelte-FF3E00?style=for-the-badge&logo=svelte&logoColor=white&logoWidth=20)](https://svelte.dev/)
+[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black&logoWidth=20)](https://codepen.io/donatso/pen/ExqJVEQ?editors=1000)
+
+</div>
+
+> **Pro Tip**: Use the [Visual Builder](https://donatso.github.io/family-chart-doc/create-tree/) to generate framework-specific code automatically!
+
+## Features
+
+- 🌳 **Interactive Family Trees** - Zoom, pan, and navigate through complex family structures
+- 🎨 **Customizable Styling** - Full control over colors, fonts, and layout
+- ⚡ **Framework Agnostic** - Works with React, Vue, Angular, Svelte, or vanilla JavaScript
+- 🎯 **TypeScript Support** - Full type definitions included
+- 📊 **D3.js Powered** - Built on the powerful D3.js visualization library
+- 🎯 **Easy to Use** - Simple API with many examples
+- 🔄 **Real-time Updates** - Dynamic tree updates and modifications
+- 🎨 **Multiple Card Types** - SVG and HTML card components
+
+## Documentation
+
+### API Reference
+- **[Chart API](https://donatso.github.io/family-chart/classes/Chart.html)** - Main chart class and methods
+- **[Edit API](https://donatso.github.io/family-chart/classes/Edit.html)** - Edit functionality and form management
+- **[Card API](https://donatso.github.io/family-chart/classes/Card.html)** - Card components and customization
+
+### Guides
+- **[Installation & Quick Start](docs/installation-and-quickstart.md)** - Get started in minutes
+- **[Data Format](docs/data-format.md)** - Understanding the data structure
+- **[Getting Started Guide](https://donatso.github.io/family-chart-doc/)** - Complete setup and configuration guide
+
+### Examples
+- **[Live Examples](https://donatso.github.io/family-chart-doc/examples/)** - Interactive examples and demos
+- **[Visual Builder](https://donatso.github.io/family-chart-doc/create-tree/)** - Code generator and configuration tool
 
 
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ol>
-</details>
+<!-- SUPPORT -->
+## Support & Feedback
 
-
-
-<!-- ABOUT THE PROJECT -->
-## About The Project
-
-[![Product Name Screen Shot][product-screenshot]](https://donatso.github.io/family-chart-doc/wiki-tree/?wiki_id=Q43274)
-
-Family Chart is a powerful D3.js-based visualization library for creating beautiful, interactive family trees. The library offers:
-
-- **Example-based Learning**: Explore pre-built examples and customize them to match your needs
-- **Create from Scratch**: Build your family tree from the ground up with an intuitive interface
-- **Full Customization**: Complete control over your tree's structure and styling
-- **Interactive Features**: Built-in interactivity
-
-<!-- GETTING STARTED -->
-## Getting Started
-
-[![Create tree][create-tree-screenshot]](https://donatso.github.io/family-chart-doc/create-tree)
-
-1. Visit [doc/create-tree](https://donatso.github.io/family-chart-doc/create-tree/) 
-2. Create your family tree
-3. Copy/paste generated code for Vanila, Vue or React.
-4. Give me some github stars (:
-
-<!-- USAGE EXAMPLES -->
-## Usage
-
-### [Static](https://codepen.io/donatso/pen/ExqJVEQ?editors=1000)
-
-### [React](https://codepen.io/donatso/pen/mdNgeQN?editors=0010)
-
-### [Vue](https://codepen.io/donatso/pen/poMBjZe)
-
-
-## Examples
-
-### 1. WikiData Integration
-Explore our interactive family tree viewer that connects to the WikiData database, allowing you to visualize family relationships for millions of historical figures and notable people. Simply enter a WikiData ID to generate a complete family tree.
-
-[![WikiData Family Tree Example][product-wiki-tree-screenshot]](https://donatso.github.io/family-chart-doc/wiki-tree/?wiki_id=Q43274)
-
-Try it with:
-- [British Royal Family (Q43274)](https://donatso.github.io/family-chart-doc/wiki-tree/?wiki_id=Q43274)
-- [Albert Einstein (Q937)](https://donatso.github.io/family-chart-doc/wiki-tree/?wiki_id=Q937)
-- [Leonardo da Vinci (Q762)](https://donatso.github.io/family-chart-doc/wiki-tree/?wiki_id=Q762)
-
-### 2. Basic Implementation
-A simple example showing how to create a custom family tree from scratch. This demo features Aristotle's family tree with basic styling and interactions.
-
-[![Basic Family Tree Example][product-basic-tree-screenshot]](https://donatso.github.io/family-chart-doc/examples/1-basic-tree)
-
-
-
-
-
-<!-- CONTRIBUTING -->
-## Contributing
-
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+### Reporting Issues
+- **Bug Reports**: Use the [issue tracker](https://github.com/donatso/family-chart/issues) to report bugs
+  - Include steps to reproduce the issue
+  - Provide browser and version information
+  - Add screenshots if applicable
+- **Feature Requests**: Contact me directly at [donatso.dev@gmail.com](mailto:donatso.dev@gmail.com) for feature requests
 
 
 <!-- LICENSE -->
@@ -125,14 +125,12 @@ Don't forget to give the project a star! Thanks again!
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
-
 <!-- CONTACT -->
 ## Contact
 
+**Email**: [donatso.dev@gmail.com](mailto:donatso.dev@gmail.com)
+
 Project Link: [https://github.com/donatso/family-chart](https://github.com/donatso/family-chart)
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
@@ -146,8 +144,10 @@ Project Link: [https://github.com/donatso/family-chart](https://github.com/donat
 [issues-url]: https://github.com/donatso/family-chart/issues
 [license-shield]: https://img.shields.io/github/license/donatso/family-chart.svg?style=for-the-badge
 [license-url]: https://github.com/donatso/family-chart/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/donat-sorić-342a92161
+[typescript-shield]: https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white
+[typescript-url]: https://www.typescriptlang.org/
+[bundle-shield]: https://img.shields.io/bundlephobia/minzip/family-chart?style=for-the-badge
+[bundle-url]: https://bundlephobia.com/package/family-chart
 [product-screenshot]: https://github.com/user-attachments/assets/a4f8a9c0-c327-45fa-90bc-23d73578a304
 [product-basic-tree-screenshot]: https://github.com/user-attachments/assets/7e231e53-9230-49f9-ae93-8125096237dc
 [product-wiki-tree-screenshot]: https://github.com/user-attachments/assets/4e2dc169-4b43-46f3-b31c-db17f4d489da

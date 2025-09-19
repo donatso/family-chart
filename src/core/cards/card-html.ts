@@ -10,6 +10,18 @@ import { CardHtmlSelection, LinkSelection } from "../../types/view"
 
 export default function CardHtmlWrapper(cont: HTMLElement, store: Store) { return new CardHtml(cont, store) }
 
+/**
+ * CardHtml class - Handles HTML-based card rendering and customization for family tree nodes.
+ * 
+ * @example
+ * ```typescript
+ * import f3 from 'family-chart'
+ * const f3Chart = f3.createChart('#FamilyChart', data)
+ *   .setTransitionTime(1000);
+ * const f3Card = f3Chart.setCardHtml()  // returns a CardHtml instance
+ *   .setCardDisplay([["first name","last name"],["birthday"]]);
+ * ```
+ */
 export class CardHtml {
   cont: HTMLElement
   svg: SVGElement

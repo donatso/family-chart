@@ -1,5 +1,8 @@
 import { execSync, spawn } from 'child_process';
 
+console.log('Deploying documentation...................');
+execSync('yarn run docs:deploy', { stdio: 'inherit' });
+
 console.log('Building...................');
 execSync('yarn run build', { stdio: 'inherit' });
 

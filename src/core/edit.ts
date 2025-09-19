@@ -21,6 +21,30 @@ type Card = CardHtml | CardSvg
 
 export default (cont: HTMLElement, store: Store) => new EditTree(cont, store)
 
+/**
+ * EditTree class - Provides comprehensive editing capabilities for family tree data.
+ * 
+ * This class handles all editing operations for family tree data, including:
+ * - Adding new family members and relationships
+ * - Editing existing person information
+ * - Removing family members and relationships
+ * - Form management and validation
+ * - History tracking and undo/redo functionality
+ * - Modal dialogs and user interactions
+ * 
+ * @example
+ * ```typescript
+ * import f3 from 'family-chart'
+ * const f3Chart = f3.createChart('#FamilyChart', data)
+ *   .setTransitionTime(1000);
+ * const f3EditTree = f3Chart.editTree()  // returns an EditTree instance
+ *   .setFields(["first name","last name","birthday"])
+ *   .setOnChange(() => {
+ *      const updated_data = f3EditTree.getStoreDataCopy()
+ *      // do something with the updated data
+ *   })
+ * ```
+ */
 export class EditTree {
   cont: HTMLElement
   store: Store
@@ -89,6 +113,10 @@ export class EditTree {
     return this 
   }
 
+  /**
+   * Open the edit form
+   * @param datum - The datum to edit
+   */
   open(datum: Datum) {
     if (!datum.rels) datum = datum.data as unknown as Datum  // if TreeDatum is used, it will be converted to Datum. will be removed in a future version.
     if (this.addRelativeInstance.is_active) handleAddRelative(this)
@@ -185,7 +213,11 @@ export class EditTree {
       if (this.onChange) this.onChange()
     }
   }
-
+  
+  /**
+   * Open the edit form without canceling the add relative or remove relative view
+   * @param datum - The datum to edit
+   */
   openWithoutRelCancel(datum: Datum) {
     this.cardEditForm(datum)
   }
@@ -371,6 +403,10 @@ export class EditTree {
     return this
   }
   
+  /**
+   * Set the onChange function to be called when the data changes via editing, adding, or removing a relative
+   * @param fn - The onChange function
+   */
   setOnChange(fn: EditTree['onChange']) {
     this.onChange = fn
   
@@ -444,7 +480,11 @@ export class EditTree {
     return this
   }
   
-  getStoreDataCopy() {  // todo: should make more sense
+  /**
+   * Get data copy
+   * @returns The store data
+   */
+  getStoreDataCopy() {
     let data = JSON.parse(JSON.stringify(this.store.getData()))  // important to make a deep copy of the data
     if (this.addRelativeInstance.is_active) data = this.addRelativeInstance.cleanUp(data)    
     data = cleanupDataJson(data)

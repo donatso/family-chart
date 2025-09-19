@@ -26,8 +26,8 @@ export const CardSvg = cardSvg
 /** @deprecated Use cardHtml instead. This export will be removed in a future version. */
 export const CardHtml = cardHtml
 // re-export card types with the new names
-export { CardHtml as CardHtmlType } from './core/cards/card-html'
-export { CardSvg as CardSvgType } from './core/cards/card-svg'
+export { CardHtml as CardHtmlClass } from './core/cards/card-html'
+export { CardSvg as CardSvgClass } from './core/cards/card-svg'
 
 import * as htmlHandlers from './renderers/html'
 import { setupHtmlSvg, setupReactiveTreeData, getUniqueId } from './features/card-component/handlers'

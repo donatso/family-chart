@@ -45,6 +45,8 @@
     "test": "cypress open",
     "test-run": "cypress run",
     "dev": "vite",
+    "docs": "typedoc",
+    "docs:deploy": "yarn docs && gh-pages -d docs/api -b gh-pages",
     "prepublishOnly": "node prePublish.js"
   },
   "sideEffects": false,
@@ -56,8 +58,10 @@
     "@rollup/plugin-typescript": "^12.1.4",
     "@types/d3": "^7.4.3",
     "cypress": "15.2.0",
+    "gh-pages": "^6.3.0",
     "http-server": "^14.1.1",
     "rollup": "^4.45.1",
+    "typedoc": "^0.28.13",
     "typescript": "^5.8.3",
     "vite": "^6.3.5"
   }

@@ -4,3 +4,4 @@
 /.vscode/
 /tests/debugging/
 cypress/screenshots
+docs/api

@@ -21,8 +21,25 @@ import { ViewProps } from "../renderers/view"
 import { KinshipInfoConfig } from "../features/kinships/calculate-kinships"
 type LinkSpouseText = ((sp1: TreeDatum, sp2: TreeDatum) => string) | null
 
-export default (cont: HTMLElement | string, data: Data) => new Chart(cont, data)
+export default function createChart(cont: HTMLElement | string, data: Data) {
+  return new Chart(cont, data)
+}
 
+/**
+ * Main Chart class - The primary class for creating and managing family tree visualizations.
+ * 
+ * This is the main entry point for the Family Chart library. Use this class to:
+ * - Create and configure family tree visualizations
+ * - Set up data, styling, and interaction options
+ * - Control tree layout, orientation, and display settings
+ * - Manage user interactions and updates
+ * 
+ * @example
+ * ```typescript
+ * const f3Chart = createChart('#FamilyChart', data)  // returns a Chart instance
+ *   .setTransitionTime(1000);
+ * ```
+ */
 export class Chart {
   cont: HTMLElement
   store: Store
@@ -233,6 +250,10 @@ export class Chart {
     else throw new Error('Card must be an instance of cardHtml or cardSvg')
   }
 
+  /**
+   * Set the Card HTML function
+   * @returns The CardHtml instance
+   */
   setCardHtml() {
     const htmlSvg = this.cont!.querySelector('#htmlSvg') as HTMLElement
     if (!htmlSvg) throw new Error('htmlSvg not found')
@@ -247,6 +268,10 @@ export class Chart {
   }
 
 
+  /**
+   * Set the Card SVG function
+   * @returns The CardSvg instance
+   */
   setCardSvg() {
     const htmlSvg = this.cont!.querySelector('#htmlSvg') as HTMLElement
     if (!htmlSvg) throw new Error('htmlSvg not found')
