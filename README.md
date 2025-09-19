@@ -73,8 +73,8 @@ Family Chart works seamlessly with all major JavaScript frameworks and vanilla J
 
 [![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black&logoWidth=20)](https://codepen.io/donatso/pen/mdNgeQN?editors=0010) 
 [![Vue](https://img.shields.io/badge/Vue-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white&logoWidth=20)](https://codepen.io/donatso/pen/poMBjZe) 
-[![Angular](https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white&logoWidth=20)](https://codepen.io/donatso/pen/ExqJVEQ?editors=1000) 
-[![Svelte](https://img.shields.io/badge/Svelte-FF3E00?style=for-the-badge&logo=svelte&logoColor=white&logoWidth=20)](https://svelte.dev/)
+[![Angular](https://codesandbox.io/p/devbox/family-chart-angular-example-j5mpy5)](https://codepen.io/donatso/pen/ExqJVEQ?editors=1000) 
+[![Svelte](https://codesandbox.io/p/devbox/family-chart-svelte-example-lclvgx)](https://svelte.dev/)
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black&logoWidth=20)](https://codepen.io/donatso/pen/ExqJVEQ?editors=1000)
 
 </div>
