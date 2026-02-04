@@ -13,6 +13,8 @@ export type PrivateCardsConfig = {
   condition: (d: Datum) => boolean;
 };
 export type ShowSiblingsOfMain = boolean;
+export type MaxChildrenPerParent = number;
+export type ShowAllChildrenForMain = boolean;
 export type ModifyTreeHierarchy = CalculateTreeOptions['modifyTreeHierarchy'];
 export type SortChildrenFunction = ((a: Datum, b: Datum) => number);
 export type SortSpousesFunction = ((d: Datum, data: Data) => void);
@@ -34,6 +36,8 @@ export interface StoreState extends CalculateTreeOptions {
   node_separation?: NodeSeparation;
   private_cards_config?: PrivateCardsConfig;
   show_siblings_of_main?: ShowSiblingsOfMain;
+  max_children_per_parent?: MaxChildrenPerParent;
+  show_all_children_for_main?: ShowAllChildrenForMain;
   sortChildrenFunction?: SortChildrenFunction;
   sortSpousesFunction?: SortSpousesFunction;
   ancestry_depth?: AncestryDepth;
