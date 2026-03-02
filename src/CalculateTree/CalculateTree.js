@@ -2,7 +2,7 @@ import d3 from "../d3.js"
 import {sortChildrenWithSpouses} from "./CalculateTree.handlers.js"
 import {createNewPerson} from "../handlers/newPerson.js"
 
-export default function CalculateTree({data_stash, main_id=null, is_vertical=true, node_separation=250, level_separation=150}) {
+export default function CalculateTree({data_stash, main_id=null, is_vertical=true, node_separation=250, level_separation=150, scale_factor=0.4}) {
   data_stash = createRelsToAdd(data_stash)
   sortChildrenWithSpouses(data_stash)
   const main = main_id !== null ? data_stash.find(d => d.id === main_id) : data_stash[0],
@@ -13,7 +13,8 @@ export default function CalculateTree({data_stash, main_id=null, is_vertical=tru
   levelOutEachSide(tree_parents, tree_children)
   const tree = mergeSides(tree_parents, tree_children)
   setupChildrenAndParents({tree})
-  setupSpouses({tree, node_separation})
+  setupFractalDepth({tree, scale_factor})
+  setupSpouses({tree, node_separation, scale_factor})
   nodePositioning({tree, is_vertical})
 
   const dim = calculateTreeDim(tree, node_separation, level_separation, is_vertical)
@@ -79,18 +80,28 @@ export default function CalculateTree({data_stash, main_id=null, is_vertical=tru
     })
   }
 
-  function setupSpouses({tree, node_separation}) {
+  function setupFractalDepth({tree, scale_factor}) {
+    tree.forEach(d => {
+      if (typeof d.fractal_depth === 'undefined') d.fractal_depth = 0
+      d.scale = Math.pow(scale_factor, d.fractal_depth)
+    })
+  }
+
+  function setupSpouses({tree, node_separation, scale_factor}) {
     for (let i = tree.length; i--;) {
       const d = tree[i]
       if (!d.is_ancestry && d.data.rels.spouses && d.data.rels.spouses.length > 0){
-        const side = d.data.data.gender === "M" ? -1 : 1;  // female on right
-        d.x += d.data.rels.spouses.length/2*node_separation*side;
+        const side = d.data.data.gender === "M" ? -1 : 1,  // female on right
+          depth_scale = d.scale || 1;
+        d.x += d.data.rels.spouses.length/2*node_separation*depth_scale*side;
         d.data.rels.spouses.forEach((sp_id, i) => {
           const spouse = {data: data_stash.find(d0 => d0.id === sp_id), added: true}
 
-          spouse.x = d.x-(node_separation*(i+1))*side;
+          spouse.fractal_depth = d.fractal_depth + 1;
+          spouse.scale = Math.pow(scale_factor, spouse.fractal_depth);
+          spouse.x = d.x-(node_separation*depth_scale*(i+1))*side;
           spouse.y = d.y
-          spouse.sx = i > 0 ? spouse.x : spouse.x + (node_separation/2)*side
+          spouse.sx = i > 0 ? spouse.x : spouse.x + (node_separation*depth_scale/2)*side
           spouse.depth = d.depth;
           spouse.spouse = d;
           if (!d.spouses) d.spouses = []
@@ -107,8 +118,9 @@ export default function CalculateTree({data_stash, main_id=null, is_vertical=tru
       if (d.parents && d.parents.length === 2) {
         const p1 = d.parents[0],
           p2 = d.parents[1],
+          pair_scale = Math.min(p1.scale || 1, p2.scale || 1),
           midd = p1.x - (p1.x - p2.x)/2,
-          x = (d,sp) => midd + (node_separation/2)*(d.x < sp.x ? 1 : -1)
+          x = (d,sp) => midd + (node_separation*pair_scale/2)*(d.x < sp.x ? 1 : -1)
 
         p2.x = x(p1, p2); p1.x = x(p2, p1)
       }
@@ -134,10 +146,15 @@ export default function CalculateTree({data_stash, main_id=null, is_vertical=tru
 
   function calculateTreeDim(tree, node_separation, level_separation, is_vertical) {
     if (!is_vertical) [node_separation, level_separation] = [level_separation, node_separation]
-    const w_extent = d3.extent(tree, d => d.x),
-      h_extent = d3.extent(tree, d => d.y)
+    const w_half_sep = node_separation/2,
+      h_half_sep = level_separation/2,
+      x_min = d3.min(tree, d => d.x - w_half_sep * (d.scale || 1)),
+      x_max = d3.max(tree, d => d.x + w_half_sep * (d.scale || 1)),
+      y_min = d3.min(tree, d => d.y - h_half_sep * (d.scale || 1)),
+      y_max = d3.max(tree, d => d.y + h_half_sep * (d.scale || 1))
     return {
-      width: w_extent[1] - w_extent[0]+node_separation, height: h_extent[1] - h_extent[0]+level_separation, x_off: -w_extent[0]+node_separation/2, y_off: -h_extent[0]+level_separation/2
+      width: x_max - x_min + node_separation, height: y_max - y_min + level_separation,
+      x_off: -x_min + node_separation/2, y_off: -y_min + level_separation/2
     }
   }
 

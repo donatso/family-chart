@@ -74,8 +74,9 @@ export default function d3AnimationView({store, cont, Card}) {
       card_update.each(cardUpdate)
 
       function cardEnter(d) {
+        const enterScale = typeof d._scale !== 'undefined' ? d._scale : (d.scale || 1);
         d3.select(this)
-          .attr("transform", `translate(${d._x}, ${d._y})`)
+          .attr("transform", `translate(${d._x}, ${d._y}) scale(${enterScale})`)
           .style("opacity", 0)
           .node().appendChild(CardElement(this, d))
       }
@@ -86,12 +87,14 @@ export default function d3AnimationView({store, cont, Card}) {
         this.innerHTML = ""
         this.appendChild(CardElement(this, d))
         const delay = calculateDelay(d);
-        d3.select(this).transition().duration(transition_time).delay(delay).attr("transform", `translate(${d.x}, ${d.y})`).style("opacity", 1)
+        const nodeScale = d.scale || 1;
+        d3.select(this).transition().duration(transition_time).delay(delay).attr("transform", `translate(${d.x}, ${d.y}) scale(${nodeScale})`).style("opacity", 1)
       }
 
       function cardExit(d) {
         const g = d3.select(this)
-        g.transition().duration(transition_time).style("opacity", 0).attr("transform", `translate(${d._x}, ${d._y})`)
+        const exitScale = typeof d._scale !== 'undefined' ? d._scale : 0;
+        g.transition().duration(transition_time).style("opacity", 0).attr("transform", `translate(${d._x}, ${d._y}) scale(${exitScale})`)
           .on("end", () => g.remove())
       }
 

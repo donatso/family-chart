@@ -23,7 +23,8 @@ export default function createStore(initial_state) {
   function calcTree() {
     return CalculateTree({
       data_stash: state.data, main_id: state.main_id,
-      node_separation: state.node_separation, level_separation: state.level_separation
+      node_separation: state.node_separation, level_separation: state.level_separation,
+      scale_factor: state.scale_factor
     })
   }
 }

@@ -22,14 +22,14 @@ function otherParent(d, p1, data) {
 export function calculateEnterAndExitPositions(d, entering, exiting) {
   d.exiting = exiting
   if (entering) {
-    if (d.depth === 0 && !d.spouse) {d._x = d.x; d._y = d.y}
-    else if (d.spouse) {d._x = d.spouse.x; d._y = d.spouse.y;}
-    else if (d.is_ancestry) {d._x = d.parent.x; d._y = d.parent.y;}
-    else {d._x = d.psx; d._y = d.parent.y;}
+    if (d.depth === 0 && !d.spouse) {d._x = d.x; d._y = d.y; d._scale = d.scale;}
+    else if (d.spouse) {d._x = d.spouse.x; d._y = d.spouse.y; d._scale = 0;}
+    else if (d.is_ancestry) {d._x = d.parent.x; d._y = d.parent.y; d._scale = 0;}
+    else {d._x = d.psx; d._y = d.parent.y; d._scale = 0;}
   } else if (exiting) {
     const x = d.x > 0 ? 1 : -1,
       y = d.y > 0 ? 1 : -1
-    {d._x = d.x+400*x; d._y = d.y+400*y;}
+    {d._x = d.x+400*x; d._y = d.y+400*y; d._scale = 0;}
   }
 }
 
