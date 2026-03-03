@@ -21,6 +21,7 @@ export default function d3AnimationView({store, cont, Card}) {
 
     updateCards();
     updateLinks();
+    svg.__tree_dim = tree.dim;
     if (props.initial) treeFit({svg, svg_dim: svg.getBoundingClientRect(), tree_dim: tree.dim, transition_time: 0})
     else if (tree_position === 'fit') treeFit({svg, svg_dim: svg.getBoundingClientRect(), tree_dim: tree.dim, transition_time})
     else if (tree_position === 'main_to_middle') mainToMiddle({datum: tree.data[0], svg, svg_dim: svg.getBoundingClientRect(), scale: props.scale, transition_time})
@@ -40,7 +41,7 @@ export default function d3AnimationView({store, cont, Card}) {
       link_update.each(linkUpdate)
 
       function linkEnter(d) {
-        d3.select(this).attr("fill", "none").attr("stroke", "#fff").style("opacity", 0)
+        d3.select(this).attr("fill", "none").style("opacity", 0)
           .attr("d", createPath(d, true))
       }
 

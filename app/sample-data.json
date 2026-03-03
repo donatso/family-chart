@@ -1,0 +1,67 @@
+[
+  {
+    "id": "main",
+    "data": {"first name": "Alex", "last name": "Morgan", "birthday": "1985", "gender": "M"},
+    "rels": {"father": "dad", "mother": "mom", "spouses": ["spouse1"], "children": ["child1", "child2"]}
+  },
+  {
+    "id": "dad",
+    "data": {"first name": "Robert", "last name": "Morgan", "birthday": "1958", "gender": "M"},
+    "rels": {"father": "grandpa_p", "mother": "grandma_p", "spouses": ["mom"], "children": ["main", "sibling1"]}
+  },
+  {
+    "id": "mom",
+    "data": {"first name": "Linda", "last name": "Morgan", "birthday": "1960", "gender": "F"},
+    "rels": {"father": "grandpa_m", "mother": "grandma_m", "spouses": ["dad"], "children": ["main", "sibling1"]}
+  },
+  {
+    "id": "spouse1",
+    "data": {"first name": "Sarah", "last name": "Morgan", "birthday": "1987", "gender": "F"},
+    "rels": {"spouses": ["main"], "children": ["child1", "child2"]}
+  },
+  {
+    "id": "child1",
+    "data": {"first name": "Emma", "last name": "Morgan", "birthday": "2012", "gender": "F"},
+    "rels": {"father": "main", "mother": "spouse1"}
+  },
+  {
+    "id": "child2",
+    "data": {"first name": "James", "last name": "Morgan", "birthday": "2015", "gender": "M"},
+    "rels": {"father": "main", "mother": "spouse1"}
+  },
+  {
+    "id": "sibling1",
+    "data": {"first name": "Kate", "last name": "Morgan", "birthday": "1988", "gender": "F"},
+    "rels": {"father": "dad", "mother": "mom", "spouses": ["sibling1_sp"], "children": ["nephew1"]}
+  },
+  {
+    "id": "sibling1_sp",
+    "data": {"first name": "Tom", "last name": "Wilson", "birthday": "1986", "gender": "M"},
+    "rels": {"spouses": ["sibling1"], "children": ["nephew1"]}
+  },
+  {
+    "id": "nephew1",
+    "data": {"first name": "Oliver", "last name": "Wilson", "birthday": "2014", "gender": "M"},
+    "rels": {"father": "sibling1_sp", "mother": "sibling1"}
+  },
+  {
+    "id": "grandpa_p",
+    "data": {"first name": "William", "last name": "Morgan", "birthday": "1930", "gender": "M"},
+    "rels": {"spouses": ["grandma_p"], "children": ["dad"]}
+  },
+  {
+    "id": "grandma_p",
+    "data": {"first name": "Eleanor", "last name": "Morgan", "birthday": "1932", "gender": "F"},
+    "rels": {"spouses": ["grandpa_p"], "children": ["dad"]}
+  },
+  {
+    "id": "grandpa_m",
+    "data": {"first name": "Henry", "last name": "Davis", "birthday": "1933", "gender": "M"},
+    "rels": {"spouses": ["grandma_m"], "children": ["mom"]}
+  },
+  {
+    "id": "grandma_m",
+    "data": {"first name": "Margaret", "last name": "Davis", "birthday": "1935", "gender": "F"},
+    "rels": {"spouses": ["grandpa_m"], "children": ["mom"]}
+  }
+]

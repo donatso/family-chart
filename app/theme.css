@@ -1,0 +1,31 @@
+:root {
+  --fc-bg: #1a2332;
+  --fc-bg-gradient: radial-gradient(ellipse at center, #1e2d3d 0%, #0f1923 100%);
+  --fc-card-male: #5ba3e6;
+  --fc-card-male-light: #7dbcf5;
+  --fc-card-female: #e87fa0;
+  --fc-card-female-light: #f0a0b8;
+  --fc-card-neutral: #7c8a96;
+  --fc-card-neutral-light: #9aa5af;
+  --fc-card-add-bg: rgba(255, 255, 255, 0.08);
+  --fc-card-add-border: rgba(255, 255, 255, 0.4);
+  --fc-link-color: rgba(255, 255, 255, 0.35);
+  --fc-link-hover: rgba(255, 255, 255, 0.6);
+  --fc-text-primary: #ffffff;
+  --fc-text-secondary: rgba(255, 255, 255, 0.7);
+  --fc-text-card: #2c3e50;
+  --fc-accent: #64b5f6;
+  --fc-accent-hover: #90caf9;
+  --fc-danger: #ef5350;
+  --fc-card-radius: 8px;
+  --fc-card-shadow: drop-shadow(0 2px 6px rgba(0,0,0,0.35));
+  --fc-toolbar-bg: rgba(15, 25, 35, 0.95);
+  --fc-toolbar-border: rgba(255, 255, 255, 0.08);
+  --fc-sidebar-bg: rgba(20, 30, 42, 0.97);
+  --fc-sidebar-width: 320px;
+  --fc-modal-bg: rgba(20, 30, 42, 0.98);
+  --fc-input-bg: rgba(255, 255, 255, 0.06);
+  --fc-input-border: rgba(255, 255, 255, 0.15);
+  --fc-input-focus: var(--fc-accent);
+  --fc-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}

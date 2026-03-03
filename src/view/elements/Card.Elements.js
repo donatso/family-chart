@@ -17,9 +17,9 @@ export function CardBody({d,card_dim,card_display}) {
 export function CardBodyAddNew({d,card_dim,card_add,label}) {
   return {template: (`
     <g class="card-body ${card_add ? 'card_add' : 'card-unknown'}">
-      <rect class="card-body-rect" width="${card_dim.w}" height="${card_dim.h}" fill="rgb(59, 85, 96)" />
-      <text transform="translate(${card_dim.w/2}, ${card_dim.h/2})" text-anchor="middle" fill="#fff">
-        <tspan font-size="18" dy="${8}">${label}</tspan>
+      <rect class="card-body-rect" width="${card_dim.w}" height="${card_dim.h}" />
+      <text transform="translate(${card_dim.w/2}, ${card_dim.h/2})" text-anchor="middle">
+        <tspan font-size="14" dy="${5}">${label}</tspan>
       </text>
     </g>
   `)
@@ -28,7 +28,7 @@ export function CardBodyAddNew({d,card_dim,card_add,label}) {
 
 export function CardBodyOutline({d,card_dim, is_new}) {
   return {template: (`
-    <rect width="${card_dim.w}" height="${card_dim.h}" rx="4" ry="4" class="card-outline ${(d.data.main && !is_new) ? 'card-main-outline' : ''} ${is_new ? 'card-new-outline' : ''}" />
+    <rect width="${card_dim.w}" height="${card_dim.h}" rx="8" ry="8" class="card-outline ${(d.data.main && !is_new) ? 'card-main-outline' : ''} ${is_new ? 'card-new-outline' : ''}" />
   `)
   }
 }
@@ -158,7 +158,7 @@ export function CardImage({d, image, card_dim, maleIcon, femaleIcon}) {
   function GenderlessIcon() {
     return (`
       <g class="genderless-icon">
-        <rect height="${card_dim.img_h}" width="${card_dim.img_w}" fill="rgb(59, 85, 96)" />
+        <rect height="${card_dim.img_h}" width="${card_dim.img_w}" fill="rgba(0,0,0,0.15)" />
         <g transform="scale(${card_dim.img_w*0.001616})">
          <path transform="translate(50,40)" fill="lightgrey" d="M256 288c79.5 0 144-64.5 144-144S335.5 0 256 0 112 
             64.5 112 144s64.5 144 144 144zm128 32h-55.1c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16H128C57.3 320 0 377.3 
