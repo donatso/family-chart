@@ -143,6 +143,25 @@ export function LinkBreakIconWrapper({d,card_dim}) {
   return g
 }
 
+export function SimpleCard({d,card_dim,card_display}) {
+  const name = card_display ? card_display[0](d.data) : ''
+  return {template: (`
+    <g class="card-body">
+      <rect width="${card_dim.w}" height="${card_dim.h}" rx="8" ry="8" class="card-body-rect" />
+      <text transform="translate(${card_dim.w/2}, ${card_dim.h/2 + 5})" text-anchor="middle" font-size="12">
+        <tspan>${name}</tspan>
+      </text>
+    </g>
+  `)}
+}
+
+export function DotCard({d,card_dim}) {
+  const r = Math.min(card_dim.w, card_dim.h) / 2.5
+  return {template: (`
+    <circle cx="${card_dim.w/2}" cy="${card_dim.h/2}" r="${r}" class="card-body-rect" />
+  `)}
+}
+
 export function CardImage({d, image, card_dim, maleIcon, femaleIcon}) {
   return ({template: (`
     <g style="transform: translate(${card_dim.img_x}px,${card_dim.img_y}px);" class="card_image" clip-path="url(#card_image_clip)">

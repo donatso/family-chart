@@ -121,6 +121,45 @@ html, body {
   color: var(--fc-text-primary);
 }
 
+/* ── Toolbar dropdown ── */
+.tb-dropdown-wrap {
+  position: relative;
+}
+.tb-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: var(--fc-sidebar-bg);
+  border: 1px solid var(--fc-toolbar-border);
+  border-radius: 8px;
+  min-width: 150px;
+  z-index: 200;
+  display: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+.tb-dropdown.visible {
+  display: block;
+}
+.tb-dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 8px 14px;
+  border: none;
+  background: transparent;
+  color: var(--fc-text-secondary);
+  font-size: 13px;
+  font-family: var(--fc-font);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.1s ease;
+}
+.tb-dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--fc-text-primary);
+}
+
 /* ── Search ── */
 .search-container {
   position: relative;
@@ -268,6 +307,16 @@ g.card_cont {
 }
 g.card_add text {
   fill: var(--fc-text-secondary);
+}
+
+/* ── Card highlight (keyboard nav) ── */
+.card-highlighted .card-outline {
+  stroke: var(--fc-accent) !important;
+  stroke-width: 3 !important;
+  stroke-dasharray: none !important;
+}
+.card-highlighted {
+  filter: drop-shadow(0 0 8px rgba(100, 181, 246, 0.5));
 }
 
 /* ── Card interactions ── */
@@ -441,6 +490,28 @@ path.link {
   background: rgba(239, 83, 80, 0.1);
 }
 
+/* ── Minimap (bottom-left) ── */
+.minimap {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  z-index: 50;
+  border-radius: 8px;
+  border: 1px solid var(--fc-toolbar-border);
+  background: var(--fc-toolbar-bg);
+  backdrop-filter: blur(8px);
+  overflow: hidden;
+  cursor: pointer;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+}
+.minimap:hover {
+  opacity: 1;
+}
+.minimap canvas {
+  display: block;
+}
+
 /* ── Zoom controls (bottom-right) ── */
 .zoom-controls {
   position: absolute;
@@ -546,6 +617,9 @@ path.link {
   }
   .app-title {
     font-size: 12px !important;
+  }
+  .minimap {
+    display: none;
   }
 }
 

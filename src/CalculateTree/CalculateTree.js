@@ -2,7 +2,7 @@ import d3 from "../d3.js"
 import {sortChildrenWithSpouses} from "./CalculateTree.handlers.js"
 import {createNewPerson} from "../handlers/newPerson.js"
 
-export default function CalculateTree({data_stash, main_id=null, is_vertical=true, node_separation=250, level_separation=150, scale_factor=0.4}) {
+export default function CalculateTree({data_stash, main_id=null, is_vertical=true, node_separation=250, level_separation=150, scale_factor=0.4, max_spouse_tree_depth=2}) {
   data_stash = createRelsToAdd(data_stash)
   sortChildrenWithSpouses(data_stash)
   const main = main_id !== null ? data_stash.find(d => d.id === main_id) : data_stash[0],
@@ -16,6 +16,7 @@ export default function CalculateTree({data_stash, main_id=null, is_vertical=tru
   setupFractalDepth({tree, scale_factor})
   setupSpouses({tree, node_separation, scale_factor})
   nodePositioning({tree, is_vertical})
+  setupSpouseAncestry({tree, data_stash, node_separation, level_separation, scale_factor, max_spouse_tree_depth})
 
   const dim = calculateTreeDim(tree, node_separation, level_separation, is_vertical)
 
@@ -142,6 +143,69 @@ export default function CalculateTree({data_stash, main_id=null, is_vertical=tru
         }
       })
     })
+  }
+
+  function setupSpouseAncestry({tree, data_stash, node_separation, level_separation, scale_factor, max_spouse_tree_depth}) {
+    if (!max_spouse_tree_depth || max_spouse_tree_depth <= 0) return
+
+    const in_tree = new Set(tree.map(d => d.data.id))
+    let to_process = tree.filter(d => d.added && !d.data.to_add)
+
+    for (let level = 0; level < max_spouse_tree_depth; level++) {
+      const next_process = []
+
+      for (const node of to_process) {
+        const father_id = node.data.rels.father
+        const mother_id = node.data.rels.mother
+        if (!father_id || !mother_id) continue
+        if (in_tree.has(father_id) || in_tree.has(mother_id)) continue
+
+        const father_data = data_stash.find(d => d.id === father_id)
+        const mother_data = data_stash.find(d => d.id === mother_id)
+        if (!father_data || !mother_data) continue
+
+        const s = node.scale
+        const parent_y = node.y - level_separation * s
+        const side = father_data.data.gender === "M" ? 1 : -1
+
+        const father = {
+          data: father_data, added: true, is_ancestry: true,
+          fractal_depth: node.fractal_depth,
+          scale: node.scale,
+          x: node.x + (node_separation * s / 2) * side,
+          y: parent_y,
+          depth: node.depth + 1,
+          parent: node
+        }
+
+        const mother = {
+          data: mother_data, added: true, is_ancestry: true,
+          fractal_depth: node.fractal_depth,
+          scale: node.scale,
+          x: node.x - (node_separation * s / 2) * side,
+          y: parent_y,
+          depth: node.depth + 1,
+          parent: node,
+          spouse: father
+        }
+
+        if (!father.spouses) father.spouses = []
+        father.spouses.push(mother)
+
+        node.parents = [father, mother]
+
+        in_tree.add(father_id)
+        in_tree.add(mother_id)
+        tree.push(father)
+        tree.push(mother)
+
+        next_process.push(father)
+        next_process.push(mother)
+      }
+
+      if (next_process.length === 0) break
+      to_process = next_process
+    }
   }
 
   function calculateTreeDim(tree, node_separation, level_separation, is_vertical) {

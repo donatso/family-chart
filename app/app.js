@@ -7,6 +7,8 @@ import {createPersistence} from './persistence.js'
 import {createUndoRedo} from './undoRedo.js'
 import {createOnboarding} from './components/Onboarding.js'
 import {setupShortcuts} from './shortcuts.js'
+import {createMinimap} from './components/Minimap.js'
+import {createExportMenu} from './components/Export.js'
 import {Form} from '../src/view/elements/Form.js'
 
 ;(async () => {
@@ -48,11 +50,16 @@ import {Form} from '../src/view/elements/Form.js'
 
   store.setOnUpdate(onUpdate)
 
+  // Image export
+  const imageExport = createExportMenu({svg: view.svg, store})
+
   // Toolbar
   createToolbar({
     store, view, undoRedo, modal,
     onExportJSON: () => exportJSON(store, card_display),
     onImportJSON: () => importJSON(store, persistence),
+    onExportSVG: () => imageExport.exportSVG(),
+    onExportPNG: () => imageExport.exportPNG(),
   })
 
   // Search
@@ -60,6 +67,9 @@ import {Form} from '../src/view/elements/Form.js'
 
   // Zoom controls
   createZoomControls(view.svg)
+
+  // Minimap
+  createMinimap({svg: view.svg, store})
 
   // Keyboard shortcuts
   setupShortcuts({store, view, undoRedo, modal})

@@ -5,7 +5,9 @@ import {
   CardImage,
   LinkBreakIconWrapper,
   MiniTree, PencilIcon,
-  PlusIcon
+  PlusIcon,
+  SimpleCard,
+  DotCard
 } from "./Card.Elements.js"
 import {cardChangeMain, cardEdit, cardShowHideRels} from "../../handlers/cardMethods.js"
 import {isAllRelativeDisplayed} from "../../handlers/general.js"
@@ -19,7 +21,35 @@ export function Card(props) {
     const el = document.createElementNS("http://www.w3.org/2000/svg", 'g'),
       gender_class = d.data.data.gender === 'M' ? 'card-male' : d.data.data.gender === 'F' ? 'card-female' : 'card-genderless',
       card_dim = props.card_dim,
-      show_mini_tree = !isAllRelativeDisplayed(d, store.state.tree.data),
+      nodeScale = d.scale || 1
+
+    // Level-of-detail: dot for very small, simple for medium, full for large
+    if (nodeScale < 0.15) {
+      el.innerHTML = (`
+        <g class="card ${gender_class}" data-id="${d.data.id}" data-cy="card">
+          <g transform="translate(${-card_dim.w / 2}, ${-card_dim.h / 2})">
+            ${DotCard({d,card_dim}).template}
+          </g>
+        </g>
+      `)
+      setupListeners(el, d, store);
+      return el
+    }
+
+    if (nodeScale < 0.4 && !d.data.to_add) {
+      el.innerHTML = (`
+        <g class="card ${gender_class}" data-id="${d.data.id}" data-cy="card">
+          <g transform="translate(${-card_dim.w / 2}, ${-card_dim.h / 2})">
+            ${CardBodyOutline({d,card_dim,is_new:false}).template}
+            ${SimpleCard({d,card_dim,card_display:props.card_display}).template}
+          </g>
+        </g>
+      `)
+      setupListeners(el, d, store);
+      return el
+    }
+
+    const show_mini_tree = !isAllRelativeDisplayed(d, store.state.tree.data),
       unknown_lbl = props.cardEditForm ? 'ADD' : 'UNKNOWN',
 
       mini_tree = () => !d.data.to_add && show_mini_tree ? MiniTree({d,card_dim}).template : '',

@@ -15,9 +15,10 @@ export default function createStore(initial_state) {
     getData = () => state.data,
     getTree = () => state.tree,
     setOnUpdate = (f) => onUpdate = f,
-    methods = {}
+    methods = {},
+    highlighted = {id: null}
 
-  return {state, update, getData, getTree, setOnUpdate, methods}
+  return {state, update, getData, getTree, setOnUpdate, methods, highlighted}
 
 
   function calcTree() {
