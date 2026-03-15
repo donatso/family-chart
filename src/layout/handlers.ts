@@ -34,13 +34,13 @@ function otherParent(d: Datum, p1: Datum, data: Data) {
 export function calculateEnterAndExitPositions(d: TreeDatum, entering: boolean, exiting: boolean) {
   d.exiting = exiting
   if (entering) {
-    if (d.depth === 0 && !d.spouse) {d._x = d.x; d._y = d.y}
-    else if (d.spouse) {d._x = d.spouse.x; d._y = d.spouse.y;}
+    if (d.depth === 0 && !d.spouse) {d._x = d.x ?? 0; d._y = d.y ?? 0}
+    else if (d.spouse) {d._x = d.spouse.x ?? 0; d._y = d.spouse.y ?? 0;}
     else if (d.is_ancestry) {
       if (!d.parent) throw new Error('no parent')
-      d._x = d.parent.x; d._y = d.parent.y;
+      d._x = d.parent.x ?? 0; d._y = d.parent.y ?? 0;
     }
-    else {d._x = d.psx; d._y = d.psy;}
+    else {d._x = d.psx ?? 0; d._y = d.psy ?? 0;}
   } else if (exiting) {
     const x = d.x > 0 ? 1 : -1,
       y = d.y > 0 ? 1 : -1
