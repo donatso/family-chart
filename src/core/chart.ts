@@ -189,6 +189,22 @@ export class Chart {
   }
 
   /**
+   * Limit how many children are shown per parent by default.
+   * When a person is the main (selected) node, all their children are shown.
+   * @param max_children_per_parent - The max number of children to show per parent.
+   * @returns The CreateChart instance
+   */
+  setMaxChildrenPerParent(max_children_per_parent: ST.MaxChildrenPerParent) {
+    if (typeof max_children_per_parent !== 'number' || max_children_per_parent < 0) {
+      console.error('max_children_per_parent must be a non-negative number')
+      return this
+    }
+    this.store.state.max_children_per_parent = max_children_per_parent
+  
+    return this
+  }
+
+  /**
    * set function that will modify the tree hierarchy. it can be used to delete or add cards in the tree.
    * @param modifyTreeHierarchy - function that will modify the tree hierarchy.
    * @returns The CreateChart instance

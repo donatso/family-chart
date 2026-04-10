@@ -16,6 +16,8 @@ export interface CalculateTreeOptions {
   single_parent_empty_card?: boolean;
   is_horizontal?: boolean;
   one_level_rels?: boolean;
+  max_children_per_parent?: number;
+  show_all_children_for_main?: boolean;
   sortChildrenFunction?: ((a: Datum, b: Datum) => number) | undefined;
   sortSpousesFunction?: ((d: Datum, data: Data) => void) | undefined;
   ancestry_depth?: number | undefined;
@@ -43,6 +45,8 @@ export default function calculateTree(data: Data, {
   single_parent_empty_card = true,
   is_horizontal = false,
   one_level_rels = false,
+  max_children_per_parent = undefined,
+  show_all_children_for_main = true,
   sortChildrenFunction = undefined,
   sortSpousesFunction = undefined,
   ancestry_depth = undefined,
@@ -121,12 +125,30 @@ export default function calculateTree(data: Data, {
     function someSpouses(a:HN, b:HN) {return hasSpouses(a) || hasSpouses(b)}
 
     function hierarchyGetterChildren(d:Datum) {
+      customLog('Agnus', d.data['first name'], 'hierarchyGetterChildren', d)
       const children = [...(d.rels.children || [])].map(id => data_stash.find(d => d.id === id)).filter(d => d !== undefined)
+      const shouldLimitChildren = typeof max_children_per_parent === 'number' && max_children_per_parent >= 0
+      console.log('shouldLimitChildren', shouldLimitChildren)
       if (sortChildrenFunction) children.sort(sortChildrenFunction)  // first sort by custom function if provided
       sortAddNewChildren(children)  // then put new children at the end
       if (sortSpousesFunction) sortSpousesFunction(d, data_stash)
       sortChildrenWithSpouses(children, d, data_stash)  // then sort by order of spouses
+      customLog('Agnus', d.data['first name'], 'show_all_children_for_main', show_all_children_for_main)
+      customLog('Agnus', d.data['first name'], 'main_id', main_id)
+      if (shouldLimitChildren && !(show_all_children_for_main && d.id === main_id)) {
+        //console.log('limiting children', max_children_per_parent)
+        customLog('Agnus', d.data['first name'], 'limiting children', max_children_per_parent)
+        //console.log('children', children)
+        //console.log('returning children', children.slice(0, max_children_per_parent))
+        return children.slice(0, max_children_per_parent)
+      }
       return children
+    }
+
+    function customLog(targetName: string, name: string, message: string, data: any) {
+      if(targetName == name){
+        console.log(`${message}`, data)
+      }
     }
 
     function hierarchyGetterParents(d:Datum) {
