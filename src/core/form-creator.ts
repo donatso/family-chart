@@ -89,6 +89,7 @@ export function formCreatorSetup({
       id: field.id,
       type: field.type,
       label: field.label,
+      required: field.required,
       initial_value: datum.data[field.id],
     })
   })
@@ -137,6 +138,7 @@ export function formCreatorSetup({
       initial_value: datum.data[field.id],
       placeholder: field.placeholder,
       options: field.options || field.optionCreator!(datum),
+      required: field.required,
     }
     form_creator.fields.push(select_field)
   }
