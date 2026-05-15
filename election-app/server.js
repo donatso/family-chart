@@ -334,16 +334,20 @@ io.on('connection', socket => {
 });
 
 // ─── Start ────────────────────────────────────────────────────────────────────
-initDB();
-server.listen(PORT, '0.0.0.0', () => {
-  const ips = getLocalIPs();
-  console.log('\n╔══════════════════════════════════════════════════╗');
-  console.log('║        Community Election System — Ready         ║');
-  console.log('╚══════════════════════════════════════════════════╝');
-  console.log(`\n  Admin console:  http://localhost:${PORT}/admin.html`);
-  if (ips.length) {
-    console.log(`\n  Booth URL for tablets on same WiFi:`);
-    ips.forEach(ip => console.log(`    http://${ip}:${PORT}/booth.html`));
-  }
-  console.log('\n  No internet connection required.\n');
+initDB().then(() => {
+  server.listen(PORT, '0.0.0.0', () => {
+    const ips = getLocalIPs();
+    console.log('\n╔══════════════════════════════════════════════════╗');
+    console.log('║        Community Election System — Ready         ║');
+    console.log('╚══════════════════════════════════════════════════╝');
+    console.log(`\n  Admin console:  http://localhost:${PORT}/admin.html`);
+    if (ips.length) {
+      console.log(`\n  Booth URL for tablets on same WiFi:`);
+      ips.forEach(ip => console.log(`    http://${ip}:${PORT}/booth.html`));
+    }
+    console.log('\n  No internet connection required.\n');
+  });
+}).catch(err => {
+  console.error('Failed to start:', err);
+  process.exit(1);
 });
