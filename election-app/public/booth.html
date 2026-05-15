@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Voting Booth</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    /* Extra booth-only overrides for comfortable tablet use */
+    body { font-size: 16px; }
+    .vote-btn { font-size: 1rem; min-width: 80px; padding: 12px 18px; }
+    @media (min-width: 600px) {
+      .candidate-vote-row { padding: 16px 0; }
+      .vote-btn { min-width: 90px; font-size: 1.05rem; }
+      .cand-name { font-size: 1.05rem; }
+    }
+  </style>
+</head>
+<body>
+<div id="toast-container"></div>
+<div class="booth-wrap">
+
+  <!-- ── Header ─────────────────────────────────────────────────────────── -->
+  <header class="booth-header">
+    <div>
+      <h1 id="bh-title">Voting Booth</h1>
+      <div class="booth-election-name" id="bh-election"></div>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="booth-name-tag" id="bh-booth-name"></span>
+      <div class="conn-status">
+        <span class="conn-dot" id="conn-dot"></span>
+        <span id="conn-label">connecting</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Main ───────────────────────────────────────────────────────────── -->
+  <div class="booth-main">
+
+    <!-- Screen: booth setup (first time) -->
+    <div id="screen-setup" class="booth-screen active">
+      <div class="booth-select-screen">
+        <div class="booth-select-card">
+          <h2>Select This Booth</h2>
+          <p class="text-sm text-gray mb-2">Choose which booth this tablet represents.</p>
+          <div id="booth-list-btns" class="booth-list">
+            <p class="text-gray text-sm">Loading booths…</p>
+          </div>
+          <p class="text-xs text-gray mt-2" style="margin-top:16px">
+            If your booth is not listed, ask the admin to register it first.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: waiting for election -->
+    <div id="screen-waiting" class="booth-screen">
+      <div class="idle-screen">
+        <div class="idle-icon">🗳</div>
+        <div class="idle-title" id="waiting-msg">Waiting for election to start…</div>
+        <p class="text-sm text-gray">The admin will start the election shortly.</p>
+      </div>
+    </div>
+
+    <!-- Screen: check-in (voter search) -->
+    <div id="screen-checkin" class="booth-screen">
+      <div class="checkin-card">
+        <h2>Voter Check-in</h2>
+        <div class="form-group">
+          <label>Search voter by name or ID</label>
+          <input type="text" id="checkin-search" class="form-control"
+            placeholder="Type name to search…" oninput="searchVoters(this.value)"
+            autocomplete="off" autocorrect="off" spellcheck="false">
+        </div>
+        <div id="checkin-results" class="search-results" style="display:none"></div>
+        <div id="selected-voter" style="display:none;margin-top:12px">
+          <div style="background:var(--yes-bg);border:1.5px solid var(--yes-color);border-radius:8px;padding:12px 16px">
+            <div class="font-bold" id="sv-name"></div>
+            <div class="text-xs text-gray" id="sv-id"></div>
+          </div>
+          <button class="btn btn-success" style="width:100%;margin-top:12px;padding:14px;font-size:1rem"
+            onclick="proceedToVoting()">
+            Proceed to Ballot →
+          </button>
+          <button class="btn btn-secondary" style="width:100%;margin-top:8px"
+            onclick="clearSelectedVoter()">
+            Choose Different Voter
+          </button>
+        </div>
+        <div class="no-voter-mode">
+          — or —
+          <br><br>
+          <button class="btn btn-outline" onclick="proceedAnonymous()">
+            Vote Without Check-in
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: open voting (no voter list) -->
+    <div id="screen-open" class="booth-screen">
+      <div class="idle-screen">
+        <div class="idle-icon">👋</div>
+        <div class="idle-title">Ready to Vote</div>
+        <p class="text-sm text-gray mb-2">Election is running in open (anonymous) mode.</p>
+        <button class="btn btn-success btn-lg" onclick="proceedAnonymous()" style="margin-top:12px">
+          Start Voting
+        </button>
+      </div>
+    </div>
+
+    <!-- Screen: ballot -->
+    <div id="screen-ballot" class="booth-screen">
+      <div id="ballot-body"></div>
+    </div>
+
+    <!-- Screen: success -->
+    <div id="screen-success" class="booth-screen">
+      <div class="success-screen">
+        <div class="success-icon">✓</div>
+        <div class="success-title">Vote Recorded!</div>
+        <div class="success-sub">Thank you. Your vote has been securely recorded.</div>
+        <button class="next-voter-btn" onclick="resetBooth()">
+          Next Voter
+        </button>
+      </div>
+    </div>
+
+    <!-- Screen: election closed -->
+    <div id="screen-closed" class="booth-screen">
+      <div class="idle-screen">
+        <div class="idle-icon">🔒</div>
+        <div class="idle-title">Election Closed</div>
+        <p class="text-sm text-gray">Voting has ended. Thank you for participating.</p>
+      </div>
+    </div>
+
+  </div><!-- /booth-main -->
+
+  <!-- Submit bar (shown during voting) -->
+  <div class="submit-bar" id="submit-bar" style="display:none">
+    <div class="submit-progress" id="submit-progress">Complete all positions to submit.</div>
+    <button class="btn-submit-vote" id="btn-submit" onclick="submitVote()" disabled>
+      Submit Vote
+    </button>
+  </div>
+
+</div><!-- /booth-wrap -->
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+'use strict';
+// ─── State ────────────────────────────────────────────────────────────────────
+let boothId       = parseInt(localStorage.getItem('boothId'))   || null;
+let boothName     = localStorage.getItem('boothName')            || '';
+let electionData  = null;   // { election, positions (with candidates), hasVoterList }
+let currentVoter  = null;   // { voter_id, name } or null for anonymous
+let ballotChoices = {};     // { candidateId: 'yes'|'no' }
+
+// ─── Socket.io ────────────────────────────────────────────────────────────────
+const socket = io();
+socket.on('connect',    () => { setConn(true);  });
+socket.on('disconnect', () => { setConn(false); });
+socket.on('election-status-changed', election => {
+  pollElection();
+});
+
+function setConn(ok) {
+  const dot   = document.getElementById('conn-dot');
+  const label = document.getElementById('conn-label');
+  dot.className   = 'conn-dot' + (ok ? '' : ' offline');
+  label.textContent = ok ? 'connected' : 'offline';
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+const $  = id => document.getElementById(id);
+const set$ = (id, v) => { const el = $(id); if (el) el.textContent = v; };
+
+function toast(msg, type = '') {
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  $('toast-container').appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+function showScreen(name) {
+  document.querySelectorAll('.booth-screen').forEach(s => s.classList.remove('active'));
+  $('screen-' + name)?.classList.add('active');
+  $('submit-bar').style.display = name === 'ballot' ? '' : 'none';
+}
+
+async function api(method, url, body) {
+  const opts = { method, headers: {} };
+  if (body) {
+    opts.headers['Content-Type'] = 'application/json';
+    opts.body = JSON.stringify(body);
+  }
+  const res  = await fetch(url, opts);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+  return data;
+}
+
+// ─── Booth selection ──────────────────────────────────────────────────────────
+async function loadBoothList() {
+  try {
+    const booths = await api('GET', '/api/booths');
+    const container = $('booth-list-btns');
+    if (!booths.length) {
+      container.innerHTML = '<p class="text-gray text-sm">No booths registered. Ask the admin to register booths first.</p>';
+      return;
+    }
+    container.innerHTML = booths.map(b => `
+      <button class="booth-list-btn" onclick="selectBooth(${b.id}, ${JSON.stringify(b.name)})">
+        ${b.name}
+      </button>`).join('');
+  } catch(e) {
+    $('booth-list-btns').innerHTML = '<p class="text-gray text-sm">Could not load booth list. Check connection.</p>';
+  }
+}
+
+function selectBooth(id, name) {
+  boothId   = id;
+  boothName = name;
+  localStorage.setItem('boothId',   id);
+  localStorage.setItem('boothName', name);
+  set$('bh-booth-name', name);
+  pollElection();
+}
+
+function resetBoothSelection() {
+  localStorage.removeItem('boothId');
+  localStorage.removeItem('boothName');
+  boothId = null; boothName = '';
+  set$('bh-booth-name', '');
+  showScreen('setup');
+  loadBoothList();
+}
+
+// ─── Election polling ─────────────────────────────────────────────────────────
+async function pollElection() {
+  try {
+    const active = await api('GET', '/api/elections/active');
+    if (!active) {
+      electionData = null;
+      set$('bh-election', 'No active election');
+      showScreen('waiting');
+      $('waiting-msg').textContent = 'Waiting for election to start…';
+      return;
+    }
+
+    const ballot = await api('GET', `/api/elections/${active.id}/ballot`);
+    electionData = ballot;
+    set$('bh-election', ballot.election.name);
+
+    if (active.status === 'closed') {
+      showScreen('closed');
+      return;
+    }
+
+    // Active election
+    if (ballot.hasVoterList) {
+      showScreen('checkin');
+    } else {
+      showScreen('open');
+    }
+  } catch(e) {
+    console.error(e);
+    set$('bh-election', 'Connection error');
+  }
+}
+
+// ─── Check-in ─────────────────────────────────────────────────────────────────
+let searchTimeout;
+function searchVoters(q) {
+  clearTimeout(searchTimeout);
+  if (!q.trim()) { $('checkin-results').style.display = 'none'; return; }
+  searchTimeout = setTimeout(async () => {
+    try {
+      const eid     = electionData?.election?.id;
+      const voters  = await api('GET', `/api/elections/${eid}/voters/search?q=${encodeURIComponent(q)}`);
+      const results = $('checkin-results');
+      if (!voters.length) {
+        results.innerHTML = '<div style="padding:12px;color:var(--gray-500);font-size:.9rem">No voters found</div>';
+        results.style.display = '';
+        return;
+      }
+      results.innerHTML = voters.map(v => `
+        <div class="search-result-item ${v.has_voted ? 'voted' : ''}"
+          onclick="${v.has_voted ? '' : `selectVoter(${v.id}, ${JSON.stringify(v.voter_id)}, ${JSON.stringify(v.name)})`}">
+          <div>
+            <div class="voter-name">${esc(v.name)}</div>
+            <div class="voter-id-tag">ID: ${esc(v.voter_id)}</div>
+          </div>
+          ${v.has_voted
+            ? '<span class="badge badge-voted">VOTED</span>'
+            : '<span class="badge badge-pending">NOT YET</span>'}
+        </div>`).join('');
+      results.style.display = '';
+    } catch {}
+  }, 300);
+}
+
+function selectVoter(id, voter_id, name) {
+  currentVoter = { voter_id, name };
+  $('sv-name').textContent = name;
+  $('sv-id').textContent   = `Voter ID: ${voter_id}`;
+  $('selected-voter').style.display = '';
+  $('checkin-results').style.display = 'none';
+  $('checkin-search').value = name;
+}
+
+function clearSelectedVoter() {
+  currentVoter = null;
+  $('selected-voter').style.display = 'none';
+  $('checkin-search').value = '';
+  $('checkin-results').style.display = 'none';
+}
+
+function proceedAnonymous() {
+  currentVoter = null;
+  renderBallot();
+}
+
+function proceedToVoting() {
+  if (!currentVoter) { toast('Please select a voter first', 'warning'); return; }
+  renderBallot();
+}
+
+// ─── Ballot rendering ─────────────────────────────────────────────────────────
+function renderBallot() {
+  ballotChoices = {};
+  const { positions } = electionData;
+
+  $('ballot-body').innerHTML = positions.map(pos => `
+    <div class="position-section" id="pos-section-${pos.id}">
+      <div class="flex items-center justify-between flex-wrap gap-2">
+        <div>
+          <div class="position-title">${esc(pos.name)}</div>
+          <div class="position-rule">
+            Vote YES for at least <strong>${pos.min_yes}</strong>
+            and at most <strong>${pos.max_yes}</strong>
+            candidate${pos.max_yes !== 1 ? 's' : ''}.
+            ${pos.description ? esc(pos.description) : ''}
+          </div>
+        </div>
+        <span class="yes-counter" id="yctr-${pos.id}">0 YES</span>
+      </div>
+      ${pos.candidates.map(c => renderCandidateRow(c, pos.id)).join('')}
+    </div>`).join('');
+
+  showScreen('ballot');
+  updateSubmitBar();
+}
+
+function renderCandidateRow(c, posId) {
+  const photo = c.photo
+    ? `<img class="cand-photo-sm" src="/uploads/${esc(c.photo)}" alt="${esc(c.name)}">`
+    : `<div class="cand-photo-init">${c.name.charAt(0).toUpperCase()}</div>`;
+  return `
+    <div class="candidate-vote-row">
+      ${photo}
+      <div class="cand-info">
+        <div class="cand-name">${esc(c.name)}</div>
+        ${c.bio ? `<div class="cand-bio">${esc(c.bio)}</div>` : ''}
+      </div>
+      <div class="vote-buttons">
+        <button class="vote-btn" id="btn-yes-${c.id}"
+          onclick="castVote(${c.id}, ${posId}, 'yes')">YES</button>
+        <button class="vote-btn" id="btn-no-${c.id}"
+          onclick="castVote(${c.id}, ${posId}, 'no')">NO</button>
+      </div>
+    </div>`;
+}
+
+function castVote(candidateId, positionId, choice) {
+  ballotChoices[candidateId] = choice;
+
+  // Update button styles
+  const btnYes = $(`btn-yes-${candidateId}`);
+  const btnNo  = $(`btn-no-${candidateId}`);
+  btnYes.className = 'vote-btn' + (choice === 'yes' ? ' yes-selected' : '');
+  btnNo.className  = 'vote-btn' + (choice === 'no'  ? ' no-selected'  : '');
+
+  // Update YES counter for this position
+  updatePositionCounter(positionId);
+  updateSubmitBar();
+}
+
+function updatePositionCounter(posId) {
+  const pos  = electionData.positions.find(p => p.id === posId);
+  if (!pos) return;
+  const yesCount = pos.candidates.filter(c => ballotChoices[c.id] === 'yes').length;
+  const ctr  = $(`yctr-${posId}`);
+  if (!ctr) return;
+  ctr.textContent = `${yesCount} YES`;
+  const ok = yesCount >= pos.min_yes && yesCount <= pos.max_yes;
+  const all = pos.candidates.every(c => ballotChoices[c.id]);
+  ctr.className = 'yes-counter' + (all ? (ok ? ' ok' : ' over') : '');
+}
+
+function updateSubmitBar() {
+  const { positions } = electionData;
+  let allAnswered = true;
+  let allValid    = true;
+  let missing     = 0;
+
+  for (const pos of positions) {
+    const answered = pos.candidates.every(c => ballotChoices[c.id]);
+    if (!answered) { allAnswered = false; missing++; continue; }
+    const yesCount = pos.candidates.filter(c => ballotChoices[c.id] === 'yes').length;
+    if (yesCount < pos.min_yes || yesCount > pos.max_yes) allValid = false;
+  }
+
+  const btn = $('btn-submit');
+  const prog = $('submit-progress');
+
+  if (!allAnswered) {
+    prog.textContent  = `${missing} position${missing !== 1 ? 's' : ''} still need your votes.`;
+    btn.disabled = true;
+  } else if (!allValid) {
+    prog.textContent  = 'Check YES counts — some positions are outside the allowed range.';
+    btn.disabled = true;
+  } else {
+    prog.textContent  = 'All positions complete. Ready to submit.';
+    btn.disabled = false;
+  }
+}
+
+// ─── Submit ───────────────────────────────────────────────────────────────────
+async function submitVote() {
+  const btn = $('btn-submit');
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  const votes = [];
+  for (const pos of electionData.positions) {
+    for (const c of pos.candidates) {
+      votes.push({ position_id: pos.id, candidate_id: c.id, vote: ballotChoices[c.id] });
+    }
+  }
+
+  const payload = {
+    election_id: electionData.election.id,
+    booth_id:    boothId,
+    voter_id:    currentVoter?.voter_id || null,
+    votes
+  };
+
+  try {
+    await api('POST', '/api/vote', payload);
+    showScreen('success');
+  } catch(e) {
+    toast(e.message, 'error');
+    btn.disabled = false;
+    btn.textContent = 'Submit Vote';
+  }
+}
+
+// ─── Reset ────────────────────────────────────────────────────────────────────
+function resetBooth() {
+  currentVoter  = null;
+  ballotChoices = {};
+  clearSelectedVoter();
+  pollElection();
+}
+
+// ─── XSS helper ──────────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+set$('bh-booth-name', boothName || '');
+
+if (boothId) {
+  showScreen('waiting');
+  pollElection();
+} else {
+  showScreen('setup');
+  loadBoothList();
+}
+
+// Add "Change Booth" link in header on long press / double tap (for setup)
+let tapCount = 0;
+document.querySelector('.booth-header h1')?.addEventListener('click', () => {
+  if (++tapCount >= 3) { tapCount = 0; if (confirm('Reset booth selection?')) resetBoothSelection(); }
+  setTimeout(() => { tapCount = 0; }, 1500);
+});
+</script>
+</body>
+</html>

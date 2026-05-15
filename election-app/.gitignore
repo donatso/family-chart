@@ -1,0 +1,6 @@
+node_modules/
+election.db
+election.db-shm
+election.db-wal
+uploads/*
+!uploads/.gitkeep

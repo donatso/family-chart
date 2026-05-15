@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Election Admin Console</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div id="toast-container"></div>
+
+<!-- ═══ HEADER ═══════════════════════════════════════════════════════════════ -->
+<header class="admin-header">
+  <h1>Election Admin</h1>
+  <nav class="admin-nav">
+    <button id="nav-dashboard" onclick="switchTab('dashboard')" class="active">Dashboard</button>
+    <button id="nav-setup"     onclick="switchTab('setup')">Setup</button>
+    <button id="nav-booths"    onclick="switchTab('booths')">Booths</button>
+    <button id="nav-voters"    onclick="switchTab('voters')">Voters</button>
+    <button id="nav-results"   onclick="switchTab('results')">Live Results</button>
+  </nav>
+  <div class="admin-status-bar">
+    <span class="live-dot" id="live-dot"></span>
+    <span id="hdr-status">connecting…</span>
+  </div>
+</header>
+
+<!-- ═══ CONTENT ══════════════════════════════════════════════════════════════ -->
+<div class="admin-content">
+
+  <!-- ── Dashboard ──────────────────────────────────────────────────────── -->
+  <div id="pane-dashboard" class="tab-pane">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Tablet Connection Info</span></div>
+      <p class="text-sm text-gray mb-2">Point tablets to this address on the same WiFi. No internet needed.</p>
+      <div id="ip-boxes"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title" id="dash-el-name">No election selected</span>
+          <span id="dash-el-badge" style="margin-left:10px"></span>
+        </div>
+        <div class="flex gap-1">
+          <button class="btn btn-success" id="btn-start" onclick="startElection()" style="display:none">▶ Start Election</button>
+          <button class="btn btn-danger"  id="btn-close" onclick="closeElection()" style="display:none">■ Close Election</button>
+        </div>
+      </div>
+      <p class="text-sm text-gray" id="dash-no-election">No election created yet. Go to <strong>Setup</strong> to create one.</p>
+    </div>
+
+    <div class="stats-strip">
+      <div class="stat-box"><div class="stat-num" id="stat-ballots">–</div><div class="stat-label">Ballots Cast</div></div>
+      <div class="stat-box"><div class="stat-num" id="stat-voters">–</div><div class="stat-label">Registered Voters</div></div>
+      <div class="stat-box"><div class="stat-num" id="stat-pct">–</div><div class="stat-label">Participation</div></div>
+      <div class="stat-box"><div class="stat-num" id="stat-booths">–</div><div class="stat-label">Booths</div></div>
+    </div>
+  </div>
+
+  <!-- ── Setup ──────────────────────────────────────────────────────────── -->
+  <div id="pane-setup" class="tab-pane hidden">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Elections</span>
+        <button class="btn btn-primary btn-sm" onclick="showCreateElectionModal()">+ New Election</button>
+      </div>
+      <div id="elections-list"><p class="text-gray text-sm">Loading…</p></div>
+    </div>
+
+    <div id="positions-section" class="hidden">
+      <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
+        <h2 class="text-lg font-bold" id="positions-heading"></h2>
+        <button class="btn btn-primary btn-sm" onclick="toggleAddPositionForm()">+ Add Position</button>
+      </div>
+
+      <div id="add-position-form" class="card hidden">
+        <h3 class="card-title mb-2" id="pos-form-title">New Position</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Position Name *</label>
+            <input type="text" id="pos-name" class="form-control" placeholder="e.g. Chairperson">
+          </div>
+          <div class="form-group">
+            <label>Description (optional)</label>
+            <input type="text" id="pos-desc" class="form-control" placeholder="Brief description">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Min YES votes per voter</label>
+            <input type="number" id="pos-min" class="form-control" value="1" min="0">
+          </div>
+          <div class="form-group">
+            <label>Max YES votes per voter</label>
+            <input type="number" id="pos-max" class="form-control" value="1" min="1">
+          </div>
+        </div>
+        <p class="text-xs text-gray mb-2">Example: 5 candidates standing, need to fill 4 seats → set Max=4. Each voter can say YES to up to 4 candidates.</p>
+        <div class="flex gap-1">
+          <button class="btn btn-primary" onclick="savePosition()">Save Position</button>
+          <button class="btn btn-secondary" onclick="toggleAddPositionForm()">Cancel</button>
+        </div>
+      </div>
+
+      <div id="positions-list"></div>
+    </div>
+  </div>
+
+  <!-- ── Booths ─────────────────────────────────────────────────────────── -->
+  <div id="pane-booths" class="tab-pane hidden">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Register New Booth</span></div>
+      <div class="flex gap-2 items-center flex-wrap">
+        <input type="text" id="new-booth-name" class="form-control" placeholder="e.g. Hall A — Table 1" style="max-width:320px">
+        <button class="btn btn-primary" onclick="createBooth()">Register Booth</button>
+      </div>
+    </div>
+    <div id="booths-list"></div>
+  </div>
+
+  <!-- ── Voters ─────────────────────────────────────────────────────────── -->
+  <div id="pane-voters" class="tab-pane hidden">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Import Voter List</span></div>
+      <p class="text-sm text-gray mb-2">
+        Import from <strong>Excel (.xlsx)</strong>, CSV, or paste names directly. First column = Name, second column = Voter ID (optional).
+        If no voter list is loaded, booths run in open (anonymous) mode.
+      </p>
+      <div class="flex gap-2 flex-wrap mb-2">
+        <label class="btn btn-outline" style="cursor:pointer">
+          Import Excel / CSV
+          <input type="file" id="voter-file-input" accept=".xlsx,.xls,.csv,.txt" style="display:none" onchange="importVoterFile(this)">
+        </label>
+        <button class="btn btn-secondary" onclick="togglePasteArea()">Paste Names</button>
+        <button class="btn btn-danger btn-sm" id="btn-clear-voters" onclick="clearAllVoters()" style="display:none">Clear All Voters</button>
+      </div>
+      <div id="paste-area" class="hidden">
+        <textarea id="voter-paste" class="form-control" rows="7"
+          placeholder="One name per line (or comma-separated: Name, VoterID):&#10;John Smith&#10;Jane Doe, V0042&#10;Robert Brown"></textarea>
+        <div class="flex gap-1 mt-1">
+          <button class="btn btn-primary btn-sm" onclick="importPastedVoters()">Import Names</button>
+          <button class="btn btn-secondary btn-sm" onclick="togglePasteArea()">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Voter List <span id="voter-count" class="text-gray text-sm"></span></span>
+        <input type="text" id="voter-search" class="form-control" placeholder="Search by name or ID…"
+          style="width:220px" oninput="loadVoters(this.value)">
+      </div>
+      <div id="voters-list"></div>
+    </div>
+  </div>
+
+  <!-- ── Results ────────────────────────────────────────────────────────── -->
+  <div id="pane-results" class="tab-pane hidden">
+    <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
+      <div class="flex items-center gap-2">
+        <span class="live-dot active" id="res-live-dot"></span>
+        <span class="font-bold text-lg" id="res-el-name">–</span>
+        <span id="res-el-badge"></span>
+      </div>
+      <div class="flex gap-1">
+        <button class="btn btn-secondary btn-sm" onclick="loadResults()">↻ Refresh</button>
+        <button class="btn btn-secondary btn-sm" onclick="downloadResultsCSV()">⬇ Export CSV</button>
+      </div>
+    </div>
+    <div class="stats-strip">
+      <div class="stat-box"><div class="stat-num" id="res-ballots">0</div><div class="stat-label">Ballots Cast</div></div>
+      <div class="stat-box"><div class="stat-num" id="res-registered">–</div><div class="stat-label">Registered</div></div>
+      <div class="stat-box"><div class="stat-num" id="res-turnout">–</div><div class="stat-label">Turnout</div></div>
+    </div>
+    <div id="results-body"></div>
+  </div>
+
+</div><!-- /admin-content -->
+
+<!-- ═══ MODAL ════════════════════════════════════════════════════════════════ -->
+<div id="modal-backdrop" class="hidden"
+  style="position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;display:flex;align-items:center;justify-content:center"
+  onclick="if(event.target===this)closeModal()">
+  <div id="modal-box"
+    style="background:#fff;border-radius:14px;padding:28px;max-width:480px;width:92%;
+           max-height:88vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.28)">
+  </div>
+</div>
+
+<!-- ═══ SCRIPTS ═══════════════════════════════════════════════════════════ -->
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/xlsx.min.js"></script>
+<script>
+'use strict';
+// ────────────────────────────────────────────────────────────────── State ──
+let currentElectionId = null;
+let currentElection   = null;
+let allResults        = null;
+let editingPosId      = null;
+
+// ──────────────────────────────────────────────────────────── Socket.io ──
+const socket = io();
+socket.on('connect',    () => { $('#live-dot').classList.add('active'); set$('hdr-status', 'Connected'); });
+socket.on('disconnect', () => { $('#live-dot').classList.remove('active'); set$('hdr-status', 'Reconnecting…'); });
+socket.on('election-status-changed', e => {
+  if (e.id === currentElectionId) { currentElection = e; refreshDashboardControls(); }
+});
+socket.on('results-updated', ({ election_id, results }) => {
+  if (election_id === currentElectionId) { allResults = results; renderResults(results); updateDashStats(results); }
+});
+socket.on('vote-cast', ({ election_id, total_sessions }) => {
+  if (election_id === currentElectionId) {
+    set$('stat-ballots', total_sessions);
+    set$('res-ballots', total_sessions);
+  }
+});
+
+// ──────────────────────────────────────────────────────────── Helpers ──
+const $  = id => document.getElementById(id);
+const set$ = (id, v) => { const el = $(id); if (el) el.textContent = v; };
+const show = id => $(id)?.classList.remove('hidden');
+const hide = id => $(id)?.classList.add('hidden');
+
+function toast(msg, type = '') {
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  $('toast-container').appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+
+function openModal(html) {
+  $('modal-box').innerHTML = html;
+  show('modal-backdrop');
+}
+function closeModal() { hide('modal-backdrop'); }
+
+async function api(method, url, body) {
+  const opts = { method, headers: {} };
+  if (body instanceof FormData) {
+    opts.body = body;
+  } else if (body) {
+    opts.headers['Content-Type'] = 'application/json';
+    opts.body = JSON.stringify(body);
+  }
+  const res = await fetch(url, opts);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+  return data;
+}
+
+// ────────────────────────────────────────────────────────────── Tabs ──
+function switchTab(name) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
+  document.querySelectorAll('.admin-nav button').forEach(b => b.classList.remove('active'));
+  show('pane-' + name);
+  $('nav-' + name)?.classList.add('active');
+  ({ dashboard: loadDashboard, setup: loadSetupTab, booths: loadBooths, voters: () => loadVoters(''), results: loadResults })[name]?.();
+}
+
+// ─────────────────────────────────────────────────────────── Dashboard ──
+async function loadDashboard() {
+  try {
+    const info = await api('GET', '/api/server-info');
+    $('ip-boxes').innerHTML = info.ips.length
+      ? info.ips.map(ip => `
+          <div class="ip-box">
+            <div>
+              <div class="label">Booth URL (tablets on same WiFi)</div>
+              <div class="ip-addr">http://${ip}:${info.port}/booth.html</div>
+            </div>
+            <button class="btn btn-secondary btn-sm"
+              onclick="navigator.clipboard.writeText('http://${ip}:${info.port}/booth.html').then(()=>toast('Copied!'))">
+              Copy
+            </button>
+          </div>`).join('')
+      : '<p class="text-sm text-gray">Connect this machine to a WiFi network to see the tablet URL.</p>';
+  } catch {}
+
+  try {
+    const [elections, booths] = await Promise.all([
+      api('GET', '/api/elections'),
+      api('GET', '/api/booths')
+    ]);
+    set$('stat-booths', booths.length);
+
+    if (!elections.length) { hide('dash-no-election'); return; }
+    hide('dash-no-election');
+    if (!currentElectionId) currentElectionId = elections[0].id;
+    currentElection = elections.find(e => e.id === currentElectionId) || elections[0];
+    refreshDashboardControls();
+
+    if (currentElection?.status !== 'setup') {
+      const results = await api('GET', `/api/elections/${currentElectionId}/results`);
+      allResults = results;
+      updateDashStats(results);
+    }
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+function refreshDashboardControls() {
+  if (!currentElection) return;
+  set$('dash-el-name', currentElection.name);
+  set$('hdr-status', `${currentElection.name} — ${currentElection.status}`);
+  $('dash-el-badge').innerHTML = `<span class="badge badge-${currentElection.status}">${currentElection.status.toUpperCase()}</span>`;
+  $('dash-no-election') && ($('dash-no-election').style.display = 'none');
+  $('btn-start').style.display = currentElection.status === 'setup'  ? '' : 'none';
+  $('btn-close').style.display = currentElection.status === 'active' ? '' : 'none';
+}
+
+function updateDashStats(r) {
+  set$('stat-ballots', r.total_sessions);
+  set$('stat-voters',  r.total_voters || '–');
+  set$('stat-pct', r.total_voters > 0
+    ? Math.round(r.voted_voters / r.total_voters * 100) + '%' : '–');
+}
+
+async function startElection() {
+  if (!currentElection) return;
+  if (!confirm(`Start election "${currentElection.name}"? All booths will go live immediately.`)) return;
+  try {
+    await api('PUT', `/api/elections/${currentElectionId}/status`, { status: 'active' });
+    toast('Election started — booths are now live!', 'success');
+    loadDashboard();
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+async function closeElection() {
+  if (!currentElection) return;
+  if (!confirm('Close election? No further votes will be accepted.')) return;
+  try {
+    await api('PUT', `/api/elections/${currentElectionId}/status`, { status: 'closed' });
+    toast('Election closed.', 'success');
+    loadDashboard();
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+// ──────────────────────────────────────────────────────────── Setup ──
+async function loadSetupTab() {
+  try {
+    const elections = await api('GET', '/api/elections');
+    const list = $('elections-list');
+    if (!elections.length) {
+      list.innerHTML = '<p class="text-gray text-sm">No elections yet. Create one to get started.</p>';
+      hide('positions-section');
+      return;
+    }
+    list.innerHTML = elections.map(e => `
+      <div class="flex items-center justify-between" style="padding:10px 0;border-bottom:1px solid var(--gray-100)">
+        <div>
+          <span class="font-bold">${esc(e.name)}</span>
+          <span class="badge badge-${e.status}" style="margin-left:8px">${e.status}</span>
+        </div>
+        <div class="flex gap-1">
+          <button class="btn btn-outline btn-sm" onclick="selectElection(${e.id}, ${JSON.stringify(e.name)})">Edit</button>
+          ${e.status === 'setup' ? `<button class="btn btn-danger btn-sm" onclick="deleteElection(${e.id})">Delete</button>` : ''}
+        </div>
+      </div>`).join('');
+
+    if (currentElectionId) selectElection(currentElectionId, elections.find(e => e.id === currentElectionId)?.name || '');
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+function showCreateElectionModal() {
+  openModal(`
+    <h2 style="font-size:1.2rem;font-weight:700;margin-bottom:16px">Create New Election</h2>
+    <div class="form-group">
+      <label>Election Name *</label>
+      <input type="text" id="m-el-name" class="form-control" placeholder="e.g. AGM 2025 — Committee Election" autofocus>
+    </div>
+    <div class="flex gap-1 mt-2">
+      <button class="btn btn-primary" onclick="createElection()">Create</button>
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+    </div>`);
+}
+
+async function createElection() {
+  const name = $('m-el-name').value.trim();
+  if (!name) { toast('Enter a name', 'warning'); return; }
+  try {
+    const el = await api('POST', '/api/elections', { name });
+    currentElectionId = el.id;
+    toast('Election created!', 'success');
+    closeModal();
+    loadSetupTab();
+    loadDashboard();
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+async function deleteElection(id) {
+  if (!confirm('Delete this election and all its data? This cannot be undone.')) return;
+  try {
+    await api('DELETE', `/api/elections/${id}`);
+    if (currentElectionId === id) { currentElectionId = null; currentElection = null; }
+    toast('Deleted.', 'success');
+    loadSetupTab();
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+function selectElection(id, name) {
+  currentElectionId = id;
+  $('positions-heading').textContent = `Positions: ${name}`;
+  show('positions-section');
+  loadPositions();
+}
+
+// ─────────────────────────────────────────────────────────── Positions ──
+function toggleAddPositionForm() {
+  const form = $('add-position-form');
+  if (form.classList.contains('hidden')) {
+    editingPosId = null;
+    $('pos-form-title').textContent = 'New Position';
+    $('pos-name').value = '';
+    $('pos-desc').value = '';
+    $('pos-min').value = 1;
+    $('pos-max').value = 1;
+    form.classList.remove('hidden');
+    $('pos-name').focus();
+  } else {
+    form.classList.add('hidden');
+  }
+}
+
+function editPosition(id, name, desc, min, max) {
+  editingPosId = id;
+  $('pos-form-title').textContent = 'Edit Position';
+  $('pos-name').value = name;
+  $('pos-desc').value = desc;
+  $('pos-min').value = min;
+  $('pos-max').value = max;
+  show('add-position-form');
+  $('pos-name').focus();
+}
+
+async function savePosition() {
+  const name    = $('pos-name').value.trim();
+  const desc    = $('pos-desc').value.trim();
+  const min_yes = parseInt($('pos-min').value) || 1;
+  const max_yes = parseInt($('pos-max').value) || 1;
+  if (!name)         { toast('Position name required', 'warning'); return; }
+  if (min_yes > max_yes) { toast('Min YES cannot exceed Max YES', 'warning'); return; }
+  try {
+    if (editingPosId) {
+      await api('PUT', `/api/positions/${editingPosId}`, { name, description: desc, min_yes, max_yes });
+      toast('Position updated.', 'success');
+    } else {
+      await api('POST', '/api/positions', { election_id: currentElectionId, name, description: desc, min_yes, max_yes });
+      toast('Position added!', 'success');
+    }
+    $('add-position-form').classList.add('hidden');
+    loadPositions();
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+async function deletePosition(id) {
+  if (!confirm('Delete this position and all its candidates?')) return;
+  try {
+    await api('DELETE', `/api/positions/${id}`);
+    toast('Deleted.', 'success');
+    loadPositions();
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+async function loadPositions() {
+  try {
+    const positions = await api('GET', `/api/elections/${currentElectionId}/positions`);
+    renderPositions(positions);
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+function renderPositions(positions) {
+  const el = $('positions-list');
+  if (!positions.length) {
+    el.innerHTML = '<p class="text-gray text-sm" style="padding:8px 0">No positions yet.</p>';
+    return;
+  }
+  el.innerHTML = positions.map(p => `
+    <div class="position-block">
+      <div class="position-block-header" onclick="togglePosBody(${p.id})">
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="font-bold">${esc(p.name)}</span>
+          ${p.description ? `<span class="text-xs text-gray">${esc(p.description)}</span>` : ''}
+          <span class="badge badge-pending">${p.candidates.length} candidate${p.candidates.length !== 1 ? 's' : ''}</span>
+          <span class="text-xs text-gray">YES: ${p.min_yes}–${p.max_yes}</span>
+        </div>
+        <div class="flex gap-1" onclick="event.stopPropagation()">
+          <button class="btn btn-secondary btn-sm"
+            onclick="editPosition(${p.id},${JSON.stringify(p.name)},${JSON.stringify(p.description||'')},${p.min_yes},${p.max_yes})">
+            Edit
+          </button>
+          <button class="btn btn-danger btn-sm" onclick="deletePosition(${p.id})">Delete</button>
+        </div>
+      </div>
+      <div class="position-block-body hidden" id="pos-body-${p.id}">
+        <div class="candidate-grid">
+          ${p.candidates.map(renderCandidateCard).join('')}
+          <div class="candidate-card" style="border-style:dashed;cursor:pointer;justify-content:center;min-height:130px"
+            onclick="showAddCandidateModal(${p.id})">
+            <div style="font-size:2.5rem;color:var(--gray-300)">+</div>
+            <div class="text-sm text-gray">Add Candidate</div>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function renderCandidateCard(c) {
+  const photo = c.photo
+    ? `<img class="candidate-photo" src="/uploads/${esc(c.photo)}" alt="${esc(c.name)}">`
+    : `<div class="candidate-photo-placeholder">${c.name.charAt(0).toUpperCase()}</div>`;
+  return `
+    <div class="candidate-card">
+      ${photo}
+      <div class="candidate-name">${esc(c.name)}</div>
+      ${c.bio ? `<div class="text-xs text-gray" style="text-align:center">${esc(c.bio)}</div>` : ''}
+      <div class="candidate-actions">
+        <button class="btn btn-secondary btn-sm"
+          onclick="showEditCandidateModal(${c.id},${JSON.stringify(c.name)},${JSON.stringify(c.bio||'')})">
+          Edit
+        </button>
+        <button class="btn btn-danger btn-sm" onclick="deleteCandidate(${c.id})">Del</button>
+      </div>
+    </div>`;
+}
+
+function togglePosBody(id) {
+  $(`pos-body-${id}`)?.classList.toggle('hidden');
+}
+
+// ─────────────────────────────────────────────────────────── Candidates ──
+function showAddCandidateModal(positionId) {
+  openModal(`
+    <h2 style="font-size:1.2rem;font-weight:700;margin-bottom:16px">Add Candidate</h2>
+    <div class="form-group">
+      <label>Full Name *</label>
+      <input type="text" id="m-cand-name" class="form-control" placeholder="Candidate's full name" autofocus>
+    </div>
+    <div class="form-group">
+      <label>Bio / Designation (optional)</label>
+      <input type="text" id="m-cand-bio" class="form-control" placeholder="e.g. Member since 2015">
+    </div>
+    <div class="form-group">
+      <label>Photo (optional)</label>
+      <input type="file" id="m-cand-photo" class="form-control" accept="image/*" onchange="previewPhoto(this,'m-preview')">
+    </div>
+    <div id="m-preview" style="text-align:center;margin:8px 0;display:none">
+      <img id="m-preview-img" style="width:80px;height:80px;object-fit:cover;border-radius:50%;border:3px solid var(--gray-200)">
+    </div>
+    <div class="flex gap-1 mt-2">
+      <button class="btn btn-primary" onclick="addCandidate(${positionId})">Add Candidate</button>
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+    </div>`);
+}
+
+function previewPhoto(input, previewId) {
+  const f = input.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = e => {
+    $(`${previewId}-img`).src = e.target.result;
+    $(previewId).style.display = '';
+  };
+  r.readAsDataURL(f);
+}
+
+async function addCandidate(positionId) {
+  const name  = $('m-cand-name').value.trim();
+  const bio   = $('m-cand-bio').value.trim();
+  const photo = $('m-cand-photo').files[0];
+  if (!name) { toast('Name required', 'warning'); return; }
+  const fd = new FormData();
+  fd.append('position_id', positionId);
+  fd.append('name', name);
+  fd.append('bio', bio);
+  if (photo) fd.append('photo', photo);
+  try {
+    await api('POST', '/api/candidates', fd);
+    toast('Candidate added!', 'success');
+    closeModal();
+    loadPositions();
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+function showEditCandidateModal(id, name, bio) {
+  openModal(`
+    <h2 style="font-size:1.2rem;font-weight:700;margin-bottom:16px">Edit Candidate</h2>
+    <div class="form-group">
+      <label>Full Name *</label>
+      <input type="text" id="m-edit-name" class="form-control" value="${esc(name)}" autofocus>
+    </div>
+    <div class="form-group">
+      <label>Bio / Designation</label>
+      <input type="text" id="m-edit-bio" class="form-control" value="${esc(bio)}">
+    </div>
+    <div class="form-group">
+      <label>New Photo (leave blank to keep existing)</label>
+      <input type="file" id="m-edit-photo" class="form-control" accept="image/*" onchange="previewPhoto(this,'m-ep')">
+    </div>
+    <div id="m-ep" style="text-align:center;margin:8px 0;display:none">
+      <img id="m-ep-img" style="width:80px;height:80px;object-fit:cover;border-radius:50%;border:3px solid var(--gray-200)">
+    </div>
+    <div class="flex gap-1 mt-2">
+      <button class="btn btn-primary" onclick="updateCandidate(${id})">Save Changes</button>
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+    </div>`);
+}
+
+async function updateCandidate(id) {
+  const name  = $('m-edit-name').value.trim();
+  const bio   = $('m-edit-bio').value.trim();
+  const photo = $('m-edit-photo').files[0];
+  if (!name) { toast('Name required', 'warning'); return; }
+  const fd = new FormData();
+  fd.append('name', name);
+  fd.append('bio', bio);
+  if (photo) fd.append('photo', photo);
+  try {
+    await api('PUT', `/api/candidates/${id}`, fd);
+    toast('Updated!', 'success');
+    closeModal();
+    loadPositions();
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+async function deleteCandidate(id) {
+  if (!confirm('Remove this candidate?')) return;
+  try {
+    await api('DELETE', `/api/candidates/${id}`);
+    toast('Removed.', 'success');
+    loadPositions();
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+// ──────────────────────────────────────────────────────────── Booths ──
+async function loadBooths() {
+  try {
+    const [booths, info] = await Promise.all([
+      api('GET', '/api/booths'),
+      api('GET', '/api/server-info')
+    ]);
+    const ip = info.ips[0] || 'YOUR_SERVER_IP';
+    const container = $('booths-list');
+    if (!booths.length) {
+      container.innerHTML = '<div class="card"><p class="text-gray text-sm">No booths registered yet.</p></div>';
+      return;
+    }
+    container.innerHTML = `<div class="card"><div style="overflow-x:auto">
+      <table class="voters-table">
+        <thead><tr><th>#</th><th>Booth Name</th><th>Tablet URL</th><th></th></tr></thead>
+        <tbody>${booths.map(b => `
+          <tr>
+            <td class="text-gray">${b.id}</td>
+            <td class="font-bold">${esc(b.name)}</td>
+            <td>
+              <code style="font-size:.8rem">http://${ip}:${info.port}/booth.html</code>
+              <span class="text-xs text-gray"> → select "${esc(b.name)}"</span>
+            </td>
+            <td>
+              <button class="btn btn-danger btn-sm" onclick="deleteBooth(${b.id})">Remove</button>
+            </td>
+          </tr>`).join('')}
+        </tbody>
+      </table></div></div>`;
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+async function createBooth() {
+  const name = $('new-booth-name').value.trim();
+  if (!name) { toast('Enter a booth name', 'warning'); return; }
+  try {
+    await api('POST', '/api/booths', { name });
+    $('new-booth-name').value = '';
+    toast('Booth registered!', 'success');
+    loadBooths();
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+async function deleteBooth(id) {
+  if (!confirm('Remove this booth?')) return;
+  try {
+    await api('DELETE', `/api/booths/${id}`);
+    toast('Removed.', 'success');
+    loadBooths();
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+// ──────────────────────────────────────────────────────────── Voters ──
+async function loadVoters(query = '') {
+  if (!currentElectionId) {
+    $('voters-list').innerHTML = '<p class="text-gray text-sm">Select an election in Setup first.</p>';
+    return;
+  }
+  try {
+    const url = query
+      ? `/api/elections/${currentElectionId}/voters/search?q=${encodeURIComponent(query)}`
+      : `/api/elections/${currentElectionId}/voters`;
+    const voters = await api('GET', url);
+    $('btn-clear-voters').style.display = voters.length ? '' : 'none';
+    set$('voter-count', voters.length ? `(${voters.length})` : '');
+    if (!voters.length) {
+      $('voters-list').innerHTML = '<p class="text-gray text-sm" style="padding:8px 0">No voters yet. Import a list above.</p>';
+      return;
+    }
+    $('voters-list').innerHTML = `<div style="overflow-x:auto"><table class="voters-table">
+      <thead><tr><th>Voter ID</th><th>Name</th><th>Status</th><th>Time</th></tr></thead>
+      <tbody>${voters.map(v => `
+        <tr>
+          <td class="text-xs text-gray">${esc(v.voter_id)}</td>
+          <td class="font-bold">${esc(v.name)}</td>
+          <td><span class="badge ${v.has_voted ? 'badge-voted' : 'badge-pending'}">${v.has_voted ? 'VOTED' : 'PENDING'}</span></td>
+          <td class="text-xs text-gray">${v.voted_at ? new Date(v.voted_at).toLocaleTimeString() : '–'}</td>
+        </tr>`).join('')}
+      </tbody></table></div>`;
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+function togglePasteArea() {
+  $('paste-area').classList.toggle('hidden');
+}
+
+async function importPastedVoters() {
+  if (!currentElectionId) { toast('Select an election first (Setup tab)', 'warning'); return; }
+  const text = $('voter-paste').value.trim();
+  if (!text) { toast('Nothing to import', 'warning'); return; }
+  const voters = text.split('\n').map(line => {
+    const parts = line.split(/,|\t/);
+    return { name: parts[0]?.trim(), voter_id: parts[1]?.trim() || undefined };
+  }).filter(v => v.name);
+  await bulkImport(voters);
+}
+
+async function importVoterFile(input) {
+  if (!currentElectionId) {
+    toast('Select an election first (Setup tab)', 'warning');
+    input.value = '';
+    return;
+  }
+  const file = input.files[0];
+  if (!file) return;
+  const fname = file.name.toLowerCase();
+  let voters = [];
+
+  if (fname.endsWith('.csv') || fname.endsWith('.txt')) {
+    const text = await file.text();
+    voters = text.split('\n').map(line => {
+      const parts = line.split(/,|\t/);
+      const name = parts[0]?.trim().replace(/^["']|["']$/g, '');
+      const voter_id = parts[1]?.trim().replace(/^["']|["']$/g, '') || undefined;
+      if (!name || name.toLowerCase() === 'name') return null;
+      return { name, voter_id };
+    }).filter(Boolean);
+  } else if (fname.endsWith('.xlsx') || fname.endsWith('.xls')) {
+    if (typeof XLSX === 'undefined') {
+      toast('Excel library not loaded yet — use CSV or paste names', 'warning');
+      input.value = '';
+      return;
+    }
+    const buf = await file.arrayBuffer();
+    const wb  = XLSX.read(buf, { type: 'array' });
+    const ws  = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+    for (const row of rows) {
+      const name = String(row[0] || '').trim().replace(/^["']|["']$/g, '');
+      if (!name || name.toLowerCase() === 'name') continue;
+      const voter_id = String(row[1] || '').trim() || undefined;
+      voters.push({ name, voter_id });
+    }
+  } else {
+    toast('Please upload .xlsx, .xls, or .csv', 'warning');
+    input.value = '';
+    return;
+  }
+  input.value = '';
+  await bulkImport(voters);
+}
+
+async function bulkImport(voters) {
+  if (!voters.length) { toast('No names found', 'warning'); return; }
+  try {
+    const r = await api('POST', `/api/elections/${currentElectionId}/voters/bulk`, { voters });
+    toast(`Imported ${r.imported} voter${r.imported !== 1 ? 's' : ''}!`, 'success');
+    $('voter-paste').value = '';
+    hide('paste-area');
+    loadVoters('');
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+async function clearAllVoters() {
+  if (!confirm('Delete all voters from this election? Cannot be undone.')) return;
+  try {
+    await api('DELETE', `/api/elections/${currentElectionId}/voters`);
+    toast('Voter list cleared.', 'success');
+    loadVoters('');
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+// ──────────────────────────────────────────────────────────── Results ──
+async function loadResults() {
+  if (!currentElectionId) {
+    $('results-body').innerHTML = '<p class="text-gray text-sm">Select an election in Setup first.</p>';
+    return;
+  }
+  try {
+    const data = await api('GET', `/api/elections/${currentElectionId}/results`);
+    allResults = data;
+    renderResults(data);
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+function renderResults(data) {
+  if (!data) return;
+  set$('res-el-name', data.election?.name || '–');
+  $('res-el-badge').innerHTML = `<span class="badge badge-${data.election?.status}">${(data.election?.status||'').toUpperCase()}</span>`;
+  set$('res-ballots',    data.total_sessions);
+  set$('res-registered', data.total_voters || '–');
+  set$('res-turnout', data.total_voters > 0
+    ? Math.round(data.voted_voters / data.total_voters * 100) + '%' : '–');
+
+  if (!data.positions?.length) {
+    $('results-body').innerHTML = '<p class="text-gray text-sm">No positions.</p>';
+    return;
+  }
+  $('results-body').innerHTML = data.positions.map(pos => `
+    <div class="card results-position">
+      <div class="card-header">
+        <div>
+          <span class="card-title">${esc(pos.name)}</span>
+          ${pos.description ? `<span class="text-xs text-gray" style="margin-left:8px">${esc(pos.description)}</span>` : ''}
+        </div>
+        <span class="text-xs text-gray">YES: ${pos.min_yes}–${pos.max_yes}</span>
+      </div>
+      ${pos.candidates.map(c => {
+        const total = Math.max(c.total, 1);
+        const yp    = Math.round(c.yes_count / total * 100);
+        const np    = Math.round(c.no_count  / total * 100);
+        const photo = c.photo
+          ? `<img class="result-photo" src="/uploads/${esc(c.photo)}" alt="${esc(c.name)}">`
+          : `<div class="result-photo" style="background:var(--admin-primary);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1.1rem">${c.name.charAt(0)}</div>`;
+        return `
+          <div class="result-row">
+            ${photo}
+            <div class="result-name">${esc(c.name)}</div>
+            <div class="result-bars">
+              <div class="result-bar-row">
+                <span class="result-bar-label" style="color:var(--yes-color)">YES</span>
+                <div class="bar-track"><div class="bar-fill yes" style="width:${yp}%"></div></div>
+                <span class="result-count" style="color:var(--yes-color)">${c.yes_count}</span>
+              </div>
+              <div class="result-bar-row">
+                <span class="result-bar-label" style="color:var(--no-color)">NO</span>
+                <div class="bar-track"><div class="bar-fill no" style="width:${np}%"></div></div>
+                <span class="result-count" style="color:var(--no-color)">${c.no_count}</span>
+              </div>
+            </div>
+          </div>`;
+      }).join('')}
+    </div>`).join('');
+}
+
+function downloadResultsCSV() {
+  if (!allResults?.positions?.length) { toast('No results to export', 'warning'); return; }
+  let csv = 'Election,Position,Candidate,YES,NO,Total,YES%\n';
+  for (const pos of allResults.positions) {
+    for (const c of pos.candidates) {
+      const pct = c.total > 0 ? Math.round(c.yes_count / c.total * 100) : 0;
+      csv += `"${allResults.election?.name}","${pos.name}","${c.name}",${c.yes_count},${c.no_count},${c.total},${pct}%\n`;
+    }
+  }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+  a.download = `results_${Date.now()}.csv`;
+  a.click();
+}
+
+// ──────────────────────────────────────────────────────────── Utils ──
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ──────────────────────────────────────────────────────────── Init ──
+loadDashboard();
+</script>
+</body>
+</html>
