@@ -172,20 +172,37 @@ export default function calculateTree(data: Data, {
         if (d._ignore_spouses) spouses = spouses.filter(sp_id => !d._ignore_spouses!.includes(sp_id))
         if (spouses.length > 0) {
           if (one_level_rels && d.depth > 0) continue
-          const side = d.data.data.gender === "M" ? -1 : 1;  // female on right
-          d.x += spouses.length/2*node_separation*side;
+          // Keep the person in the MIDDLE and fan their spouses out to
+          // alternating sides (spouse 1 one side, spouse 2 the other, further
+          // spouses farther out), then recenter the whole cluster on the
+          // person's slot. This way each couple's children descend from between
+          // the correct pair, instead of all spouses stacking on one
+          // (gender-based) side. Order follows relationship order, not gender;
+          // children are sorted to match in sortChildrenWithSpouses.
+          const offsets = spouses.map((_sp, i) => {
+            const dir = i % 2 === 0 ? 1 : -1
+            const dist = Math.floor(i / 2) + 1  // 1,1,2,2,3,3...
+            return -(node_separation * dist) * dir
+          })
+          // Mean over the person (offset 0) + every spouse, so the cluster stays
+          // centered on the person's original x.
+          const center = offsets.reduce((a, b) => a + b, 0) / (offsets.length + 1)
+          const base_x = d.x
+          d.x = base_x - center
           spouses.forEach((sp_id, i) => {
             const spouse:TreeDatum = {
               data: data_stash.find(d0 => d0.id === sp_id) as Datum,
               added: true,
               depth: d.depth,
               spouse: d,
-              x: d.x-(node_separation*(i+1))*side,
+              x: base_x + offsets[i] - center,
               y: d.y,
               tid: `${d.data.id}-spouse-${i}`,
             }
-            spouse.sx = i > 0 ? spouse.x : spouse.x + (node_separation/2)*side
-            spouse.sy = i > 0 ? spouse.y : spouse.y + (node_separation/2)*side
+            // Anchor the couple link at the midpoint toward the person.
+            const toward = spouse.x < d.x ? 1 : -1
+            spouse.sx = spouse.x + toward * (node_separation / 2)
+            spouse.sy = spouse.y
             if (!d.spouses) d.spouses = []
             d.spouses.push(spouse)
             tree.push(spouse)
