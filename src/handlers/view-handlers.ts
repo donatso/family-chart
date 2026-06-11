@@ -45,7 +45,7 @@ type CardToMiddleProps = {
   transition_time?: number
 }
 export function cardToMiddle({datum, svg, svg_dim, scale, transition_time}: CardToMiddleProps) {
-  const k = scale || 1, x = svg_dim.width/2-datum.x*k, y = svg_dim.height/2-datum.y,
+  const k = scale || 1, x = svg_dim.width/2-datum.x*k, y = svg_dim.height/2-datum.y*k,
     t = {k, x: x/k, y: y/k}
   positionTree({t, svg, transition_time})
 }
