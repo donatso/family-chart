@@ -12,8 +12,9 @@ export function sortChildrenWithSpouses(children: Datum[], datum: Datum, data: D
     const a_i = a_p2 ? spouses.indexOf(a_p2.id) : -1
     const b_i = b_p2 ? spouses.indexOf(b_p2.id) : -1
 
-    if (datum.data.gender === "M") return a_i - b_i
-    else return b_i - a_i
+    // Order children by spouse order (ascending), independent of gender, so each
+    // couple's children sit next to the matching spouse in the centered layout.
+    return a_i - b_i
   })
 }
 
