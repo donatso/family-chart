@@ -12,7 +12,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/donatso/family-chart">
-    <img src="examples/logo.svg" alt="Family Chart Logo" width="100" height="60">
+    <img src="examples/logo.svg" alt="Family Chart Logo " width="100" height="60">
   </a>
 
 <h3 align="center">Family Chart</h3>
