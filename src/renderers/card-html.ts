@@ -1,5 +1,6 @@
 import * as d3 from "d3"
 import {personSvgIcon, miniTreeSvgIcon, plusSvgIcon} from "./icons"
+import {escapeHtml} from "./escape-html"
 import {handleCardDuplicateToggle} from "../features/duplicates-toggle/duplicates-toggle-renderer"
 import { Store } from "../types/store";
 import { TreeDatum } from "../types/treeData";
@@ -31,7 +32,7 @@ export default function CardHtml(props: {
 
   return function (this: HTMLElement, d: TreeDatum) {
     this.innerHTML = (`
-    <div class="card ${getClassList(d).join(' ')}" data-id="${d.tid}" style="transform: translate(-50%, -50%); pointer-events: auto;">
+    <div class="card ${getClassList(d).join(' ')}" data-id="${escapeHtml(d.tid)}" style="transform: translate(-50%, -50%); pointer-events: auto;">
       ${props.mini_tree ? getMiniTree(d) : ''}
       ${(props.cardInnerHtmlCreator && !d.data._new_rel_data) ? props.cardInnerHtmlCreator(d) : cardInner(d)}
     </div>
@@ -56,7 +57,7 @@ export default function CardHtml(props: {
   function getCardInnerImageCircle(d: TreeDatum) {
     return (`
     <div class="card-inner card-image-circle" ${getCardStyle()}>
-      ${d.data.data[props.cardImageField] ? `<img src="${d.data.data[props.cardImageField]}" ${getCardImageStyle()}>` : noImageIcon(d)}
+      ${d.data.data[props.cardImageField] ? `<img src="${escapeHtml(d.data.data[props.cardImageField])}" ${getCardImageStyle()}>` : noImageIcon(d)}
       <div class="card-label">${textDisplay(d)}</div>
       ${d.duplicate ? getCardDuplicateTag(d) : ''}
     </div>
@@ -66,7 +67,7 @@ export default function CardHtml(props: {
   function getCardInnerImageRect(d: TreeDatum) {
     return (`
     <div class="card-inner card-image-rect" ${getCardStyle()}>
-      ${d.data.data[props.cardImageField] ? `<img src="${d.data.data[props.cardImageField]}" ${getCardImageStyle()}>` : noImageIcon(d)}
+      ${d.data.data[props.cardImageField] ? `<img src="${escapeHtml(d.data.data[props.cardImageField])}" ${getCardImageStyle()}>` : noImageIcon(d)}
       <div class="card-label">${textDisplay(d)}</div>
       ${d.duplicate ? getCardDuplicateTag(d) : ''}
     </div>
@@ -84,18 +85,18 @@ export default function CardHtml(props: {
 
   function textDisplay(d: TreeDatum) {
     if (d.data._new_rel_data) return newRelDataDisplay(d)
-    if (d.data.to_add) return `<div>${props.empty_card_label || 'ADD'}</div>`
-    if (d.data.unknown) return `<div>${props.unknown_card_label || 'UNKNOWN'}</div>`
+    if (d.data.to_add) return `<div>${escapeHtml(props.empty_card_label || 'ADD')}</div>`
+    if (d.data.unknown) return `<div>${escapeHtml(props.unknown_card_label || 'UNKNOWN')}</div>`
     return (`
-      ${props.card_display.map(display => `<div>${display(d.data)}</div>`).join('')}
+      ${props.card_display.map(display => `<div>${escapeHtml(display(d.data))}</div>`).join('')}
     `)
   }
 
   function newRelDataDisplay(d: TreeDatum) {
     const attr_list = []
-    attr_list.push(`data-rel-type="${d.data._new_rel_data.rel_type}"`)
-    if (['son', 'daughter'].includes(d.data._new_rel_data.rel_type)) attr_list.push(`data-other-parent-id="${d.data._new_rel_data.other_parent_id}"`)
-    return `<div ${attr_list.join(' ')}>${d.data._new_rel_data.label}</div>`
+    attr_list.push(`data-rel-type="${escapeHtml(d.data._new_rel_data.rel_type)}"`)
+    if (['son', 'daughter'].includes(d.data._new_rel_data.rel_type)) attr_list.push(`data-other-parent-id="${escapeHtml(d.data._new_rel_data.other_parent_id)}"`)
+    return `<div ${attr_list.join(' ')}>${escapeHtml(d.data._new_rel_data.label)}</div>`
   }
 
   function getMiniTree(d: TreeDatum) {

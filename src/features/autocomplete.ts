@@ -1,5 +1,6 @@
 import * as d3 from "d3"
 import {personSvgIcon, chevronDownSvgIcon, linkOffSvgIcon} from "../renderers/icons"
+import {escapeHtml} from "../renderers/escape-html"
 import { checkIfConnectedToFirstPerson } from "../handlers/check-person-connection"
 import { Datum } from "../types/data"
 
@@ -39,7 +40,7 @@ class Autocomplete {
     d3.select(this.autocomplete_cont).html(`
       <div class="f3-autocomplete">
         <div class="f3-autocomplete-input-cont">
-          <input type="text" placeholder="${this.config?.placeholder || 'Search'}">
+          <input type="text" placeholder="${escapeHtml(this.config?.placeholder || 'Search')}">
           <span class="f3-autocomplete-toggle">${chevronDownSvgIcon()}</span>
         </div>
         <div class="f3-autocomplete-items" tabindex="0"></div>
@@ -92,14 +93,15 @@ class Autocomplete {
       updateDropdown(filtered_options)
   
       function setHtmlLabel(d: AutocompleteOption) {
-        const index = d.label.toLowerCase().indexOf(search_input_value.toLowerCase())
+        const label = String(d.label ?? '')
+        const index = label.toLowerCase().indexOf(search_input_value.toLowerCase())
         if (index !== -1) d.label_html = itemLabel()
-        else d.label_html = d.label
-  
+        else d.label_html = escapeHtml(label)
+
         function itemLabel() {
-          return d.label.substring(0, index) 
-            + '<strong>' + d.label.substring(index, index + search_input_value.length) 
-            + '</strong>' + d.label.substring(index + search_input_value.length)
+          return escapeHtml(label.substring(0, index))
+            + '<strong>' + escapeHtml(label.substring(index, index + search_input_value.length))
+            + '</strong>' + escapeHtml(label.substring(index + search_input_value.length))
         }
       }
   
@@ -126,7 +128,7 @@ class Autocomplete {
   
   
       function itemHtml(d: AutocompleteOption) {
-        return `<div class="${d.class ? d.class : ''}">${d.label_html}</div>`
+        return `<div class="${escapeHtml(d.class ? d.class : '')}">${d.label_html}</div>`
       }
     }
   

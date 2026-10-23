@@ -1,4 +1,5 @@
 import { EditDatumFormCreator, NewRelFormCreator, SelectField } from '../types/form'
+import { escapeHtml } from './escape-html'
 import * as icons from './icons'
 
 
@@ -6,7 +7,7 @@ export function getHtmlNew(form_creator: NewRelFormCreator) {
   return (` 
     <form id="familyForm" class="f3-form">
       ${closeBtn()}
-      <h3 class="f3-form-title">${form_creator.title}</h3>
+      <h3 class="f3-form-title">${escapeHtml(form_creator.title)}</h3>
       ${genderRadio(form_creator)}
 
       ${fields(form_creator)}
@@ -93,12 +94,12 @@ function genderRadio(form_creator: EditDatumFormCreator | NewRelFormCreator) {
     <div class="f3-radio-group">
       ${form_creator.gender_field.options.map(option => (`
         <label>
-          <input type="radio" name="${form_creator.gender_field.id}" 
-            value="${option.value}" 
+          <input type="radio" name="${escapeHtml(form_creator.gender_field.id)}" 
+            value="${escapeHtml(option.value)}" 
             ${option.value === form_creator.gender_field.initial_value ? 'checked' : ''}
             ${form_creator.gender_field.disabled ? 'disabled' : ''}
           >
-          ${option.label}
+          ${escapeHtml(option.label)}
         </label>
       `)).join('')}
     </div>
@@ -112,37 +113,37 @@ function fields(form_creator: EditDatumFormCreator | NewRelFormCreator) {
     if (field.type === 'text') {
       fields_html += `
       <div class="f3-form-field">
-        <label>${field.label}</label>
-        <input type="${field.type}" 
-          name="${field.id}" 
-          value="${field.initial_value || ''}"
-          placeholder="${field.label}">
+        <label>${escapeHtml(field.label)}</label>
+        <input type="${escapeHtml(field.type)}" 
+          name="${escapeHtml(field.id)}" 
+          value="${escapeHtml(field.initial_value || '')}"
+          placeholder="${escapeHtml(field.label)}">
       </div>`
     } else if (field.type === 'textarea') {
       fields_html += `
       <div class="f3-form-field">
-        <label>${field.label}</label>
-        <textarea name="${field.id}" 
-          placeholder="${field.label}">${field.initial_value || ''}</textarea>
+        <label>${escapeHtml(field.label)}</label>
+        <textarea name="${escapeHtml(field.id)}" 
+          placeholder="${escapeHtml(field.label)}">${escapeHtml(field.initial_value || '')}</textarea>
       </div>`
     } else if (field.type === 'select') {
       const select_field = field as SelectField
       fields_html += `
       <div class="f3-form-field">
-        <label>${select_field.label}</label>
-        <select name="${select_field.id}" value="${select_field.initial_value || ''}">
-          <option value="">${select_field.placeholder || `Select ${select_field.label}`}</option>
-          ${select_field.options.map((option) => `<option ${option.value === select_field.initial_value ? 'selected' : ''} value="${option.value}">${option.label}</option>`).join('')}
+        <label>${escapeHtml(select_field.label)}</label>
+        <select name="${escapeHtml(select_field.id)}" value="${escapeHtml(select_field.initial_value || '')}">
+          <option value="">${escapeHtml(select_field.placeholder || `Select ${select_field.label}`)}</option>
+          ${select_field.options.map((option) => `<option ${option.value === select_field.initial_value ? 'selected' : ''} value="${escapeHtml(option.value)}">${escapeHtml(option.label)}</option>`).join('')}
         </select>
       </div>`
     } else if (field.type === 'rel_reference') {
       fields_html += `
       <div class="f3-form-field">
-        <label>${field.label} - <i>${field.rel_label}</i></label>
+        <label>${escapeHtml(field.label)} - <i>${escapeHtml(field.rel_label)}</i></label>
         <input type="text" 
-          name="${field.id}" 
-          value="${field.initial_value || ''}"
-          placeholder="${field.label}">
+          name="${escapeHtml(field.id)}" 
+          value="${escapeHtml(field.initial_value || '')}"
+          placeholder="${escapeHtml(field.label)}">
       </div>`
     }
   })
@@ -155,22 +156,22 @@ function fields(form_creator: EditDatumFormCreator | NewRelFormCreator) {
         if (!field.initial_value) return
         fields_html += `
         <div class="f3-info-field">
-          <span class="f3-info-field-label">${field.label} - <i>${field.rel_label}</i></span>
-          <span class="f3-info-field-value">${field.initial_value || ''}</span>
+          <span class="f3-info-field-label">${escapeHtml(field.label)} - <i>${escapeHtml(field.rel_label)}</i></span>
+          <span class="f3-info-field-value">${escapeHtml(field.initial_value || '')}</span>
         </div>`
       } else if (field.type === 'select') {
         const select_field = field as SelectField
         if (!field.initial_value) return
         fields_html += `
         <div class="f3-info-field">
-          <span class="f3-info-field-label">${select_field.label}</span>
-          <span class="f3-info-field-value">${select_field.options.find(option => option.value === select_field.initial_value)?.label || ''}</span>
+          <span class="f3-info-field-label">${escapeHtml(select_field.label)}</span>
+          <span class="f3-info-field-value">${escapeHtml(select_field.options.find(option => option.value === select_field.initial_value)?.label || '')}</span>
         </div>`
       } else {
         fields_html += `
         <div class="f3-info-field">
-          <span class="f3-info-field-label">${field.label}</span>
-          <span class="f3-info-field-value">${field.initial_value || ''}</span>
+          <span class="f3-info-field-label">${escapeHtml(field.label)}</span>
+          <span class="f3-info-field-value">${escapeHtml(field.initial_value || '')}</span>
         </div>`
       }
     })
@@ -186,10 +187,10 @@ function addLinkExistingRelative(form_creator: EditDatumFormCreator | NewRelForm
     <div>
       <hr>
       <div class="f3-link-existing-relative">
-        <label>${title}</label>
+        <label>${escapeHtml(title)}</label>
         <select>
-          <option value="">${select_placeholder}</option>
-          ${options.map(option => `<option value="${option.value}">${option.label}</option>`).join('')}
+          <option value="">${escapeHtml(select_placeholder)}</option>
+          ${options.map(option => `<option value="${escapeHtml(option.value)}">${escapeHtml(option.label)}</option>`).join('')}
         </select>
       </div>
     </div>
